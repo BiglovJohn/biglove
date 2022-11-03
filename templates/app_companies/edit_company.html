@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{{ current_company.short_company_name }}{% endblock title %}</title>
+    <link type="text/css" rel="reset" href="../../static/css/reset.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="../../static/css/style.css">
+    <link type="text/css" rel="stylesheet" href="../../static/css/stylesheet.css">
+
+</head>
+<body>
+    {% block content %}
+    <div class="company_edit__top_bar"></div>
+    <div class="company__edit_form_container">
+        <form class="company__edit_profile" method="post">{% csrf_token %}
+            {{ company_form.user.as_hidden }}
+            <div class="company__main_param_block">
+                <div class="edit-element-container">
+                    <p class="profile-categories">Форма организации: </p>
+                    <p class="profile-edit-data">{{ company_form.type }}</p>
+                </div>
+                <div class="manager-form-container">
+                    <p class="profile-categories">Полное наименование: </p>
+                    <p class="profile-edit-data">{{ company_form.full_company_name }}</p>
+                </div>
+                <div class="manager-form-container">
+                    <p class="profile-categories">Сокращенное наименование: </p>
+                    <p class="profile-edit-data">{{ company_form.short_company_name }}</p>
+                </div>
+                <div class="manager-form-container">
+                    <p class="profile-categories">Юр. адрес: </p>
+                    <p class="profile-edit-data">{{ company_form.legal_address }}</p>
+                </div>
+                <div class="manager-form-container">
+                    <p class="profile-categories">Факт. адрес: </p>
+                    <p class="profile-edit-data"> {{ company_form.actual_address }}</p>
+                </div>
+                <div class="company__inn_kpp_ogrn">
+                    <div class="company__inn">
+                        <p class="profile-categories">ИНН: </p>
+                        <p class="profile-edit-data"> {{ company_form.inn }}</p>
+                    </div>
+                    <div class="company__kpp">
+                        <p class="profile-categories">КПП: </p>
+                        <p class="profile-edit-data"> {{ company_form.kpp }}</p>
+                    </div>
+                    <div class="company__ogrn">
+                        <p class="profile-categories">ОГРН: </p>
+                        <p class="profile-edit-data"> {{ company_form.ogrn }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="company__bank_param">
+                <div class="company__bank_accounts">
+                    <div class="company__rs">
+                        <p class="profile-categories">Р/с: </p>
+                        <p class="profile-edit-data"> {{ company_form.bank_account }}</p>
+                    </div>
+                    <div class="company__ks">
+                        <p class="profile-categories">К/с: </p>
+                        <p class="profile-edit-data"> {{ company_form.kor_account }}</p>
+                    </div>
+                </div>
+                <div class="manager-form-container">
+                    <p class="profile-categories">Банк: </p>
+                    <p class="profile-edit-data"> {{ company_form.bank_name }}</p>
+                </div>
+
+                <div class="company__bic">
+                    <p class="profile-categories">БИК: </p>
+                    <p class="profile-edit-data"> {{ company_form.bic }}</p>
+                </div>
+            </div>
+            <div class="company__contacts_param">
+                <div class="company__ceo">
+                    <p class="profile-categories">Руководитель: </p>
+                    <p class="profile-edit-data"> {{ company_form.director }}</p>
+                </div>
+                <div class="company__phone_and_email">
+                    <div class="company__phone">
+                        <p class="profile-categories">Номер телефона: </p>
+                        <p class="profile-edit-data"> {{ company_form.company_phone }}</p>
+                    </div>
+                    <div class="company__email">
+                        <p class="profile-categories">Эл. почта: </p>
+                        <p class="profile-edit-data"> {{ company_form.company_email }}</p>
+                    </div>
+                </div>
+                <div style="text-align: center;">
+                    <button class="btn btn-success" name="account__save_form" id="edit-manager-save" type="submit">Сохранить изменения</button>
+                </div>
+            </div>
+        </form>
+        <div class="company__show_objects_list">
+            <h5 class="company__h5_realty_objects">Объекты в управлении</h5>
+            <div class="company__realty_list_menu">
+                    <!-- Кнопка-триггер модального окна регистрации объекта недвижимости -->
+                <a class="company__realty_list_menu_link" title="Зарегистрировать объект" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><img class="company__realty_list_menu_img" src="../../static/img/icons/free-icon-add-house-15735.png"></a>
+                    <!-- Кнопка-триггер модального окна статистических данных -->
+                <a class="company__realty_list_menu_link" title="Статистические данные" data-bs-toggle="modal" data-bs-target="#staticBackdrop2"><img class="company__realty_list_menu_img" src="../../static/img/icons/free-icon-financial-report-3344965.png"></a>
+                    <!-- Кнопка-триггер модального окна промо акций -->
+                <a class="company__realty_list_menu_link" title="Промо акции" data-bs-toggle="modal" data-bs-target="#staticBackdrop3"><img class="company__realty_list_menu_img" src="../../static/img/icons/free-icon-promotions-372754.png"></a>
+            </div>
+            <ul class="company__list_of_realty">
+                {% if realty_objects_to_profile %}
+                    {% for company in realty_objects_to_profile %}
+                        <a class="link-to-realty-from-profile" href="{% url 'app_premises:realty_detail' slug=company.slug %}"><li class="company__realty_object">{{ company }}</li></a>
+                    {% endfor %}
+                {% else %}
+                    <img class="company__you_have_no_objects" src="../../static/img/icons/free-icon-construction-worker-4440872.png">
+                    <p>У вас еще нет объектов в управлении</p>
+                    <a href="#">Зарегистрировать объект</a>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="company__show_reservation_list">
+            <h5 class="company__h5_realty_objects">Список бронирований</h5>
+            {% for reserve in reservations_list %}
+                <div class="company__reserve_container">
+                    <div class="company__reserve_realty_and_sum">
+                        {{ reserve }} (Сумма: {{ reserve.total_sum }}₽)
+                    </div>
+                    <div class="company__reserve_date">
+                        С {{ reserve.check_in }} по {{ reserve.check_out }}
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="company__total_sum_of_active_reserves">
+                {% if total_company_sum %}
+                    <p>Общая сумма: {{ total_company_sum }}₽</p>
+                {% else %}
+                    <p>У вас пока нет активных бронирований</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно создания объекта недвижимости -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Регистрация объекта недвижимости</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+          </div>
+          <div class="modal-body">
+              {% if request.user.is_authenticated %}
+                  {% if request.user.is_company %}
+                      <form class="create-realty-form" method="post">{% csrf_token %}
+
+                          <div class="input__wrapper">
+
+                              <form class="create-realty-main-container" method="post">
+
+                                  <div class="create-realty-container">
+                                      <div class="create-realty-menu1">
+                                          {{ upload_photos_form.photo }}
+                                          <p class="create-realty-form-container">
+                                                <p>Управляющая компания:</p>
+                                                <p>{{ realty_form.manager }}</p>
+                                            <p class="create-realty-form-container">
+                                                <p>Название объекта:</p>
+                                                <p>{{ realty_form.realty_name }}</p>
+                                            <p class="create-realty-form-container">
+                                                <p>Страна:</p>
+                                                <p>{{ realty_form.realty_country }}</p>
+                                            <p class="create-realty-form-container">
+                                                <p>Регион:</p>
+                                                <p>{{ realty_form.realty_region }}</p>
+                                            <p class="create-realty-form-container">
+                                                <p>Населенный пункт:</p>
+                                                <p>{{ realty_form.realty_city }}</p>
+                                            <p class="create-realty-form-container">
+                                                <p>Адрес:</p>
+                                                <p>{{ realty_form.realty_address }}</p>
+                                            <p class="create-realty-form-container">
+                                                <p>Расстояние до города:</p>
+                                                <p>{{ realty_form.realty_to_city }}</p>
+                                      </div>
+                                    <div class="create-realty-menu2">
+
+                                        <div class="col-md-3" id="create-realty-type">
+                                            <label for="validationDefault04" class="form-label">Тип объекта</label>
+                                            <select class="form-select" name="realty_type" id="validationDefault04" required>
+                                              <option selected disabled value="">Выберите...</option>
+                                                  {% for type in realty_form.realty_type %}
+                                                      {{ type }}
+                                                  {% endfor %}
+                                            </select>
+                                        </div>
+
+                                        <p class="create-realty-form-container">
+                                            <p>Количество мест:</p>
+                                            <p>{{ realty_form.count_of_persons }}</p>
+                                        <p class="create-realty-form-container">
+                                            <p>Цена за сутки:</p>
+                                            <p>{{ realty_form.realty_price }}</p>
+                                        <p class="create-realty-form-container">
+                                            <p>Площадь помещения:</p>
+                                            <p>{{ realty_form.realty_area }}</p>
+                                        <p class="create-realty-form-container">
+                                            <p>Способ оплыты:</p>
+                                            <p>{{ realty_form.pay_type }}</p>
+                                        <p class="create-realty-form-container">
+                                            <p>Питание:</p>
+                                            <p>{{ realty_form.food_options }}</p>
+                                        <p class="create-realty-form-container">
+                                            <p>Отмена бронирования:</p>
+                                            <p>{{ realty_form.book_cancel }}</p>
+
+                                        <p class="create-realty-form-container">
+                                            <div class="form-check">
+                                                {% for option in realty_form.options %}
+                                                    <input class="form-check-input" type="checkbox" value="{{ option.id }}" id="flexCheckDefault">
+                                                    <label class="form-check-label" for="flexCheckDefault">
+                                                        {{ option }}
+                                                    </label>
+                                                {% endfor %}
+                                            </div>
+                                            <select class="form-select form-select-sm" aria-label=".form-select-sm" multiple>
+                                                {% for option in realty_form.options %}
+                                                    <option value="{{ option }}"></option>
+                                                {% endfor %}
+                                            </select>
+                                        </p>
+
+                                    </div>
+                                </div>
+                                <button type="submit" name="account__save_realty_object" class="btn btn-success" id="create-realty-button">Зарегистрировать объект</button>
+                                <p>Нажимая «Зарегистрировать объект» я подтверждаю корректность введенных данных.</p>
+                              </form>
+                        </div>
+                    </form>
+                  </div>
+                  {% endif %}
+              {% endif %}
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Модальное окно статистических данных -->
+    <div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel2">Статистические данные</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+          </div>
+          <div class="modal-body">
+            Каминсун
+          </div>
+          <div class="modal-footer">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Модальное окно управления промо-акциями -->
+    <div class="modal fade" id="staticBackdrop3" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel3">Управление акциями</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+          </div>
+          <div class="modal-body">
+            Каминсун
+          </div>
+          <div class="modal-footer">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+        const myModal = document.getElementById('myModal')
+        const myInput = document.getElementById('myInput')
+
+        myModal.addEventListener('shown.bs.modal', () => {
+          myInput.focus()
+        })
+    </script>
+    {% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Страница бронирования</title>
+    <link type="text/css" rel="reset" href="../../static/css/reset.css">
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="../../static/css/style.css">
+    <link type="text/css" rel="stylesheet" href="../../static/css/stylesheet.css">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+    <!-- Fengyuan Chen's Datepicker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
+
+</head>
+{% block content %}
+<header class="basemenu">
+    <menu class="menu1">
+        <a class="base-logo" style="width: 100px;" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
+        <menu class="base-menu-buttons">
+            {% if request.user.is_authenticated %}
+                    <div class="dropdown">
+                      <a data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                        {{ guest }} <img class="open-profile-button" src="../static/img/icons/icons8-login-66.png" alt="Войти в кабинет">
+                      </a>
+                      <form class="dropdown-menu p-4" id="base_menu__container">
+                          <p>{{ guest }}</p>
+                          <p class="base_menu__lk_logout"><a href="{% url 'app_profiler:account_detail' user_id=request.user.id %}">Личный кабинет</a> <a href="{% url 'app_profiler:logout' %}">Выйти</a></p>
+                          <ul class="base_menu__links_container">
+                              {% if request.user.is_company %}
+                                  <li class="base_menu__li_container">
+                                      <a href="{% url 'app_companies:company_detail' company_id=request.user.id %}">
+                                          Кабинет арендодателя
+                                      </a>
+                                  </li>
+                              {% endif %}
+                          </ul>
+                      </form>
+                    </div>
+            {% else %}
+                <div class="dropdown" id="login">
+                        <a type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button type="button" class="btn btn-light">Войти</button>
+                        </a>
+                        <div class="dropdown-menu">
+                            <form class="px-4 py-3" id="login-form" method="post">{% csrf_token %}
+                                <div class="mb-3">
+                                    {{ auth_form.email }}
+                                </div>
+                                <div class="mb-3">
+                                    {{ auth_form.password }}
+                                </div>
+                                <div class="mb-3">
+                                    <div class="form-check" id="remember-me">
+                                        <input type="checkbox" class="form-check-input" id="dropdownCheck">
+                                        <label class="form-check-label" for="dropdownCheck">
+                                            Запомнить меня
+                                        </label>
+                                    </div>
+                                </div>
+                                <button type="submit" name="reserve__submit_login_form" class="btn btn-success">Войти</button>
+
+                            </form>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item" id="open_pop_up">Впервые у нас? <b>Зарегистрироваться</b></button>
+                            <a class="dropdown-item" href="#">Забыли пароль?</a>
+                        </div>
+                </div>
+            {% endif %}
+        </menu>
+
+    </menu>
+
+</header>
+<body>
+    <div class="reserve-end-container">
+        <div class="reserve-img-container">
+            <img class="reserve-img" src="../../media/{{ photos.photo }}">
+            <div class="reserve__hotel_info">
+                <h5 class="end_reserve_form_text">{{ realty_object_to_reserve_page }}</h5>
+                <div class="reserve__text_form">{{ realty_object_to_reserve_page.realty_region }}, {{ realty_object_to_reserve_page.realty_city }}, {{ realty_object_to_reserve_page.realty_address }}</div>
+                <div class="reserve__text_form">Количество мест: {{ realty_object_to_reserve_page.count_of_persons }}</div>
+                <div class="reserve__text_form">Общая площадь помещения: {{ realty_object_to_reserve_page.realty_area }} кв.м.</div>
+            </div>
+            <div class="reserve__date_range">
+                <div>
+                    <div>Заезд с </div>
+                    <div>{{ check_in }}</div>
+                </div>
+                <div>
+                    <div>Выезд до </div>
+                    <div>{{ check_out }}</div>
+                </div>
+            </div>
+        </div>
+        <div class="reserve__menu_book_pay_type">
+            <div class="reserve__menu_book_pay_type_elem">
+                {% if realty_object_to_reserve_page.book_cancel == 'y' %}
+                    <li style="color:green; list-style: none;" class="reserve__main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-calendar-5237130.png">{{ realty_object_to_reserve_page.get_book_cancel_display }}</li>
+                {% elif realty_object_to_reserve_page.book_cancel == 'n' %}
+                    <li style="color:red; list-style: none;" class="reserve__main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-calendar-5237130.png">{{ realty_object_to_reserve_page.get_book_cancel_display }}</li>
+                {% endif %}
+            </div>
+            <div class="reserve__menu_book_pay_type_elem_2">
+                {% if realty_object_to_reserve_page.food_options == 'a' %}
+                    <li style="color:green; list-style: none;" class="reserve__main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ realty_object_to_reserve_page.get_food_options_display }}</li>
+                {% elif realty_object_to_reserve_page.food_options == 'b' %}
+                    <li style="color:green; list-style: none;" class="reserve__main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ realty_object_to_reserve_page.get_food_options_display }}</li>
+                {% elif realty_object_to_reserve_page.food_options == 'c' %}
+                    <li style="color:green; list-style: none;" class="reserve__main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ realty_object_to_reserve_page.get_food_options_display }}</li>
+                {% elif realty_object_to_reserve_page.food_options == 'd' %}
+                    <li style="color:green; list-style: none;" class="reserve__main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ realty_object_to_reserve_page.get_food_options_display }}</li>
+                {% elif realty_object_to_reserve_page.food_options == 'e' %}
+                    <li style="color:red; list-style: none;" class="reserve__main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ realty_object_to_reserve_page.get_food_options_display }}</li>
+                {% endif %}
+            </div>
+            <div class="reserve__menu_book_pay_type_elem">
+                {% if realty_object_to_reserve_page.pay_type == 'o' %}
+                    <li class="reserve__pay_type_menu"><img class="reserve__main_option_img" src="../../static/img/icons/mir-logo-h14px.svg">{{ realty_object_to_reserve_page.get_pay_type_display }}</li>
+                {% else %}
+                    <li class="reserve__pay_type_menu"><img class="reserve__main_option_img" src="../../static/img/icons/money.png">{{ realty_object_to_reserve_page.get_pay_type_display }}</li>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="reserve-end-container">
+        {% if request.user.is_authenticated %}
+            <form style="width: 60%; margin: 1% auto;" method="post">{% csrf_token %}
+                <div class="end_reserve_form_text_container">
+                    <div class="reserve__main_guest_head_text">Контактные данные гостя</div>
+                    <div class="reserve__main_guest_sub_info">Проверьте пожалуйста все поля перед бронированием</div>
+                    Имя: <div class="reserve__main_guest_name">{{ current_user.first_name }}</div>
+                    Фамилия: <div class="reserve__main_guest_name">{{ current_user.last_name }}</div>
+                    Номер телефона: <div class="reserve__main_guest_contacts">{{ current_user.phone }}</div>
+                    Эл. почта: <div class="reserve__main_guest_contacts">{{ current_user.email }}</div>
+                </div>
+
+                {{ reservation_form.realty.as_hidden }}
+                {{ reservation_form.guest.as_hidden }}
+                {{ reservation_form.check_in.as_hidden }}
+                {{ reservation_form.check_out.as_hidden }}
+                {{ reservation_form.is_booked.as_hidden }}
+                <p class="total_sum_and_button_reserve_end">
+                    Сумма к оплате: {{ reservation_form.total_sum }}₽
+                </p>
+                <button class="btn btn-light" type="submit" id="end_reserve" name="reservation-submit">Подтвердить</button>
+            </form>
+        {% elif not request.user.is_authenticated %}
+            <!--Форма регистрации для неавторизованного пользователя при попытке бронирования-->
+            <form style="width: 60%; margin: 1% auto;" method="post">{% csrf_token %}
+                <form class="register-container" method="post">{% csrf_token %}
+                <div class="reserve__register_form_main_container">
+                    <div class="reserve__register_form_email_phone">
+                        <div class="reserve__register_form_email">{{ register_form.email }}</div>
+                        <div class="reserve__register_form_phone">{{ register_form.phone }}</div>
+                    </div>
+                    <div class="reserve__container_register_form_passwords">
+                        <div class="reserve__register_form_password">{{ register_form.password1 }}</div>
+                        <div class="reserve__register_form_password">{{ register_form.password2 }}</div>
+                    </div>
+
+                    <div class="reserve__register_form_name_container">
+                        <div class="reserve__register_form_name">{{ register_form.first_name }}</div>
+                        <div class="reserve__register_form_last_name">{{ register_form.last_name }}</div>
+                    </div>
+
+                    <div class="reserve__container_for_switch">
+                        <div class="form-check form-switch">
+                        <p class="register-form-container">
+                            <p>{{ register_form.is_company }}</p>
+                            <label class="form-check-label" for="flexSwitchCheckDefault">Являюсь арендодателем</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            {{ register_form.is_active }}
+                            <label class="form-check-label" for="flexSwitchCheckDefault">Согласиться с <a href="">правилами сайта</a></label>
+                        </div>
+                        <button type="submit" name="save-register-form" class="btn btn-light" id="reserve__register_button">Зарегистрироваться</button>
+                    </div>
+                </div>
+            </form>
+                <div class="reserve__total_sum_and_submit">
+                    <p class="total_sum_and_button_reserve_end">Сумма к оплате: {{ reservation_form.total_sum }}₽</p>
+                    <button class="btn btn-light" type="submit" id="end_reserve_not_auth" name="reservation-submit" disabled>Подтвердить</button>
+                </div>
+
+            </form>
+        {% endif %}
+    </div>
+
+    <!--Всплывающая форма регистрации из основного меню-->
+    <div id="pop_up" style="position: fixed; left: 50%; top: 50%;transform: translate(-50%, -50%); display: none; z-index: 100; padding: 5px;">
+            <button id="close_pop_up_btn" class="btn-close" aria-label="Close"></button>
+            <div class="register-popup-picture">
+            </div>
+            <form class="register-container" method="post">{% csrf_token %}
+                <div class="register-form-main-container">
+                    <p class="register-form-container">
+                        <p>{{ register_form.email }}</p>
+                    <p class="register-form-container">
+                        <p>{{ register_form.password1 }}</p>
+                    <p class="register-form-container">
+                        <p>{{ register_form.password2 }}</p>
+                    <p class="register-form-container">
+                        <p>{{ register_form.first_name }}</p>
+                    <p class="register-form-container">
+                        <p>{{ register_form.last_name }}</p>
+                    <p class="register-form-container">
+                        <p>{{ register_form.phone }}</p>
+                    <div class="form-check form-switch">
+                    <p class="register-form-container">
+                        <p>{{ register_form.is_company }}</p>
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Являюсь арендодателем</label>
+                    </div>
+                    <div class="form-check form-switch">
+                        {{ register_form.is_active }}
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Согласиться с <a href="">правилами сайта</a></label>
+                    </div>
+                </div>
+                <button type="submit" name="save-register-form" class="btn btn-light" id="register-button">Зарегистрироваться</button>
+            </form>
+        </div>
+
+    <script>
+        let pop_up   = document.getElementById('pop_up');
+        let open_btn  = document.getElementById('open_pop_up');
+        let close_btn = document.getElementById('close_pop_up_btn');
+
+        open_btn.addEventListener('click',()=>{
+            pop_up.style.display = 'block';
+        })
+
+        close_btn.addEventListener('click', ()=>{
+            pop_up.style.display = 'none';
+        })
+    </script>
+
+</body>
+{% endblock content %}
+</html>

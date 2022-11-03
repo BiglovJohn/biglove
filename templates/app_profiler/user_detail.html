@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+
+<html lang="ru" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{{ current_user.first_name }} {{ current_user.last_name }}{% endblock title %}</title>
+    <link type="text/css" rel="reset" href="../../static/css/reset.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="../../static/css/style.css">
+    <link type="text/css" rel="stylesheet" href="../../static/css/stylesheet.css">
+</head>
+<body>
+    {% block content %}
+    <div style="display: block; height: 50px;"></div>
+    <div class="user_detail__main_container">
+        <div class="user_detail__forms_container">
+            <form class="account__form_container" method="post">{% csrf_token %}
+                <div class="account__div_container">
+                    <div class="account__name_container">
+                        {{ account_form.status.as_hidden }}
+                        {{ account_form.created_at.as_hidden }}
+                        {{ account_form.is_active.as_hidden }}
+                        {{ account_form.is_company.as_hidden }}
+                        {{ account_form.as_staff.as_hidden }}
+                        {{ account_form.is_superuser.as_hidden }}
+                        {{ account_form.book_count.as_hidden }}
+                        {{ account_form.password.as_hidden }}
+                        <div class="account__names">
+                            <label>Ваше имя:</label>
+                            {{ account_form.first_name }}
+                        </div>
+                        <div class="account__names">
+                            <label>Ваша фамилия:</label>
+                            {{ account_form.last_name }}
+                        </div>
+                    </div>
+
+                    <div class="account__birth_and_gender_container">
+                        <div class="account__names">
+                            <label>Дата рождения:</label>
+                            {{ account_form.birthday }}
+                        </div>
+                        <div style="width: 45%;">
+                            <label for="id_gender">Пол:</label>
+                            <select class="edit-account-input" name="gender" id="id_gender" aria-label="Пример выбора по умолчанию">
+                            {% for gender in account_form.gender %}
+                                {{ gender }}
+                            {% endfor %}
+                        </select>
+                        </div>
+                    </div>
+
+                    <div class="account__phone_and_email_container">
+                        <div class="account__names">
+                            <label>Номер телефона:</label>
+                            {{ account_form.phone }}
+                        </div>
+                        <div class="account__names">
+                            <label>Электронная почта:</label>
+                            {{ account_form.email }}
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success" name="account__save_form">Сохранить</button>
+                </div>
+            </form>
+            <form class="account__change_password" method="post" >{% csrf_token %}
+                <div class="account__div_container">
+                    <h4>Сменить пароль</h4>
+                    <div class="account__name_container">
+                        <div class="account__names">
+                            <label>Старый пароль:</label>
+                            {{ change_password_form.old_password }}
+                        </div>
+                        <div class="account__names">
+                            <label>Новый пароль:</label>
+                            {{ change_password_form.new_password1 }}
+                        </div>
+                        <div class="account__names">
+                            <label>Подтвердите новый пароль:</label>
+                            {{ change_password_form.new_password2 }}
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success" id="account__change_password" name="account__change_password_form">Сохранить</button>
+                </div>
+
+            </form>
+        </div>
+        <div class="user_detail__list_of_reservations">
+            {% if user_reservations %}
+                {% for reserve in user_reservations %}
+                    {% if reserve.is_booked %}
+                        <h5>Ваши дествующие бронирования</h5>
+                        <div class="user_detail__reservations_list_container">
+                            <div class="user_detail__reserve-img-container">
+                                <img class="user_detail__reserve-img" src="../../media/{{ reserve.realty.photos.all.0.photo }}">
+                                <div class="reserve__hotel_info">
+                                    <h5 class="user_detail__list_of_reservations_form_text">{{ reserve }}</h5>
+                                    <div class="user_detail__list_of_reservations_text_form">{{ reserve.realty.realty_region }}, {{ reserve.realty.realty_city }}, {{ reserve.realty.realty_address }}</div>
+                                    <div class="user_detail__list_of_reservations_text_form">Количество мест: {{ reserve.realty.count_of_persons }}</div>
+                                    <div class="user_detail__list_of_reservations_text_form">Общая площадь помещения: {{ reserve.realty.realty_area }} кв.м.</div>
+                                </div>
+                                <div class="user_detail__date_range">
+                                    <div>
+                                        <div>Заезд с </div>
+                                        <div>{{ reserve.check_in }}</div>
+                                    </div>
+                                    <div>
+                                        <div>Выезд до </div>
+                                        <div>{{ reserve.check_out }}</div>
+                                    </div>
+                                    <button class="btn btn-danger user_detail__cancel_the_reservation">Отменить</button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <div class="user_detail__no_reservations_container">
+                    <img class="user_detail__no_reservations_img" src="../../static/img/no_reservations.png">
+                    <div>А кто это у нас тут ещё ничего не забронировал?</div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endblock %}
+</body>
+</html>

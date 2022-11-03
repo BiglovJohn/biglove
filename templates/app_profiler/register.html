@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Регистрация</title>
+    <link rel="reset" href="static/css/reset.css">
+    <link rel="stylesheet" href="static/css/stylesheet.css">
+</head>
+<body>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Зарегистрироваться</button>
+        <a href="/">Назад</a>
+    </form>
+</body>
+</html>

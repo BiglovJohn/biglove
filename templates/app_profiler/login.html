@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Вход{% endblock title %}</title>
+</head>
+{% block content%}
+<body>
+    <section>
+        <form method="post">
+                {% csrf_token %}
+                {{ auth_form.as_p }}
+            <p>
+                <button class="login" type="submit">Войти</button>
+                или
+                <a class="register" href="/register">Зарегистрироваться</a>
+            </p>
+        </form>
+    </section>
+</body>
+{% endblock content %}
+</html>

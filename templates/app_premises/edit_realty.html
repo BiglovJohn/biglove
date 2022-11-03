@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ realty_edit }}</title>
+    <link type="text/css" rel="reset" href="../../static/css/reset.css">
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <link type="text/css" rel="stylesheet" href="../../static/css/style.css">
+    <link type="text/css" rel="stylesheet" href="../../static/css/stylesheet.css">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+    <!-- Fengyuan Chen's Datepicker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
+</head>
+    <header class="basemenu">
+        <menu class="menu1">
+            <a class="base-logo" style="width: 100px;" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
+            <menu class="base-menu-buttons">
+                {% if not request.user.is_authenticated %}
+                    <div class="dropdown" id="login">
+                        <a type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button type="button" class="btn btn-light">Войти</button>
+                        </a>
+                        <div class="dropdown-menu">
+                            <form class="px-4 py-3" id="login-form" method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    {{ auth_form.email }}
+                                </div>
+                                <div class="mb-3">
+                                    {{ auth_form.password }}
+                                </div>
+                                <div class="mb-3">
+                                    <div class="form-check" id="remember-me">
+                                        <input type="checkbox" class="form-check-input" id="dropdownCheck">
+                                        <label class="form-check-label" for="dropdownCheck">
+                                            Запомнить меня
+                                        </label>
+                                    </div>
+                                </div>
+                                <button type="submit" name="submit-login-form" class="btn btn-primary">Войти</button>
+
+                            </form>
+                            <div class="dropdown-divider"></div>
+                            <button class="dropdown-item" id="open_pop_up">Впервые у нас? <b>Зарегистрироваться</b></button>
+                            <a class="dropdown-item" href="#">Забыли пароль?</a>
+                        </div>
+                    </div>
+                {% endif %}
+                    <form method="get" action="{% url 'app_premises:realty_detail' slug=realty_edit.slug %}">
+                        <button type="submit" name="exit_from_realty_edit" class="btn btn-danger" id="exit_from_realty_edit">Назад</button>
+                    </form>
+                    <div class="dropdown">
+                      <a data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                        {{ guest }} <img class="open-profile-button" src="../static/img/icons/icons8-login-66.png" alt="Войти в кабинет">
+                      </a>
+                      <form class="dropdown-menu p-4" id="base_menu__container">
+                          <p>{{ guest }}</p>
+                          <p class="base_menu__lk_logout"><a href="{% url 'app_profiler:account_detail' user_id=request.user.id %}">Личный кабинет</a> <a href="{% url 'app_profiler:logout' %}">Выйти</a></p>
+                          <ul class="base_menu__links_container">
+                              {% if request.user.is_company %}
+                                  <li class="base_menu__li_container">
+                                      <a href="{% url 'app_companies:company_detail' company_id=request.user.id %}">
+                                          Кабинет арендодателя
+                                      </a>
+                                  </li>
+                              {% endif %}
+                          </ul>
+                      </form>
+                    </div>
+            </menu>
+        </menu>
+    </header>
+<body>
+    <h3 class="realty_edit_h3">{{ realty_edit }}</h3>
+    <form method="post" class="realty_edit_form_container" enctype="multipart/form-data">{% csrf_token %}
+        {{ realty_edit_form.manager.as_hidden }}
+        {{ realty_edit_form.slug.as_hidden }}
+        {{ realty_edit_form.created_at.as_hidden }}
+        {{ realty_edit_form.book_count.as_hidden }}
+
+            <div class="detail__menu_container">
+
+                <a class="detail__realty_edit_menu_img_container" data-bs-toggle="modal" data-bs-target="#staticBackdrop4">
+                    <img class="detail__realty_edit_menu_img" src="../../static/img/icons/free-icon-upload-4131814.png">
+                    <label class="detail__edit_menu_label">Загрузить фото</label>
+                </a>
+
+                <a class="detail__realty_edit_menu_img_container" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                    <img class="detail__realty_edit_menu_img" src="../../static/img/icons/free-icon-ring-bell-6192436.png">
+                    <label class="detail__edit_menu_label">Редактировать услуги</label>
+                </a>
+
+                <!-- Модальное окно -->
+                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                  <div class="modal-dialog" id="detail__service_modal">
+                    <div class="modal-content main">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">Редактирование услуги</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="options_parameters_edit_container">
+                            <p>Тип объекта: </p>{{ realty_edit_form.realty_type }}
+                            <p>Отмена бронирования: </p>{{ realty_edit_form.book_cancel }}
+                            <p>Способ оплаты: </p>{{ realty_edit_form.pay_type }}
+                            <p>Питание: </p>{{ realty_edit_form.food_options }}
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="submit" name="realty_edit_submitting" class="btn btn-success" id="create-realty-button3">Сохранить</button>
+                          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закрыть</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <a class="detail__realty_edit_menu_img_container" data-bs-toggle="modal" data-bs-target="#staticBackdrop2">
+                    <img class="detail__realty_edit_menu_img" src="../../static/img/icons/free-icon-options-8111047.png">
+                    <label class="detail__edit_menu_label">Редактировать опции</label>
+                </a>
+
+                <!-- Модальное окно -->
+                <div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                  <div class="modal-dialog" id="detail__comforts_modal">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel2">Удобства</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                      </div>
+                      <div class="modal-body">
+                        {{ realty_edit_form.options }}
+                      </div>
+                      <div class="modal-footer">
+                          <button type="submit" name="realty_edit_submitting" class="btn btn-success" id="create-realty-button4">Сохранить</button>
+                          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закрыть</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <a class="detail__realty_edit_menu_img_container" data-bs-toggle="modal" data-bs-target="#staticBackdrop3">
+                    <img class="detail__realty_edit_menu_img" src="../../static/img/icons/free-icon-edit-info-7033287.png">
+                    <label class="detail__edit_menu_label">Редактировать описание</label>
+                </a>
+
+                <!-- Модальное окно -->
+                <div class="modal fade" id="staticBackdrop3" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel3">Описание</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="edit__info_container">
+                            {{ realty_edit_form.full_description }}
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="submit" name="realty_edit_submitting" class="btn btn-success" id="create-realty-button5">Сохранить</button>
+                          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закрыть</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+            </div>
+
+            <div class="edit__main_info_container">
+                <p style="display: none;">{{ upload_photos_form.photo }}</p>
+                <p>Компания: </p>{{ realty_edit_form.company }}
+                <p>Название объекта: </p>{{ realty_edit_form.realty_name }}
+                <p>Страна: </p>{{ realty_edit_form.realty_country }}
+                <p>Регион: </p>{{ realty_edit_form.realty_region }}
+                <p>Населенный пункт: </p>{{ realty_edit_form.realty_city }}
+                <p>Адрес: </p>{{ realty_edit_form.realty_address }}
+                <p>До регионального центра: </p>{{ realty_edit_form.realty_to_city }} км.
+                <p>Количество мест: </p>{{ realty_edit_form.count_of_persons }}
+                <p>Цена за сутки: </p>{{ realty_edit_form.realty_price }} ₽
+                <p>Площадь помещения: </p>{{ realty_edit_form.realty_area }} кв.м.
+            </div>
+
+        <button type="submit" name="realty_edit_submitting" class="btn btn-success" id="detail__save_realty_form">Сохранить</button>
+    </form>
+    <div class="edit__menu_for_more_function">
+
+    </div>
+
+    <!-- Модальное окно -->
+    <div class="modal fade" id="staticBackdrop4" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel4">Фотографии</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+          </div>
+          <div class="modal-body">
+            <div class="detail__image_upload">
+                <form method="post" enctype="multipart/form-data">{% csrf_token %}
+                    {{ upload_photos_form.realty_obj.as_hidden }}
+                    {{ upload_photos_form.photo }}
+                  <button type="submit" name="realty_edit_submitting_photo" class="btn btn-success" id="detail__save_realty_form_photo">Сохранить</button>
+              </form>
+            </div>
+            <div class="edit__realty_photos_container">
+                <p>Ваши фотографии</p>
+                <div style="column-count: 4;">
+                    {% for photo in realty_edit.photos.all %}
+                        <form method="get" action="#" enctype="multipart/form-data">
+                            <button style="position: absolute; width: 30px" type="button" class="btn-close btn-close-white" aria-label="Закрыть" value="{{ photo.photo}}, {{ photo.pk }}" name="delete_photo_button"></button>
+                            <img class="edit__realty_photo_delete" src="../../media/{{ photo.photo }}">
+                        </form>
+                    {% endfor %}
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закрыть</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="pop_up4" style="position: fixed; left: 50%; top: 50%;transform: translate(-50%, -50%); display: none; z-index: 100; padding: 5px;">
+        <button id="close_pop_up_btn4" class="btn-close" aria-label="Close"></button>
+        <div>
+            <form method="post" enctype="multipart/form-data">{% csrf_token %}
+                {{ detail_reserve_form.as_p }}
+                <button type="submit">Зобронировать</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="pop_up" style="position: fixed; left: 50%; top: 50%;transform: translate(-50%, -50%); display: none; z-index: 100; padding: 5px;">
+        <button id="close_pop_up_btn" class="btn-close" aria-label="Close"></button>
+        <div class="register-popup-picture">
+
+        </div>
+        <form class="register-container" method="post" enctype="multipart/form-data">{% csrf_token %}
+            <div class="register-form-main-container">
+                <p class="register-form-container">
+                    <p>{{ register_form.email }}</p>
+                <p class="register-form-container">
+                    <p>{{ register_form.password1 }}</p>
+                <p class="register-form-container">
+                    <p>{{ register_form.password2 }}</p>
+                <p class="register-form-container">
+                    <p>{{ register_form.first_name }}</p>
+                <p class="register-form-container">
+                    <p>{{ register_form.last_name }}</p>
+                <p class="register-form-container">
+                    <p>{{ register_form.phone }}</p>
+                <div class="form-check form-switch">
+                <p class="register-form-container">
+                    <p>{{ register_form.is_company }}</p>
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Являюсь арендодателем</label>
+                </div>
+                <div class="form-check form-switch">
+                    {{ register_form.is_active }}
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Согласиться с <a href="">правилами сайта</a></label>
+                </div>
+            </div>
+
+            <button type="submit" name="save-register-form" class="btn btn-light" id="register-button">Зарегистрироваться</button>
+
+        </form>
+    </div>
+
+        <script>
+        let pop_up4   = document.getElementById('pop_up4');
+        let open_btn4  = document.getElementById('open_pop_up4');
+        let close_btn4 = document.getElementById('close_pop_up_btn4');
+
+        open_btn4.addEventListener('click',()=>{
+            pop_up4.style.display = 'block';
+        })
+
+        close_btn4.addEventListener('click', ()=>{
+            pop_up4.style.display = 'none';
+        })
+
+        </script>
+
+        <script>
+            let pop_up   = document.getElementById('pop_up');
+            let open_btn  = document.getElementById('open_pop_up');
+            let close_btn = document.getElementById('close_pop_up_btn');
+
+            open_btn.addEventListener('click',()=>{
+                pop_up.style.display = 'block';
+            })
+
+            close_btn.addEventListener('click', ()=>{
+                pop_up.style.display = 'none';
+            })
+
+        </script>
+
+        <script>
+            var myModal = document.getElementById('myModal')
+            var myInput = document.getElementById('myInput')
+
+            myModal.addEventListener('shown.bs.modal', function () {
+              myInput.focus()
+            })
+        </script>
+
+</body>
+
+</html>

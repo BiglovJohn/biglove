@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+{% load static %}
+<html lang="ru" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Список объектов{%endblock title %}</title>
+    <link type="text/css" rel="reset" href="../../static/css/reset.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <link type="text/css" rel="stylesheet" href="../../static/css/style.css">
+    <link type="text/css" rel="stylesheet" href="../../static/css/stylesheet.css">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+    <!-- Fengyuan Chen's Datepicker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
+
+</head>
+<body>
+{% block content %}
+    <aside class="realty-list-container">
+        <menu class="realty-type-filters">
+
+            <form class="block-type" action="{% url 'app_premises:realty_list' %}" method="post">{% csrf_token %}
+                <menu class="search-realty-list-block-type">
+                    <div class="container2">
+                        <div class="row height d-flex justify-content-center align-items-center">
+                            <div class="col-md-8" id="search-form-input">
+                                <div class="search2">
+                                    <i class="fa fa-search"></i>
+                                    <input name="q" type="text" class="form-control search-date" id="search-form" placeholder="Введите название города" autocomplete="off">
+<!--                                    <button name="search" class="btn btn-info" id="realty-search-button"></button>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </menu>
+                <menu class="date-block-type">
+                    <menu class="search-form2-datepicker">
+                        <div class="date-picker-index" id="base-search">
+                            {{ list_reserve_form.check_in }} -
+                            {{ list_reserve_form.check_out }}
+                        </div>
+
+                        <script>
+                          $(function () {
+                            $("#id_check_in").datepicker({
+                              format:'dd.mm.yyyy',
+                              startDate:'today',
+                              autoHide:'True',
+                              autoPick:'True',
+                              language:'ru-RU',
+                            });
+                          });
+                        </script>
+
+                        <script>
+                          $(function () {
+                            $("#id_check_out").datepicker({
+                              format:'dd.mm.yyyy',
+                              startDate:'today',
+                              autoHide:'True',
+                              autoPick:'True',
+                              language:'ru-RU',
+                            });
+                          });
+                        </script>
+                    </menu>
+                </menu>
+
+                <menu class="block-type">
+                    <p class="realty-menu-text">Сортировка</p>
+                    <div class="main-filter">{{ main_filter }}</div>
+                </menu>
+
+                <menu class="block-type">
+                    <p class="realty-menu-text">Диапазон цен</p>
+                    <div class="price-filter">{{ price_filter.as_p }}</div>
+                </menu>
+
+                <menu class="block-type">
+                    <p class="realty-menu-text">Отмена бронирования</p>
+                    <div class="form-checkbox">
+                        {% for cancel_type in book_filter %}
+                            {{ cancel_type.0 }}
+                            {{ cancel_type.1 }}
+                        {% endfor %}
+                    </div>
+                </menu>
+
+                <menu class="block-type">
+                    <p class="realty-menu-text">Способ оплаты</p>
+                    <div class="form-checkbox">
+                        {% for pay_type in pay_filter %}
+                            {{ pay_type.0 }}
+                            {{ pay_type.1 }}
+                        {% endfor %}
+                    </div>
+                </menu>
+
+                <menu class="block-type">
+                    <p class="realty-menu-text">Тип размещения</p>
+                    <div class="form-check form-switch">
+                        {{ realty_type_checkbox }}
+                      <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+                    </div>
+                </menu>
+
+                <menu class="block-type">
+                    <p class="realty-menu-text">В отеле</p>
+                    <div class="form-checkbox">
+                        {% for in_hotel_option in hotel_filter_checkbox %}
+                            {{ in_hotel_option.0 }}
+                            {{ in_hotel_option.1 }}
+                            {{ in_hotel_option.2 }}
+                            {{ in_hotel_option.3 }}
+                            {{ in_hotel_option.4 }}
+                        {% endfor %}
+                    </div>
+                </menu>
+
+                <menu class="block-type">
+                    <p class="realty-menu-text">В номере</p>
+                    <div class="form-checkbox">
+                        {% for in_room_option in room_filter_checkbox %}
+                            {{ in_room_option.0 }}
+                            {{ in_room_option.1 }}
+                            {{ in_room_option.2 }}
+                            {{ in_room_option.3 }}
+                            {{ in_room_option.4 }}
+                        {% endfor %}
+                    </div>
+                </menu>
+
+                <menu class="block-type">
+                    <p class="realty-menu-text">Питание</p>
+                    <div class="form-checkbox">
+                        {% for food_option in food_options_checkbox %}
+                            {{ food_option.0 }}
+                            {{ food_option.1 }}
+                            {{ food_option.2 }}
+                            {{ food_option.3 }}
+                            {{ food_option.4 }}
+                        {% endfor %}
+                    </div>
+                </menu>
+
+                <input class="filter-input" type="submit" name="realty_list__search" value="Найти">
+            </form>
+
+        </menu>
+        <ul class="realty-list">
+            {% for obj in realty_list %}
+                    <div class="realty-card">
+                        <div id="carouselExampleFade{{ obj.id }}" class="carousel slide carousel-fade" data-bs-ride="carousel">
+                          <div class="carousel-inner">
+                            <div class="carousel-item active">
+                              <img src="../../media/{{ obj.photos.all.0.photo }}" class="d-block w-100" alt="...">
+                            </div>
+                              {% if obj.photos.all.1.photo %}
+                                <div class="carousel-item">
+                                  <img src="../../media/{{ obj.photos.all.1.photo }}" class="d-block w-100" alt="...">
+                                </div>
+                              {% endif %}
+                              {% if obj.photos.all.2.photo %}
+                                <div class="carousel-item">
+                                  <img src="../../media/{{ obj.photos.all.2.photo }}" class="d-block w-100" alt="...">
+                                </div>
+                              {% endif %}
+                          </div>
+                          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade{{ obj.id }}"  data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Предыдущий</span>
+                          </button>
+                          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade{{ obj.id }}"  data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Следующий</span>
+                          </button>
+                        </div>
+
+<!--                        <img class="shor-describe-realty-img" width="250px" src="../../media/{{ obj.realty_picture }}" alt="Фото объекта">-->
+
+                        <div class="short-describe-text">
+                            <h4 class="short-description-title"> <a href='{% url "app_premises:realty_detail" obj.slug %}'>{{ obj.realty_name }}</a></h4>
+                            <p class="short-description-text">{{ obj.realty_country }}, {{ obj.realty_region }}, {{ obj.realty_city }}</p>
+                            <p class="short-description-text">{{ obj.realty_address }}</p>
+                            <p class="short-description-text">Количество мест: {{ obj.count_of_persons }}</p>
+                            <ul class="realty-list-options-list">
+                                <h6 class="realty_list__h6_comfort">Удобства</h6>
+                                <div class="realty_list__options_container">
+                                    {% for option in obj.options.all|slice:6 %}
+                                        <li class="options_without_title_li"><img class="options-icon"  src="../../static/img/icons/{{ option.icon_url }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ option.option_name }}"></li>
+                                    {% endfor %}
+                                </div>
+                            </ul>
+
+                            <ul class="main_options_info">
+
+                                {% if obj.book_cancel == 'y' %}
+                                    <li style="color:green;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-calendar-5237130.png">{{ obj.get_book_cancel_display }}</li>
+                                {% elif obj.book_cancel == 'n' %}
+                                    <li style="color:red;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-calendar-5237130.png">{{ obj.get_book_cancel_display }}</li>
+                                {% endif %}
+
+                                {% if obj.food_options == 'a' %}
+                                    <li style="color:green;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ obj.get_food_options_display }}</li>
+                                {% elif obj.food_options == 'b' %}
+                                    <li style="color:green;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ obj.get_food_options_display }}</li>
+                                {% elif obj.food_options == 'c' %}
+                                    <li style="color:green;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ obj.get_food_options_display }}</li>
+                                {% elif obj.food_options == 'd' %}
+                                    <li style="color:green;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ obj.get_food_options_display }}</li>
+                                {% elif obj.food_options == 'e' %}
+                                    <li style="color:red;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ obj.get_food_options_display }}</li>
+                                {% endif %}
+
+                                {% if obj.pay_type == 'o' %}
+                                    <li class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/mir-logo-h14px.svg">{{ obj.get_pay_type_display }}</li>
+                                {% else %}
+                                    <li class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/money.png">{{ obj.get_pay_type_display }}</li>
+                                {% endif %}
+                            </ul>
+                            <div class="price_book_status_container">
+                                <p class="realty-list-price">От: {{ obj.realty_price }} РУБ</p>
+                                {% for reserve in reservation_set %}
+                                    {% if obj.id == reserve.obj_id %}
+                                        <div class="realty-booked">
+                                            <p class="realty-booked-text">Забронировано</p>
+                                            <p class="realty-booked-date-range">с {{ reserve.obj_check_in }} по {{ reserve.obj_check_out }}</p>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+            {% endfor %}
+        </ul>
+    </aside>
+{% endblock content %}
+</body>
+</html>
