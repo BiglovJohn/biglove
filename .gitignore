@@ -101,7 +101,6 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-core/env.py
 
 # mkdocs documentation
 /site
