@@ -26,3 +26,5 @@ class CompanyProfileForm(forms.ModelForm):
         self.fields['director'].widget.attrs['class'] = 'edit-manager-input'
         self.fields['company_phone'].widget.attrs['class'] = 'edit-manager-input'
         self.fields['company_email'].widget.attrs['class'] = 'edit-manager-input'
+        self.fields['slug'].widget.attrs['class'] = 'edit-manager-input'
+        self.fields['slug'].widget.attrs['placeholder'] = '/yourcompany'

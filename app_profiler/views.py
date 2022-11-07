@@ -20,27 +20,30 @@ class AnotherLogoutView(LogoutView):
 
 
 class AccountEditFromView(View):
-    def get(self, request, user_id):
-        current_user = CustomUser.objects.get(id=user_id)
-        account_form = GuestForm(instance=current_user)
-        change_password_form = PasswordChangeCustomForm(user=request.user.id)
-        user_reservations = Reservation.objects.filter(guest=user_id)
+    def get(self, request, slug):
+        if request.user.slug == slug:
+            current_user = CustomUser.objects.get(slug=slug)
+            account_form = GuestForm(instance=current_user)
+            change_password_form = PasswordChangeCustomForm(user=request.user.id)
+            user_reservations = Reservation.objects.filter(guest=request.user.id)
 
-        return render(request, 'app_profiler/user_detail.html',
-                      context={
-                          'account_form': account_form,
-                          'user_id': user_id,
-                          'current_user': current_user,
-                          'change_password_form': change_password_form,
-                          'user_reservations': user_reservations,
-                      }
-                      )
+            return render(request, 'app_profiler/user_detail.html',
+                          context={
+                              'account_form': account_form,
+                              'slug': slug,
+                              'current_user': current_user,
+                              'change_password_form': change_password_form,
+                              'user_reservations': user_reservations,
+                          }
+                          )
+        else:
+            return redirect('app_profiler:account_detail', slug=request.user.slug)
 
-    def post(self, request, user_id):
-        current_user = CustomUser.objects.get(id=user_id)
+    def post(self, request, slug):
+        current_user = CustomUser.objects.get(slug=slug)
         account_form = GuestForm(request.POST, instance=current_user)
-        user_reservations = Reservation.objects.filter(guest=user_id)
-        change_password_form = PasswordChangeCustomForm(user=user_id)
+        user_reservations = Reservation.objects.filter(guest=request.user.id)
+        change_password_form = PasswordChangeCustomForm(user=request.user.id)
 
         if 'account__save_form' in request.POST and account_form.is_valid():
             account = account_form.save(commit=False)
@@ -53,7 +56,7 @@ class AccountEditFromView(View):
                     user = change_password_form.save()
                     update_session_auth_hash(request, user)  # Important!
                     messages.success(request, 'Your password was successfully updated!')
-                    return redirect('app_profiler:account_detail', user_id=user_id)
+                    return redirect('app_profiler:account_detail', slug=slug)
                 else:
                     messages.error(request, 'Please correct the error below.')
             else:
@@ -61,10 +64,21 @@ class AccountEditFromView(View):
             return render(request, 'app_profiler/user_detail.html', {
                 'change_password_form': change_password_form
             })
+
+        if 'account__change_slug' in request.POST:
+            if account_form.is_valid():
+                account = account_form.save(commit=False)
+                account.slug = account_form.cleaned_data['slug']
+                account.save()
+                return redirect('app_profiler:account_detail', slug=slug)
+            else:
+                messages.error(request, 'Ошибка при изменении ника')
+            return redirect('app_profiler:account_detail', slug=slug)
+
         return render(request, 'app_profiler/user_detail.html',
                       context={
                           'account_form': account_form,
-                          'user_id': user_id,
+                          'slug': slug,
                           'current_user': current_user,
                           'change_password_form': change_password_form,
                           'user_reservations': user_reservations,

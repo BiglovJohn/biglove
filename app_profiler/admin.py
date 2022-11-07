@@ -11,7 +11,7 @@ class CustomUserAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Учетные данные пользователя', {'fields': ('email', 'password', 'created_at')}),
         ('Статусы', {'fields': ('is_superuser', 'is_staff', 'is_company', 'is_active')}),
-        ('Общая информация', {'fields': ('first_name', 'last_name', 'phone', 'gender', 'birthday')}),
+        ('Общая информация', {'fields': ('first_name', 'last_name', 'slug', 'phone', 'gender', 'birthday')}),
         ('Статистическая информация', {'fields': ('status', 'book_count')}),
         ('Доступы и группы', {'fields': ('groups', 'user_permissions')})
     )

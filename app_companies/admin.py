@@ -14,7 +14,7 @@ class CompanyProfileAdmin(admin.ModelAdmin):
     readonly_fields = ['created_at']
 
     fieldsets = (
-        ('Общая информация', {'fields': ('user', 'created_at', 'type')}),
+        ('Общая информация', {'fields': ('user', 'slug', 'created_at', 'type')}),
         ('Реквизиты компании', {'fields': ('full_company_name', 'short_company_name', 'legal_address', 'actual_address',
                                            'inn', 'kpp', 'ogrn', 'bank_account', 'bank_name', 'kor_account', 'bic',
                                            'director', 'company_phone', 'company_email')}),

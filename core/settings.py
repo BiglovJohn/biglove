@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'app_profiler',
     'app_companies',
     'app_comments',
+    'app_rules',
 ]
 
 AUTH_USER_MODEL = 'app_profiler.CustomUser'
@@ -91,6 +92,8 @@ TEMPLATES = [
                 'app_premises.context_processors.render_today_and_tomorrow',
                 'app_premises.context_processors.render_food_options_list',
                 # 'app_profiler.context_processors.render_change_password',
+                'app_companies.context_processors.render_current_company_slug',
+                'app_rules.context_processors.render_rules_list',
             ],
         },
     },

@@ -29,6 +29,7 @@
                         {{ account_form.is_superuser.as_hidden }}
                         {{ account_form.book_count.as_hidden }}
                         {{ account_form.password.as_hidden }}
+                        {{ account_form.slug.as_hidden }}
                         <div class="account__names">
                             <label>Ваше имя:</label>
                             {{ account_form.first_name }}
@@ -67,6 +68,28 @@
                     <button type="submit" class="btn btn-success" name="account__save_form">Сохранить</button>
                 </div>
             </form>
+            <form class="account__change_slug" method="post" action="{% url 'app_profiler:account_detail' slug=request.user.slug %}">{% csrf_token %}
+                <div class="account__div_container">
+                    <h4>Задать красивый адрес</h4>
+                    <div class="account__slug_container">
+                        {{ account_form.status.as_hidden }}
+                        {{ account_form.created_at.as_hidden }}
+                        {{ account_form.is_active.as_hidden }}
+                        {{ account_form.is_company.as_hidden }}
+                        {{ account_form.as_staff.as_hidden }}
+                        {{ account_form.is_superuser.as_hidden }}
+                        {{ account_form.book_count.as_hidden }}
+                        {{ account_form.password.as_hidden }}
+                        {{ account_form.first_name.as_hidden }}
+                        {{ account_form.last_name.as_hidden }}
+                        {{ account_form.phone.as_hidden }}
+                        {{ account_form.email.as_hidden }}
+                        {{ account_form.birthday.as_hidden }}
+                        {{ account_form.slug }}
+                    </div>
+                    <button type="submit" class="btn btn-success" id="account__change_slug" name="account__change_slug">Сохранить</button>
+                </div>
+            </form>
             <form class="account__change_password" method="post" >{% csrf_token %}
                 <div class="account__div_container">
                     <h4>Сменить пароль</h4>
@@ -102,6 +125,7 @@
                                     <div class="user_detail__list_of_reservations_text_form">{{ reserve.realty.realty_region }}, {{ reserve.realty.realty_city }}, {{ reserve.realty.realty_address }}</div>
                                     <div class="user_detail__list_of_reservations_text_form">Количество мест: {{ reserve.realty.count_of_persons }}</div>
                                     <div class="user_detail__list_of_reservations_text_form">Общая площадь помещения: {{ reserve.realty.realty_area }} кв.м.</div>
+                                    <div class="user_detail__list_of_reservations_text_form">Идентификатор: {{ reserve.book_identifier }}</div>
                                 </div>
                                 <div class="user_detail__date_range">
                                     <div>
@@ -128,4 +152,19 @@
     </div>
     {% endblock %}
 </body>
+{% block footer %}
+<footer>
+    <div class="base__footer_container">
+        <a class="base__logo_footer" style="width: 4%;" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
+<!--        <div class="base__footer">-->
+<!--            <div class="base__copyright">-->
+<!--                Copyright © 2022 Начилле.рф. Все права защищены.-->
+<!--            </div>-->
+<!--            <div class="base__footer_info">-->
+<!--                Начилле.рф — часть ООО "Биглов-Групп".-->
+<!--            </div>-->
+<!--        </div>-->
+    </div>
+</footer>
+{% endblock footer %}
 </html>

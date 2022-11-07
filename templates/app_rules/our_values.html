@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+{% load static %}
+<html lang="ru" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Наши ценности{% endblock title %}</title>
+</head>
+{% block content %}
+<body class="rules__body">
+    <h1 class="rules__h1_text">Наши ценности и правила</h1>
+    <h3 class="rules__h3_text">Стандарты, которые помогают нам обеспечить безопасную работу партнеров и приятный отдых гостей.</h3>
+    <div class="rules__our_values_main_container">
+        <div class="rules__our_values_main_block_container">
+            <h3 class="rules__h3_sub_container">Путешествуйте осознанно</h3>
+            <div class="rules__our_values_block_container">
+                <img class="rules__img_in_container" src="../../static/img/rules_consciously.jpg">
+                <div class="rules__text_container">
+                    <div>
+                        <h5 class="rules__h5_text">Уважение</h5>
+                        <div class="rules__main_text_container">Мы ожидаем уважительного отношения друг к другу от наших сотрудников, клиентов и партнеров. Мы не терпим домогательств, дискриминации, выражения ненависти, манипуляций, физического насилия, а также оскорбительного поведения и угроз в любой форме.</div>
+                    </div>
+                    <div>
+                        <h5 class="rules__h5_text">Забота о сообществе</h5>
+                        <div class="rules__main_text_container">Во время проживания в объекте или использования других услуг Biglov.ru мы просим вас внимательно относиться ко всему, что вас окружает. Постарайтесь ограничить или свести к минимуму шум, который может побеспокоить соседей, соблюдайте местные законы и уважайте традиции, учитывайте влияние своих действий на окружающую среду.</div>
+                    </div>
+                    <div>
+                        <h5 class="rules__h5_text">Честность</h5>
+                        <div class="rules__main_text_container">Мы рассчитываем на то, что наши партнеры и клиенты используют платформу Biglov.ru честно и по назначению, не выдают себя за других лиц и не нарушают наши договоренности.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="rules__our_values_main_block_container">
+            <h3 class="rules__h3_sub_container">Защита и конфиденциальность данных</h3>
+            <div class="rules__our_values_block_container_reverse">
+                <img class="rules__img_in_container" src="../../static/img/rules_data.jpg">
+                <div class="rules__text_container">
+                    <div>
+                        <h5 class="rules__h5_text">Персональные данные</h5>
+                        <div class="rules__main_text_container">Biglov.ru не приемлет использование партнерами и аффилиатами чужих персональных данных для целей, противоречащих нашему договору и/или действующим законам.</div>
+                    </div>
+                    <div>
+                        <h5 class="rules__h5_text">Видео- и аудионаблюдение</h5>
+                        <div>
+                            <ul>
+                                <li>Являясь клиентом или партнером Biglov.ru, уважительно относитесь к личному пространству, частной жизни и личным вещам других. Если вы останавливаетесь в отеле или частном доме, будьте аккуратны и соблюдайте правила проживания.</li>
+                                <li>Камеры в объектах размещения разрешены только в общих зонах. Они должны быть хорошо видны, и гости должны быть уведомлены о них до начала проживания.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div>
+                        <h5 class="rules__h5_text">Конфиденциальность ваших данных</h5>
+                        <div>
+                            <ul>
+                                <li>Конфиденциальность. Нам важно, чтобы все пользователи сервисов Biglov.ru были ими довольны. Мы очень серьезно относимся к конфиденциальности ваших данных и защищаем их согласно нашему <a>Положению о конфиденциальности и cookie-файлах</a> и действующим законам.</li>
+                                <li>Защита ваших персональных данных и данных ваших банковских карт — приоритет Biglov.ru.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="rules__our_values_main_block_container">
+            <h3 class="rules__h3_sub_container">Путешествуйте безопасно</h3>
+            <div class="rules__our_values_block_container">
+                <img class="rules__img_in_container" src="../../static/img/rules_safety.jpg">
+                <div class="rules__text_container">
+                    <div>
+                        <h5 class="rules__h5_text">Соблюдение закона</h5>
+                        <div class="rules__main_text_container">Компания Biglov.ru не приемлет кражи, вандализм, криминальные действия и вымогательство. Любые незаконные или опасные действия могут привести к блокировке вашего аккаунта и/или объекта размещения.</div>
+                    </div>
+                    <div>
+                        <h5 class="rules__h5_text">Физическая безопасность</h5>
+                        <div class="rules__main_text_container">Физическая безопасность клиентов, партнеров и сотрудников Biglov.ru — наш приоритет. Просим вас не совершать и не продвигать действия, которые могут нанести вред другому человеку или которые можно расценить как жестокое обращение с животными.</div>
+                    </div>
+                    <div>
+                        <h5 class="rules__h5_text">Благополучие животных</h5>
+                        <div class="rules__main_text_container">Biglov.ru не приемлет жестокого обращения с животными. Гости, партнеры и сотрудники Biglov.ru должны уважительно относиться к домашним и диким животным и предоставлять условия проживания, соответствующие законодательству РФ.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="rules__bottom_info">Эта страница носит ознакомительный характер. Она не может быть использована для юридической помощи и не предоставляет каких-либо прав или гарантий. В зависимости от индивидуальных обстоятельств вам может понадобиться предпринять дополнительные меры безопасности.</div>
+    </div>
+</body>
+{% endblock %}
+{% block footer %}
+<footer>
+    <div class="base__footer_container">
+        <a class="base__logo_footer" style="width: 4%;" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
+        <div class="base__footer">
+            <div class="base__copyright">
+                Copyright © 2022 Начилле.рф. Все права защищены.
+            </div>
+            <div class="base__footer_info">
+                Начилле.рф — часть ООО "Биглов-Групп".
+            </div>
+        </div>
+    </div>
+</footer>
+{% endblock footer %}
+</html>

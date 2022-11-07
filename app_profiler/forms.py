@@ -86,7 +86,8 @@ class GuestForm(forms.ModelForm):
         self.fields['gender'].widget.attrs['class'] = 'edit-account-input'
         self.fields['phone'].widget.attrs['class'] = 'edit-account-input'
         self.fields['email'].widget.attrs['class'] = 'edit-account-input'
-        # self.fields['email'].widget.attrs['disabled'] = True
+        self.fields['slug'].widget.attrs['placeholder'] = '/username'
+        self.fields['slug'].widget.attrs['class'] = 'edit-account-input'
         self.fields['birthday'].widget.attrs['class'] = 'edit-account-input'
 
 

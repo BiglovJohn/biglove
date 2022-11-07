@@ -25,7 +25,7 @@
 </head>
 <header class="basemenu">
     <menu class="menu1">
-        <a class="base-logo" style="width: 100px;" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
+        <a class="base-logo" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
         <menu class="base-menu-buttons">
             {% if request.user.is_authenticated %}
                     <div class="dropdown">
@@ -34,11 +34,12 @@
                       </a>
                       <form class="dropdown-menu p-4" id="base_menu__container">
                           <p>{{ guest }}</p>
-                          <p class="base_menu__lk_logout"><a href="{% url 'app_profiler:account_detail' user_id=request.user.id %}">Личный кабинет</a> <a href="{% url 'app_profiler:logout' %}">Выйти</a></p>
+                          <p class="base_menu__lk_logout"><a href="{% url 'app_profiler:account_detail' slug=request.user.slug %}">Личный кабинет</a> <a href="{% url 'app_profiler:logout' %}">Выйти</a></p>
+                          <p><a data-bs-toggle="modal" data-bs-target="#staticBackdropRules" href="#">Правила сайта</a></p>
                           <ul class="base_menu__links_container">
                               {% if request.user.is_company %}
                                   <li class="base_menu__li_container">
-                                      <a href="{% url 'app_companies:company_detail' company_id=request.user.id %}">
+                                      <a href="{% url 'app_companies:company_detail' company_slug=company_slug %}">
                                           Кабинет арендодателя
                                       </a>
                                   </li>
@@ -108,369 +109,36 @@
                     </div>
                     <div class="form-check form-switch">
                         {{ register_form.is_active }}
-                        <label class="form-check-label" for="flexSwitchCheckDefault">Согласиться с <a href="">правилами сайта</a></label>
+                        <label class="form-check-label" for="flexSwitchCheckDefault">Согласиться с <a style="color: blue;" data-bs-toggle="modal" data-bs-target="#staticBackdropRules">правилами сайта</a></label>
                     </div>
                 </div>
                 <button type="submit" name="save-register-form" class="btn btn-light" id="register-button">Зарегистрироваться</button>
             </form>
         </div>
-        {% if request.user.is_authenticated %}
-            {% if request.user.is_company %}
-<!--                <div id="pop_up2" style="position: fixed; left: 50%; top: 50%;transform: translate(-50%, -50%); display: none; z-index: 100; padding: 5px;">-->
-<!--                    <button id="close_pop_up_btn2" class="btn-close" aria-label="Close"></button>-->
-<!--                    <form class="create-realty-form" method="post">{% csrf_token %}-->
 
-<!--                        <div class="input__wrapper">-->
+        <!-- Modal -->
+        <div class="modal fade" id="staticBackdropRules" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-scrollable modal-xl">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title" id="staticBackdropLabel">Правила оказания услуг клиентам</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                {% for rule in rules_list %}
+                    <ul>
+                        <li>{{ rule.sub_category }}</li>
+                        <div>{{ rule.text | safe | linebreaks }}</div>
+                    </ul>
+                {% endfor %}
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
 
-<!--                            <form class="create-realty-main-container" method="post">-->
-
-<!--                                <div class="create-realty-container">-->
-<!--                                    <div class="create-realty-menu1">-->
-<!--                                        {{ upload_photos_form.photo }}-->
-<!--                                        <p class="create-realty-form-container">-->
-<!--                                            <p>Управляющая компания:</p>-->
-<!--                                            <p>{{ realty_form.manager }}</p>-->
-<!--                                        <p class="create-realty-form-container">-->
-<!--                                            <p>Название объекта:</p>-->
-<!--                                            <p>{{ realty_form.realty_name }}</p>-->
-<!--                                        <p class="create-realty-form-container">-->
-<!--                                            <p>Страна:</p>-->
-<!--                                            <p>{{ realty_form.realty_country }}</p>-->
-<!--                                        <p class="create-realty-form-container">-->
-<!--                                            <p>Регион:</p>-->
-<!--                                            <p>{{ realty_form.realty_region }}</p>-->
-<!--                                        <p class="create-realty-form-container">-->
-<!--                                            <p>Населенный пункт:</p>-->
-<!--                                            <p>{{ realty_form.realty_city }}</p>-->
-<!--                                        <p class="create-realty-form-container">-->
-<!--                                            <p>Адрес:</p>-->
-<!--                                            <p>{{ realty_form.realty_address }}</p>-->
-<!--                                        <p class="create-realty-form-container">-->
-<!--                                            <p>Расстояние до города:</p>-->
-<!--                                            <p>{{ realty_form.realty_to_city }}</p>-->
-<!--                                    </div>-->
-<!--                                    <div class="create-realty-menu2">-->
-
-<!--                                        <div class="col-md-3" id="create-realty-type">-->
-<!--                                            <label for="validationDefault04" class="form-label">Тип объекта</label>-->
-<!--                                            <select class="form-select" name="realty_type" id="validationDefault04" required>-->
-<!--                                              <option selected disabled value="">Выберите...</option>-->
-<!--                                                  {% for type in realty_form.realty_type %}-->
-<!--                                                      {{ type }}-->
-<!--                                                  {% endfor %}-->
-<!--                                            </select>-->
-<!--                                        </div>-->
-
-<!--                                        <p class="create-realty-form-container">-->
-<!--                                            <p>Количество мест:</p>-->
-<!--                                            <p>{{ realty_form.count_of_persons }}</p>-->
-<!--                                        <p class="create-realty-form-container">-->
-<!--                                            <p>Цена за сутки:</p>-->
-<!--                                            <p>{{ realty_form.realty_price }}</p>-->
-<!--                                        <p class="create-realty-form-container">-->
-<!--                                            <p>Площадь помещения:</p>-->
-<!--                                            <p>{{ realty_form.realty_area }}</p>-->
-<!--                                        <p class="create-realty-form-container">-->
-<!--                                            <p>Способ оплыты:</p>-->
-<!--                                            <p>{{ realty_form.pay_type }}</p>-->
-<!--                                        <p class="create-realty-form-container">-->
-<!--                                            <p>Питание:</p>-->
-<!--                                            <p>{{ realty_form.food_options }}</p>-->
-<!--                                        <p class="create-realty-form-container">-->
-<!--                                            <p>Отмена бронирования:</p>-->
-<!--                                            <p>{{ realty_form.book_cancel }}</p>-->
-
-<!--                                        <p class="create-realty-form-container">-->
-<!--                                            <select class="form-select form-select-sm" aria-label=".form-select-sm" multiple>-->
-<!--                                                {% for option in realty_form.options %}-->
-<!--                                                    <option value="{{ option }}"></option>-->
-<!--                                                {% endfor %}-->
-<!--                                            </select>-->
-<!--                                        </p>-->
-
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                                <button type="submit" name="save-realty-object" class="btn btn-success" id="create-realty-button">Сохранить</button>-->
-<!--                            </form>-->
-
-<!--                        </div>-->
-<!--                    </form>-->
-<!--                </div>-->
-
-<!--                <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling2" aria-labelledby="offcanvasScrollingLabel">-->
-<!--                    <div class="offcanvas-header">-->
-<!--                      <h5 class="offcanvas-title" id="offcanvasScrollingLabel2">Ваши управляющие компании</h5>-->
-<!--                      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Закрыть"></button>-->
-<!--                    </div>-->
-<!--                    <div class="offcanvas-body">-->
-
-<!--                        <form class="profile-main-container" onsubmit="return false;" method="get">-->
-
-<!--                            <div class="profile-data-container">-->
-<!--                                <h5 class="company-name-in-profile">{{ profile.short_company_name }}</h5>-->
-
-<!--                                <div>-->
-<!--                                    <p class="profile-categories">Форма организации: </p>-->
-<!--                                    <p class="profile-data">{{ profile.get_manager_type_display }}</p>-->
-<!--                                </div>-->
-<!--                                <div>-->
-<!--                                    <p class="profile-categories">Полное наименование: </p>-->
-<!--                                    <p class="profile-data">{{ profile.full_company_name }}</p>-->
-<!--                                </div>-->
-<!--                                <div>-->
-<!--                                    <p class="profile-categories">Сокращенное наименование: </p>-->
-<!--                                    <p class="profile-data">{{ profile.short_company_name }}</p>-->
-<!--                                </div>-->
-<!--                                <div>-->
-<!--                                    <p class="profile-categories">Юр. адрес: </p>-->
-<!--                                    <p class="profile-data">{{ my_profile.legal_address }}</p>-->
-<!--                                </div>-->
-<!--                                <div>-->
-<!--                                    <p class="profile-categories">Факт. адрес: </p>-->
-<!--                                    <p class="profile-data"> {{ profile.actual_address }}</p>-->
-<!--                                <div>-->
-<!--                                    <p class="profile-categories">ИНН: </p>-->
-<!--                                    <p class="profile-data"> {{ profile.inn }}</p>-->
-<!--                                </div>-->
-<!--                                <div>-->
-<!--                                    <p class="profile-categories">КПП: </p>-->
-<!--                                    <p class="profile-data"> {{ profile.kpp }}</p>-->
-<!--                                </div>-->
-<!--                                <div>-->
-<!--                                    <p class="profile-categories">ОГРН: </p>-->
-<!--                                    <p class="profile-data"> {{ profile.ogrn }}</p>-->
-<!--                                </div>-->
-<!--                                <div>-->
-<!--                                    <p class="profile-categories">Р/с: </p>-->
-<!--                                    <p class="profile-data"> {{ profile.bank_account }}</p>-->
-<!--                                </div>-->
-<!--                                <div>-->
-<!--                                    <p class="profile-categories">В банке: </p>-->
-<!--                                    <p class="profile-data"> {{ profile.bank_name }}</p>-->
-<!--                                </div>-->
-<!--                                <div>-->
-<!--                                    <p class="profile-categories">К/с: </p>-->
-<!--                                    <p class="profile-data"> {{ profile.kor_account }}</p>-->
-<!--                                </div>-->
-<!--                                <div>-->
-<!--                                    <p class="profile-categories">БИК: </p>-->
-<!--                                    <p class="profile-data"> {{ profile.bic }}</p>-->
-<!--                                </div>-->
-<!--                                <div>-->
-<!--                                    <p class="profile-categories">Руководитель: </p>-->
-<!--                                    <p class="profile-data"> {{ profile.director }}</p>-->
-<!--                                </div>-->
-<!--                                <div>-->
-<!--                                    <p class="profile-categories">Номер телефона: </p>-->
-<!--                                    <p class="profile-data"> {{ profile.company_phone }}</p>-->
-<!--                                </div>-->
-<!--                                <div>-->
-<!--                                    <p class="profile-categories">Эл. почта: </p>-->
-<!--                                    <p class="profile-data"> {{ profile.company_email }}</p>-->
-<!--                                </div>-->
-<!--                                <div>-->
-<!--                                    <p class="profile-categories">На сайте с: </p>-->
-<!--                                    <p class="profile-data"> {{ profile.created_at }}</p>-->
-<!--                                </div>-->
-
-<!--                                <button class="btn btn-success" type="button" name="edit-profile" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Редактировать</button>-->
-<!--                                <button class="btn btn-success" type="button" name="list-of-realty-objects" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling4" aria-controls="offcanvasScrolling4">Список объектов</button>-->
-<!--                            </div>-->
-<!--                            </div>-->
-<!--                        </form>-->
-<!--                    </div>-->
-<!--                </div>-->
-
-                <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling4" aria-labelledby="offcanvasScrollingLabel4">
-                    <div class="offcanvas-header">
-                        <a class="back-img-link-container" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling2" aria-controls="offcanvasScrolling2">
-                            <img class="back-img-link" src="../static/img/icons/fi-rs-arrow-alt-circle-left.svg" alt="Назад">
-                        </a>
-                        <h5 class="offcanvas-title" id="offcanvasScrollingLabel4">Список объектов в управлении</h5>
-                        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Закрыть"></button>
-                    </div>
-                    <div class="offcanvas-body" id="realty-list-in-profile">
-                        {% for realty_obj in realty_objects_to_profile %}
-                            <a class="link-to-realty-from-profile" href="{% url 'app_premises:realty_detail' slug=realty_obj.slug %}">{{ realty_obj }}</a>
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
-                    <div class="offcanvas-header">
-                        <a class="back-img-link-container" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling2" aria-controls="offcanvasScrolling2">
-                            <img class="back-img-link" src="../static/img/icons/fi-rs-arrow-alt-circle-left.svg" alt="Назад">
-                        </a>
-                        <h5 class="offcanvas-title" id="offcanvasScrollingLabel">{{ profile }}</h5>
-                        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Закрыть"></button>
-                    </div>
-                    <div class="offcanvas-body">
-                        <form class="edit-manager-profile" method="post">{% csrf_token %}
-
-                            <div class="edit-element-container">
-                                <p class="profile-categories">Форма организации: </p>
-                                <p class="profile-edit-data">{{ manager_form.manager_type }}</p>
-                            </div>
-                            <div class="manager-form-container">
-                                <p class="profile-categories">Полное наименование: </p>
-                                <p class="profile-edit-data">{{ manager_form.full_company_name }}</p>
-                            </div>
-                            <div class="manager-form-container">
-                                <p class="profile-categories">Сокращенное наименование: </p>
-                                <p class="profile-edit-data">{{ manager_form.short_company_name }}</p>
-                            </div>
-                            <div class="manager-form-container">
-                                <p class="profile-categories">Юр. адрес: </p>
-                                <p class="profile-edit-data">{{ manager_form.legal_address }}</p>
-                            </div>
-                            <div class="manager-form-container">
-                                <p class="profile-categories">Факт. адрес: </p>
-                                <p class="profile-edit-data"> {{ manager_form.actual_address }}</p>
-                            <div class="manager-form-container">
-                                <p class="profile-categories">ИНН: </p>
-                                <p class="profile-edit-data"> {{ manager_form.inn }}</p>
-                            </div>
-                            <div class="manager-form-container">
-                                <p class="profile-categories">КПП: </p>
-                                <p class="profile-edit-data"> {{ manager_form.kpp }}</p>
-                            </div>
-                            <div class="manager-form-container">
-                                <p class="profile-categories">ОГРН: </p>
-                                <p class="profile-edit-data"> {{ manager_form.ogrn }}</p>
-                            </div>
-                            <div class="manager-form-container">
-                                <p class="profile-categories">Р/с: </p>
-                                <p class="profile-edit-data"> {{ manager_form.bank_account }}</p>
-                            </div>
-                            <div class="manager-form-container">
-                                <p class="profile-categories">В банке: </p>
-                                <p class="profile-edit-data"> {{ manager_form.bank_name }}</p>
-                            </div>
-                            <div class="manager-form-container">
-                                <p class="profile-categories">К/с: </p>
-                                <p class="profile-edit-data"> {{ manager_form.kor_account }}</p>
-                            </div>
-                            <div class="manager-form-container">
-                                <p class="profile-categories">БИК: </p>
-                                <p class="profile-edit-data"> {{ manager_form.bic }}</p>
-                            </div>
-                            <div class="manager-form-container">
-                                <p class="profile-categories">Руководитель: </p>
-                                <p class="profile-edit-data"> {{ manager_form.director }}</p>
-                            </div>
-                            <div class="manager-form-container">
-                                <p class="profile-categories">Номер телефона: </p>
-                                <p class="profile-edit-data"> {{ manager_form.company_phone }}</p>
-                            </div>
-                            <div class="manager-form-container">
-                                <p class="profile-categories">Эл. почта: </p>
-                                <p class="profile-edit-data"> {{ manager_form.company_email }}</p>
-                            </div>
-                            <div style="text-align: center;">
-                                <button class="btn btn-success" name="save-manager-form" id="edit-manager-save" type="submit">Сохранить изменения</button>
-                            </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            {% elif not request.user.is_company %}
-                <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
-                    <div class="offcanvas-header">
-                        <h5 id="offcanvasRightLabel">{{ guest.first_name }} {{ guest.last_name }}</h5>
-                        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Закрыть"></button>
-                    </div>
-                    <div class="offcanvas-body">
-                        <div>
-                            <div>
-                                <p class="guest-info-text">Электронная почта:</p>
-                                <p class="guest-info">{{ guest.email }}</p>
-                            </div>
-                            <div>
-                                <p class="guest-info-text">Номер телефона:</p>
-                                <p class="guest-info">{{ guest.phone }}</p>
-                            </div>
-                            <div>
-                                <p class="guest-info-text">Дата рождения:</p>
-                                <p class="guest-info">{{ guest.birthday }}</p>
-                            </div>
-                            <div>
-                                <p class="guest-info-text">Пол:</p>
-                                <p class="guest-info">{{ guest.get_gender_display }}</p>
-                            </div>
-                        </div>
-                        <div>
-                            <div>
-                                <p class="guest-info-text">Ваш статус:</p>
-                                <p class="guest-info">{{ guest.get_status_display }}</p>
-                            </div>
-                            <div>
-                                <p class="guest-info-text">Количество бронирований:</p>
-                                <p class="guest-info">{{ guest.book_count }}</p>
-                            </div>
-                        </div>
-                        <button class="btn btn-success" name="edit-guest" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling3" aria-controls="offcanvasScrolling3">Редактировать</button>
-                        <div class="list-of-booking">
-                            <h5 class="h5-list-of-booking">Список бронирований</h5>
-                                {% for reserve in reservation_list %}
-                                    {% if reserve.is_booked %}
-                                        <div class="booking-info">
-                                            <p class="reserve-title"><a href="{{ reserve.realty.slug }}">{{ reserve.realty }}</a></p>
-                                            <p>{{ reserve.check_in }} - {{ reserve.check_out }}</p>
-                                            <p class="reserve-sum">{{ reserve.total_sum }} РУБ</p>
-                                        </div>
-                                    {% endif %}
-                                {% endfor %}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="offcanvas offcanvas-end" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling3" aria-labelledby="offcanvasScrollingLabel">
-                        <div class="offcanvas-header">
-                            <a class="back-img-link-container" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
-                                <img class="back-img-link" src="../static/img/icons/fi-rs-arrow-alt-circle-left.svg" alt="Назад">
-                            </a>
-                            <h5 class="offcanvas-title" id="offcanvasScrollingLabel3">{{ guest.first_name }} {{ guest.last_name }}</h5>
-                            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Закрыть"></button>
-                        </div>
-                        <div class="offcanvas2-body">
-                            <form class="edit-manager-profile" method="post">
-                                {% csrf_token %}
-
-                                <div class="guest-form-container">
-                                    <p class="profile-categories">Имя: </p>
-                                    <p class="profile-edit-data">{{ guest_form.first_name }}</p>
-                                </div>
-                                <div class="guest-form-container">
-                                    <p class="profile-categories">Фамилия: </p>
-                                    <p class="profile-edit-data">{{ guest_form.last_name }}</p>
-                                </div>
-                                <div class="guest-form-container">
-                                    <p class="profile-categories">Пол: </p>
-                                    <p class="profile-edit-data"> {{ guest_form.gender }}</p>
-                                </div>
-                                <div class="guest-form-container">
-                                    <p class="profile-categories">Номер телефона: </p>
-                                    <p class="profile-edit-data">{{ guest_form.phone }}</p>
-                                </div>
-                                <div class="guest-form-container">
-                                    <p class="profile-categories">Электронная почта: </p>
-                                    <p class="profile-edit-data">{{ guest_form.email }}</p>
-                                </div>
-                                <div class="guest-form-container">
-                                    <p class="profile-categories">Дата рождения: </p>
-                                    <p class="profile-edit-data"> {{ guest_form.birthday }}</p>
-
-
-                                <div style="text-align: center;">
-                                    <button class="btn btn-success" id="save-guest-form" type="submit" name="save-edit-guest">Сохранить изменения</button>
-                                </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-            {% endif %}
-        {% endif %}
-</body>
 <script>
     let pop_up   = document.getElementById('pop_up');
     let open_btn  = document.getElementById('open_pop_up');
@@ -487,33 +155,28 @@
 </script>
 
 <script>
-    let pop_up2   = document.getElementById('pop_up2');
-    let open_btn2  = document.getElementById('open_pop_up2');
-    let close_btn2 = document.getElementById('close_pop_up_btn2');
+    var myModal = document.getElementById('myModal')
+    var myInput = document.getElementById('myInput')
 
-    open_btn2.addEventListener('click',()=>{
-        pop_up2.style.display = 'block';
+    myModal.addEventListener('shown.bs.modal', function () {
+      myInput.focus()
     })
-
-    close_btn2.addEventListener('click', ()=>{
-        pop_up2.style.display = 'none';
-    })
-
 </script>
 
-<script>
-    let pop_up3   = document.getElementById('pop_up3');
-    let open_btn3  = document.getElementById('open_pop_up3');
-    let close_btn3 = document.getElementById('close_pop_up_btn3');
-
-    open_btn3.addEventListener('click',()=>{
-        pop_up3.style.display = 'block';
-    })
-
-    close_btn3.addEventListener('click', ()=>{
-        pop_up3.style.display = 'none';
-    })
-
-</script>
-
+</body>
+{% block footer %}
+<footer class="base__footer_all">
+    <div class="base__footer_container">
+        <a class="base__logo_footer" style="width: 4%;" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
+<!--        <div class="base__footer">-->
+<!--            <div class="base__copyright">-->
+<!--                Copyright © 2022 Начилле.рф. Все права защищены.-->
+<!--            </div>-->
+<!--            <div class="base__footer_info">-->
+<!--                Начилле.рф — часть ООО "Биглов-Групп".-->
+<!--            </div>-->
+<!--        </div>-->
+    </div>
+</footer>
+{% endblock footer %}
 </html>

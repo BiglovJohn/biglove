@@ -1,9 +1,6 @@
 from app_profiler.forms import AuthForm, RegisterForm
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
-from requests import put
-
-from .forms import GuestForm, PasswordChangeCustomForm
+from .forms import GuestForm
 from .models import CustomUser
 
 
@@ -28,7 +25,7 @@ def render_login_form(request):
 def render_register_form(request):
     """Регистрация и авторизация"""
     if 'save-register-form' in request.POST:
-        register_form = RegisterForm(request.POST)
+        register_form = RegisterForm(request.POST, initial={'phone': '+7'})
         user_obj = CustomUser()
         if register_form.is_valid():
             user = register_form.save()
@@ -43,7 +40,7 @@ def render_register_form(request):
             user = authenticate(email=email, password=raw_password)
             login(request, user)
     else:
-        register_form = RegisterForm()
+        register_form = RegisterForm(initial={'phone': '+7'})
     return {'register_form': register_form}
 
 

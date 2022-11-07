@@ -25,8 +25,9 @@ api_version = 'api/v1/'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('app_profiler.urls')),
+    path('account/', include('app_profiler.urls')),
     path('company/', include('app_companies.urls')),
+    path('rules/', include('app_rules.urls')),
     path('', include('app_premises.urls')),
     path('', include('app_index.urls')),
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),

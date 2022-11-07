@@ -80,7 +80,8 @@ def render_realty_object_to_profile(request):
     realty_objects_to_profile = RealtyObject.objects.filter(company=request.user.id)
     reservations_list = Reservation.objects.filter(
         realty__in=realty_objects_to_profile).select_related('realty').select_related('guest')
-    total_company_sum = Reservation.objects.filter(realty__in=realty_objects_to_profile).aggregate(Sum('total_sum'))['total_sum__sum']
+    total_company_sum = Reservation.objects.filter(realty__in=realty_objects_to_profile).aggregate(Sum('total_sum'))[
+        'total_sum__sum']
 
     return {'realty_objects_to_profile': realty_objects_to_profile,
             'reservations_list': reservations_list,

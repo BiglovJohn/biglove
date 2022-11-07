@@ -16,7 +16,7 @@
 </head>
 <body>
     {% block content %}
-    <div class="company_edit__top_bar"></div>
+
     <div class="company__edit_form_container">
         <form class="company__edit_profile" method="post">{% csrf_token %}
             {{ company_form.user.as_hidden }}
@@ -24,6 +24,10 @@
                 <div class="edit-element-container">
                     <p class="profile-categories">Форма организации: </p>
                     <p class="profile-edit-data">{{ company_form.type }}</p>
+                </div>
+                <div class="manager-form-container">
+                    <p class="profile-categories">Короткое название: </p>
+                    <p class="profile-edit-data">{{ company_form.slug }}</p>
                 </div>
                 <div class="manager-form-container">
                     <p class="profile-categories">Полное наименование: </p>
@@ -110,7 +114,10 @@
             <ul class="company__list_of_realty">
                 {% if realty_objects_to_profile %}
                     {% for company in realty_objects_to_profile %}
-                        <a class="link-to-realty-from-profile" href="{% url 'app_premises:realty_detail' slug=company.slug %}"><li class="company__realty_object">{{ company }}</li></a>
+                        <div>
+                            <img class="company__list_of_control_realty" src="../../media/{{ company.photos.all.0.photo }}">
+                            <a class="link-to-realty-from-profile" href="{% url 'app_premises:realty_detail' slug=company.slug %}"><li class="company__realty_object">{{ company }}</li></a>
+                        </div>
                     {% endfor %}
                 {% else %}
                     <img class="company__you_have_no_objects" src="../../static/img/icons/free-icon-construction-worker-4440872.png">
@@ -122,14 +129,26 @@
         <div class="company__show_reservation_list">
             <h5 class="company__h5_realty_objects">Список бронирований</h5>
             {% for reserve in reservations_list %}
-                <div class="company__reserve_container">
-                    <div class="company__reserve_realty_and_sum">
-                        {{ reserve }} (Сумма: {{ reserve.total_sum }}₽)
+                {% if reserve.is_booked %}
+                    <div class="company__reserve_container">
+                        <div class="company__reserve_realty">
+                            {{ reserve }}
+                        </div>
+                        <div class="company__reserve_date">
+                            <div>С {{ reserve.check_in }} по {{ reserve.check_out }}</div>
+                        </div>
+                        <div>
+                            <div>Арендатор: {{ reserve.guest.first_name }} {{ reserve.guest.last_name }}</div>
+                            <div>Контактный телефон: {{ reserve.guest.phone }}</div>
+                            <div>Электронная почта: {{ reserve.guest.email }}</div>
+                            <div>Телеграм: {{ reserve.guest.telegram }}</div>
+                            <div class="user_detail__list_of_reservations_text_form">Идентификатор: {{ reserve.book_identifier }}</div>
+                        </div>
+                        <div class="reserve__sum_of_reservation">Сумма: {{ reserve.total_sum }} ₽</div>
                     </div>
-                    <div class="company__reserve_date">
-                        С {{ reserve.check_in }} по {{ reserve.check_out }}
-                    </div>
-                </div>
+                {% else %}
+                    <div>У вас нет активных бронирований</div>
+                {% endif %}
             {% endfor %}
             <div class="company__total_sum_of_active_reserves">
                 {% if total_company_sum %}
@@ -291,4 +310,19 @@
     {% endblock %}
 
 </body>
+{% block footer %}
+<footer>
+    <div class="base__footer_container">
+        <a class="base__logo_footer" style="width: 4%;" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
+<!--        <div class="base__footer">-->
+<!--            <div class="base__copyright">-->
+<!--                Copyright © 2022 Начилле.рф. Все права защищены.-->
+<!--            </div>-->
+<!--            <div class="base__footer_info">-->
+<!--                Начилле.рф — часть ООО "Биглов-Групп".-->
+<!--            </div>-->
+<!--        </div>-->
+    </div>
+</footer>
+{% endblock footer %}
 </html>

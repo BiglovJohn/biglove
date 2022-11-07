@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% extends "base.html" %}
 {% load static %}
 <html lang="ru" xmlns="http://www.w3.org/1999/html">
 <head>
@@ -20,347 +21,257 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
 
 </head>
-<header class="basemenu">
-    <menu class="menu1">
-        <a class="base-logo" style="width: 100px;" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
-        <menu class="base__menu_buttons_realty">
-            {% if not request.user.is_authenticated %}
-                <div class="dropdown" id="login">
-                        <a type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                            <button type="button" class="btn btn-light">Войти</button>
-                        </a>
-                        <div class="dropdown-menu">
-                            <form class="px-4 py-3" id="login-form" method="post">
-                                {% csrf_token %}
-                                <div class="mb-3">
-<!--                                    <lable class="login-form-lable">Логин</lable>-->
-                                    {{ auth_form.email }}
-                                </div>
-                                <div class="mb-3">
-<!--                                    <lable class="login-form-lable">Пароль</lable>-->
-                                    {{ auth_form.password }}
-                                </div>
-                                <div class="mb-3">
-                                    <div class="form-check" id="remember-me">
-                                        <input type="checkbox" class="form-check-input" id="dropdownCheck">
-                                        <label class="form-check-label" for="dropdownCheck">
-                                            Запомнить меня
-                                        </label>
-                                    </div>
-                                </div>
-                                <button type="submit" name="submit-login-form" class="btn btn-primary">Войти</button>
-
-                            </form>
-                            <div class="dropdown-divider"></div>
-                            <button class="dropdown-item" id="open_pop_up">Впервые у нас? <b>Зарегистрироваться</b></button>
-                            <a class="dropdown-item" href="#">Забыли пароль?</a>
-                        </div>
-                </div>
-            {% endif %}
-            {% if request.user.is_authenticated %}
-                <a href="{% url 'app_premises:realty_edit' slug=realty.slug %}">
-                    <img class="edit__realty" src="../static/img/icons/free-icon-settings-2735296.png" alt="Редактировать">
-                </a>
-
-                <div class="dropdown">
-                  <a data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-                    {{ guest }} <img class="open-profile-button" src="../static/img/icons/icons8-login-66.png" alt="Войти в кабинет">
-                  </a>
-                  <form class="dropdown-menu p-4" id="base_menu__container">
-                      <p>{{ guest }}</p>
-                      <p class="base_menu__lk_logout"><a href="{% url 'app_profiler:account_detail' user_id=request.user.id %}">Личный кабинет</a> <a href="{% url 'app_profiler:logout' %}">Выйти</a></p>
-                      <ul class="base_menu__links_container">
-                          {% if request.user.is_company %}
-                              <li class="base_menu__li_container">
-                                  <a href="{% url 'app_companies:company_detail' company_id=request.user.id %}">
-                                      Кабинет арендодателя
-                                  </a>
-                              </li>
-                          {% endif %}
-                      </ul>
-                  </form>
-                </div>
-
-            {% endif %}
-
-        </menu>
-    </menu>
-</header>
 <body>
 {% block content %}
-
-        <ul class="realty_list">
-
-            <aside class="realty-detail-img-container">
-                <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-                  <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-                  </div>
-                  <div class="carousel-inner">
-                    <div class="carousel-item active">
-                      <img src="../../media/{{ detail_photos.0.photo }}" class="d-block w-100" alt="...">
-                    </div>
-                      {% if detail_photos.1 %}
-                        <div class="carousel-item">
-                          <img src="../../media/{{ detail_photos.1.photo }}" class="d-block w-100" alt="...">
-                        </div>
-                      {% endif %}
-                      {% if detail_photos.2 %}
-                        <div class="carousel-item">
-                          <img src="../../media/{{ detail_photos.2.photo }}" class="d-block w-100" alt="...">
-                        </div>
-                      {% endif %}
-                  </div>
-                  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"  data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Предыдущий</span>
-                  </button>
-                  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"  data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Следующий</span>
-                  </button>
+    {% if request.user.is_company %}
+        {% if current_realty.company == current_company %}
+            <a style="width: 10%;" href="{% url 'app_premises:realty_edit' slug=realty_slug %}">
+                <img class="edit__realty" src="../static/img/icons/free-icon-settings-2735296.png" alt="Редактировать">
+            </a>
+        {% endif %}
+    {% endif %}
+    <ul class="realty_list">
+        <aside class="realty-detail-img-container">
+            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+              <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+              </div>
+              <div class="carousel-inner">
+                <div class="carousel-item active">
+                  <img src="../../media/{{ detail_photos.0.photo }}" class="d-block w-100" alt="...">
                 </div>
+                  {% if detail_photos.1 %}
+                    <div class="carousel-item">
+                      <img src="../../media/{{ detail_photos.1.photo }}" class="d-block w-100" alt="...">
+                    </div>
+                  {% endif %}
+                  {% if detail_photos.2 %}
+                    <div class="carousel-item">
+                      <img src="../../media/{{ detail_photos.2.photo }}" class="d-block w-100" alt="...">
+                    </div>
+                  {% endif %}
+              </div>
+              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"  data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Предыдущий</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"  data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Следующий</span>
+              </button>
+            </div>
 
-                <div class="detail-info-container">
+            <div class="detail-info-container">
 
-                    <div class="detail__comments_and_info_container">
-                        <div class="detail__menu_feedback_container">
-                            <a class="btn btn-light" id="detail__show_comments" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling"><img class="detail__menu_icon" src="../../static/img/icons/free-icon-good-feedback-3594679.png"></a>
-                            <label class="detail__menu_icon_label" for="detail__show_comments">Отзывы</label>
-                        </div>
-                        <!-- Кнопка вызова модального окна с описанием -->
-                        <div class="detail__menu_description_container">
-                            <a type="button" id="detail__show_description" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><img class="detail__menu_icon" src="../../static/img/icons/free-icon-edit-info-7033287.png"></a>
-                            <label class="detail__menu_icon_label" for="detail__show_description">Описание</label>
-                        </div>
-                        <!-- Кнопка вызова модального окна с опциями -->
-                        <div class="detail__menu_options_container">
-                            <a type="button" id="detail__show_options" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#staticBackdrop2"><img class="detail__menu_icon" src="../../static/img/icons/free-icon-options-8111047.png"></a>
-                            <label class="detail__menu_icon_label" for="detail__show_options">Удобства</label>
-                        </div>
+                <div class="detail__comments_and_info_container">
+                    <div class="detail__menu_feedback_container">
+                        <a class="btn btn-light" id="detail__show_comments" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling"><img class="detail__menu_icon" src="../../static/img/icons/free-icon-good-feedback-3594679.png"></a>
+                        <label class="detail__menu_icon_label" for="detail__show_comments">Отзывы</label>
+                    </div>
+                    <!-- Кнопка вызова модального окна с описанием -->
+                    <div class="detail__menu_description_container">
+                        <a type="button" id="detail__show_description" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><img class="detail__menu_icon" src="../../static/img/icons/free-icon-edit-info-7033287.png"></a>
+                        <label class="detail__menu_icon_label" for="detail__show_description">Описание</label>
+                    </div>
+                    <!-- Кнопка вызова модального окна с опциями -->
+                    <div class="detail__menu_options_container">
+                        <a type="button" id="detail__show_options" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#staticBackdrop2"><img class="detail__menu_icon" src="../../static/img/icons/free-icon-options-8111047.png"></a>
+                        <label class="detail__menu_icon_label" for="detail__show_options">Удобства</label>
+                    </div>
 
-                        <div class="offcanvas offcanvas-start detail__show_comments" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
-                          <div class="offcanvas-header" id="detail__offcanvas_comments_header">
-                            <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Отзывы о "{{ realty }}"</h5>
-                            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Закрыть"></button>
-                          </div>
-                          <div class="offcanvas-body">
-                            <form class="detail__comments_container" method="post">{% csrf_token %}
-                                {% for comment in comments|slice:8 %}
-                                    <div class="detail__comments_text_container">
-                                        <b class="detail__comment_username">{{ comment }}:</b>
-                                        <p class="detail__comments_text_space">{{ comment.comment_text }}</p>
-                                    </div>
-                                    {% if request.user.is_company %}
-                                        <p class="detail__publish_at"><b style="color: black;">Ответ компании</b> {{ comment.publish_at }}</p>
-                                    {% else %}
-                                        <p class="detail__publish_at">{{ comment.publish_at }}</p>
-                                    {% endif %}
-                                {% endfor %}
-                                <div class="detail__comment_text_and_user">
-                                    {{ comment_form.realty.as_hidden }}
-                                    {{ comment_form.user.as_hidden }}
-                                    {{ comment_form.comment_text }}
-                                    <button type="submit" class="btn btn-outline-light" id="detail__button_send_message" name="detail__send_feedback"></button>
+                    <div class="offcanvas offcanvas-start detail__show_comments" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+                      <div class="offcanvas-header" id="detail__offcanvas_comments_header">
+                        <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Отзывы о "{{ realty }}"</h5>
+                        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Закрыть"></button>
+                      </div>
+                      <div class="offcanvas-body">
+                        <form class="detail__comments_container" method="post">{% csrf_token %}
+                            {% for comment in comments|slice:8 %}
+                                <div class="detail__comments_text_container">
+                                    <b class="detail__comment_username">{{ comment }}:</b>
+                                    <p class="detail__comments_text_space">{{ comment.comment_text }}</p>
                                 </div>
-                            </form>
-                          </div>
-                        </div>
-                    </div>
-
-                    <ul class="realty-list-info">
-                        <p class="realty_name">{{ realty.get_realty_type_display }} {{ realty.realty_name }}</p>
-                        <p class="realty_address">{{ realty.realty_country }}, {{ realty.realty_region }}, {{ realty.realty_address }}</p>
-                        <p class="realty_distance"><b>{{ realty.realty_to_city }}</b> км. от {{ realty.realty_region_center }}</p>
-                        <p class="realty_area"><b>Площадь: {{ realty.realty_area }} кв.м.</b></p>
-                        <p class="realty-bed">Количество спальных мест: <b>{{ realty.count_of_persons }}</b></p>
-                        <p class="realty_price">От: {{ realty.realty_price }} РУБ.</p>
-                    </ul>
-                    <div class="realty-options-list-container">
-                        <p class="options-list-title">Основные удобства:</p>
-                        <ul class="realty-options-list">
-                            {% for option in realty.options.all|slice:6 %}
-                                <li class="option-list"><img class="detail__options_icon" src="../../static/img/icons/{{ option.icon_url }}">{{ option }}</li>
+                                {% if request.user.is_company %}
+                                    <p class="detail__publish_at"><b style="color: black;">Ответ компании</b> {{ comment.publish_at }}</p>
+                                {% else %}
+                                    <p class="detail__publish_at">{{ comment.publish_at }}</p>
+                                {% endif %}
                             {% endfor %}
-                        </ul>
-                    </div>
-
-                    <div class="check-the-reservation">
-                        <form class="realty-detail-check-reserve-container" method="get" action="?">
-                            {% if not 'check-is-reserve-available' in request.GET %}
-                                {{ detail_reserve_form.check_in }} - {{ detail_reserve_form.check_out }} <button class="btn btn-light" type="submit" value="{{ realty.id }}, {{ realty.realty_price }}" id="check-detail-button" name="check-is-reserve-available">Проверить</button>
-                            {% elif 'check-is-reserve-available' in request.GET %}
-                                {{ detail_reserve_form_filled.check_in }} - {{ detail_reserve_form_filled.check_out }} <button class="btn btn-light" type="submit" value="{{ realty.id }}, {{ realty.realty_price }}" id="check-detail-button2" name="check-is-reserve-available">Проверить</button>
-
-
-                                    {% if pk == reservation_set_detail.0.obj_id %}
-                                        <div class="realty-detail-booked">
-                                            <p class="realty-booked-text">Забронировано</p>
-                                            <p class="realty-booked-date-range">с {{ reservation_set_detail.0.obj_check_in }} по {{ reservation_set_detail.0.obj_check_out }}</p>
-                                        </div>
-                                    {% else %}
-                                        <p class="reserve-detail-end-form"> Итого: {{ detail_reserve_form_filled.total_sum }} <b style="font-size: 1.2em; color: black;">₽</b></p>
-                                    {% endif %}
-
-                            {% endif %}
+                            <div class="detail__comment_text_and_user">
+                                {{ comment_form.realty.as_hidden }}
+                                {{ comment_form.user.as_hidden }}
+                                {{ comment_form.comment_text }}
+                                <button type="submit" class="btn btn-outline-light" id="detail__button_send_message" name="detail__send_feedback"></button>
+                            </div>
                         </form>
+                      </div>
+                    </div>
+                </div>
 
-                        {% if pk != reservation_set_detail.0.obj_id %}
-                            <form method="get" action="{% url 'app_premises:reservation' %}">
-                                <button class="btn btn-light" type="submit" value="{{ realty.id }}, {{ realty.realty_price }}, {{ check_in }}, {{ check_out }}" id="to-reserve-page-id" name="to-reserve-page">Забронировать</button>
-                            </form>
+                <ul class="realty-list-info">
+                    <p class="realty_name">{{ realty.get_realty_type_display }} {{ realty.realty_name }}</p>
+                    <p class="realty_address">{{ realty.realty_country }}, {{ realty.realty_region }}, {{ realty.realty_address }}</p>
+                    <p class="realty_distance"><b>{{ realty.realty_to_city }}</b> км. от {{ realty.realty_region_center }}</p>
+                    <p class="realty_area"><b>Площадь: {{ realty.realty_area }} кв.м.</b></p>
+                    <p class="realty-bed">Количество спальных мест: <b>{{ realty.count_of_persons }}</b></p>
+                    <p class="realty_price">От: {{ realty.realty_price }} РУБ.</p>
+                </ul>
+                <div class="realty-options-list-container">
+                    <p class="options-list-title">Основные удобства:</p>
+                    <ul class="realty-options-list">
+                        {% for option in realty.options.all|slice:6 %}
+                            <li class="option-list"><img class="detail__options_icon" src="../../static/img/icons/{{ option.icon_url }}">{{ option }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="check-the-reservation">
+                    <form class="realty-detail-check-reserve-container" method="get" action="?">
+                        {% if not 'check-is-reserve-available' in request.GET %}
+                            {{ detail_reserve_form.check_in }} - {{ detail_reserve_form.check_out }} <button class="btn btn-light" type="submit" value="{{ realty.id }}, {{ realty.realty_price }}" id="check-detail-button" name="check-is-reserve-available">Проверить</button>
+                        {% elif 'check-is-reserve-available' in request.GET %}
+                            {{ detail_reserve_form_filled.check_in }} - {{ detail_reserve_form_filled.check_out }} <button class="btn btn-light" type="submit" value="{{ realty.id }}, {{ realty.realty_price }}" id="check-detail-button2" name="check-is-reserve-available">Проверить</button>
+
+
+                                {% if pk == reservation_set_detail.0.obj_id %}
+                                    <div class="realty-detail-booked">
+                                        <p class="realty-booked-text">Забронировано</p>
+                                        <p class="realty-booked-date-range">с {{ reservation_set_detail.0.obj_check_in }} по {{ reservation_set_detail.0.obj_check_out }}</p>
+                                    </div>
+                                {% else %}
+                                    <p class="reserve-detail-end-form"> Итого: {{ detail_reserve_form_filled.total_sum }} <b style="font-size: 1.2em; color: black;">₽</b></p>
+                                {% endif %}
+
                         {% endif %}
+                    </form>
 
-                        <script>
-                          $(function () {
-                            $("#id_check_in").datepicker({
-                              format:'dd.mm.yyyy',
-                              startDate:'today',
-                              autoHide:'True',
-                              autoPick:'True',
-                              language:'ru-RU',
-                            });
-                          });
-                        </script>
+                    {% if pk != reservation_set_detail.0.obj_id %}
+                        <form method="get" action="{% url 'app_premises:reservation' %}">
+                            <button class="btn btn-light" type="submit" value="{{ realty.id }}, {{ realty.realty_price }}, {{ check_in }}, {{ check_out }}" id="to-reserve-page-id" name="to-reserve-page">Забронировать</button>
+                        </form>
+                    {% endif %}
 
-                        <script>
-                          $(function () {
-                            $("#id_check_out").datepicker({
-                              format:'dd.mm.yyyy',
-                              startDate:'today',
-                              autoHide:'True',
-                              language:'ru-RU',
-                            });
-                          });
-                        </script>
-                    </div>
+                    <script>
+                      $(function () {
+                        $("#id_check_in").datepicker({
+                          format:'dd.mm.yyyy',
+                          startDate:'today',
+                          autoHide:'True',
+                          autoPick:'True',
+                          language:'ru-RU',
+                        });
+                      });
+                    </script>
+
+                    <script>
+                      $(function () {
+                        $("#id_check_out").datepicker({
+                          format:'dd.mm.yyyy',
+                          startDate:'today',
+                          autoHide:'True',
+                          language:'ru-RU',
+                        });
+                      });
+                    </script>
                 </div>
-            </aside>
-
-        </ul>
-
-        <div id="pop_up4" style="position: fixed; left: 50%; top: 50%;transform: translate(-50%, -50%); display: none; z-index: 100; padding: 5px;">
-            <button id="close_pop_up_btn4" class="btn-close" aria-label="Close"></button>
-            <div>
-                <form method="post">
-                    {% csrf_token %}
-                    {{ detail_reserve_form.as_p }}
-                    <button type="submit">Зобронировать</button>
-                </form>
             </div>
+        </aside>
+    </ul>
+    <div class="realty_detail__adv_main_container">
+        <h4 class="realty_detail__h4_adv">Вам может быть интересно</h4>
+        <div class="realty_detail__advertising">
+            {% if not realty.is_advertised %}
+                {% for adv_realty in advertised_realty %}
+                    {% if realty.realty_region == adv_realty.realty_region %}
+                        <div class="realty_detail__adv_container">
+                            <img class="realty_detain__adv_img" src="../media/{{ adv_realty.photos.all.0.photo }}">
+                            <a href="{% url 'app_premises:realty_detail' slug=adv_realty.slug %}">{{ adv_realty }}</a>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
         </div>
-
-        <div id="pop_up" style="position: fixed; left: 50%; top: 50%;transform: translate(-50%, -50%); display: none; z-index: 100; padding: 5px;">
-            <button id="close_pop_up_btn" class="btn-close" aria-label="Close"></button>
-            <div class="register-popup-picture">
-
-            </div>
-            <form class="register-container" method="post">
+    </div>
+    <div id="pop_up4" style="position: fixed; left: 50%; top: 50%;transform: translate(-50%, -50%); display: none; z-index: 100; padding: 5px;">
+        <button id="close_pop_up_btn4" class="btn-close" aria-label="Close"></button>
+        <div>
+            <form method="post">
                 {% csrf_token %}
-                <div class="register-form-main-container">
-                    <p class="register-form-container">
-    <!--                    <p>Электронная почта:</p>-->
-                        <p>{{ register_form.email }}</p>
-                    <p class="register-form-container">
-    <!--                    <p>Пароль:</p>-->
-                        <p>{{ register_form.password1 }}</p>
-                    <p class="register-form-container">
-    <!--                    <p>Подтвердите пароль:</p>-->
-                        <p>{{ register_form.password2 }}</p>
-                    <p class="register-form-container">
-    <!--                    <p>Имя:</p>-->
-                        <p>{{ register_form.first_name }}</p>
-                    <p class="register-form-container">
-    <!--                    <p>Фамилия:</p>-->
-                        <p>{{ register_form.last_name }}</p>
-                    <p class="register-form-container">
-    <!--                    <p>Номер телефона:</p>-->
-                        <p>{{ register_form.phone }}</p>
-                    <div class="form-check form-switch">
-                    <p class="register-form-container">
-                        <p>{{ register_form.is_company }}</p>
-                        <label class="form-check-label" for="flexSwitchCheckDefault">Являюсь арендодателем</label>
-                    </div>
-                    <div class="form-check form-switch">
-                        {{ register_form.is_active }}
-                        <label class="form-check-label" for="flexSwitchCheckDefault">Согласиться с <a href="">правилами сайта</a></label>
-                    </div>
-                </div>
-
-                <button type="submit" name="save-register-form" class="btn btn-light" id="register-button">Зарегистрироваться</button>
-
+                {{ detail_reserve_form.as_p }}
+                <button type="submit">Зобронировать</button>
             </form>
         </div>
+    </div>
 
-        <!-- Модальное окно подробного описания -->
-        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Описание отеля и местности</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                <div class="detail__bottom_container_comment_and_info">
-                    <div class="detail__description_container">
-                        <p>
-                            <p style="font-size: 0.9em; text-align: justify;">{{ realty.full_description }}</p>
-                        </p>
-                    </div>
+    <!-- Модальное окно подробного описания -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel">Описание отеля и местности</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="detail__bottom_container_comment_and_info">
+                <div class="detail__description_container">
+                    <p>
+                        <p style="font-size: 0.9em; text-align: justify;">{{ realty.full_description | safe | linebreaks }}</p>
+                    </p>
                 </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закрыть</button>
-              </div>
             </div>
           </div>
-        </div>
-
-        <!-- Модальное окно всех опций -->
-        <div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel2">Все доступные опции</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                <div class="detail__bottom_container_comment_and_info">
-                    <div class="detail__description_container">
-                        <p>
-                            <h6 style="color: black; text-align: left;">{{ hotel_options.0.0 }}:</h6>
-                            <ul>
-                                {% for option in hotel_options %}
-                                    <li>{{ option.1 }}</li>
-                                {% endfor %}
-                            </ul>
-                            <h6 style="color: black; text-align: left;">{{ room_options.0.0 }}:</h6>
-                            <ul>
-                                {% for option in room_options %}
-                                    <li>{{ option.1 }}</li>
-                                {% endfor %}
-                            </ul>
-                        </p>
-                    </div>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закрыть</button>
-              </div>
-            </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закрыть</button>
           </div>
         </div>
+      </div>
+    </div>
 
-        <script>
-            var myModal = document.getElementById('myModal')
-            var myInput = document.getElementById('myInput')
+    <!-- Модальное окно всех опций -->
+    <div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel2">Все доступные опции</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="detail__bottom_container_comment_and_info">
+                <div class="detail__description_container">
+                    <p>
+                        <h6 style="color: black; text-align: left;">{{ hotel_options.0.0 }}:</h6>
+                        <ul>
+                            {% for option in hotel_options %}
+                                <li>{{ option.1 }}</li>
+                            {% endfor %}
+                        </ul>
+                        <h6 style="color: black; text-align: left;">{{ room_options.0.0 }}:</h6>
+                        <ul>
+                            {% for option in room_options %}
+                                <li>{{ option.1 }}</li>
+                            {% endfor %}
+                        </ul>
+                    </p>
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закрыть</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-            myModal.addEventListener('shown.bs.modal', function () {
-              myInput.focus()
-            })
-        </script>
+    <script>
+        var myModal = document.getElementById('myModal')
+        var myInput = document.getElementById('myInput')
+
+        myModal.addEventListener('shown.bs.modal', function () {
+          myInput.focus()
+        })
+    </script>
 
 {% endblock content %}
 </body>

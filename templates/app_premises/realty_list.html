@@ -4,7 +4,7 @@
 <html lang="ru" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Список объектов{%endblock title %}</title>
+    <title>{% block title %}Список объектов{% endblock title %}</title>
     <link type="text/css" rel="reset" href="../../static/css/reset.css">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -157,38 +157,15 @@
         <ul class="realty-list">
             {% for obj in realty_list %}
                     <div class="realty-card">
-                        <div id="carouselExampleFade{{ obj.id }}" class="carousel slide carousel-fade" data-bs-ride="carousel">
-                          <div class="carousel-inner">
-                            <div class="carousel-item active">
-                              <img src="../../media/{{ obj.photos.all.0.photo }}" class="d-block w-100" alt="...">
-                            </div>
-                              {% if obj.photos.all.1.photo %}
-                                <div class="carousel-item">
-                                  <img src="../../media/{{ obj.photos.all.1.photo }}" class="d-block w-100" alt="...">
-                                </div>
-                              {% endif %}
-                              {% if obj.photos.all.2.photo %}
-                                <div class="carousel-item">
-                                  <img src="../../media/{{ obj.photos.all.2.photo }}" class="d-block w-100" alt="...">
-                                </div>
-                              {% endif %}
-                          </div>
-                          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade{{ obj.id }}"  data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Предыдущий</span>
-                          </button>
-                          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade{{ obj.id }}"  data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Следующий</span>
-                          </button>
+                        <div>
+                          <img src="../../media/{{ obj.photos.all.0.photo }}" class="d-block w-100" alt="...">
                         </div>
 
 <!--                        <img class="shor-describe-realty-img" width="250px" src="../../media/{{ obj.realty_picture }}" alt="Фото объекта">-->
 
                         <div class="short-describe-text">
                             <h4 class="short-description-title"> <a href='{% url "app_premises:realty_detail" obj.slug %}'>{{ obj.realty_name }}</a></h4>
-                            <p class="short-description-text">{{ obj.realty_country }}, {{ obj.realty_region }}, {{ obj.realty_city }}</p>
-                            <p class="short-description-text">{{ obj.realty_address }}</p>
+                            <p class="short-description-text">{{ obj.realty_country }}, {{ obj.realty_region }}, г. {{ obj.realty_city }}, {{ obj.realty_address }}</p>
                             <p class="short-description-text">Количество мест: {{ obj.count_of_persons }}</p>
                             <ul class="realty-list-options-list">
                                 <h6 class="realty_list__h6_comfort">Удобства</h6>
@@ -246,4 +223,19 @@
     </aside>
 {% endblock content %}
 </body>
+{% block footer %}
+<footer>
+    <div class="base__footer_container">
+        <a class="base__logo_footer" style="width: 4%;" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
+<!--        <div class="base__footer">-->
+<!--            <div class="base__copyright">-->
+<!--                Copyright © 2022 Начилле.рф. Все права защищены.-->
+<!--            </div>-->
+<!--            <div class="base__footer_info">-->
+<!--                Начилле.рф — часть ООО "Биглов-Групп".-->
+<!--            </div>-->
+<!--        </div>-->
+    </div>
+</footer>
+{% endblock footer %}
 </html>

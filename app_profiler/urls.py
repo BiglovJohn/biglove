@@ -9,7 +9,7 @@ app_name = 'app_profiler'
 
 urlpatterns = [
     path('logout/', AnotherLogoutView.as_view(), name='logout'),
-    path('<int:user_id>/', AccountEditFromView.as_view(), name='account_detail'),
+    path('<slug:slug>/', AccountEditFromView.as_view(), name='account_detail'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
+{% extends "base.html" %}
 {% load static %}
-{% block content %}
 <html class="index__html" lang="ru" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
@@ -23,69 +23,8 @@
     <script src="../../static/js/datepicker.ru-RU.js"></script>
 
 </head>
-<header class="basemenu">
-
-    <menu class="menu1">
-        <a class="base-logo" style="width: 100px;" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
-
-        <menu class="base-menu-buttons">
-            {% if request.user.is_authenticated %}
-                    <div class="dropdown">
-                      <a data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-                        {{ guest }} <img class="open-profile-button" src="../static/img/icons/icons8-login-66.png" alt="Войти в кабинет">
-                      </a>
-                      <form class="dropdown-menu p-4" id="base_menu__container">
-                          <p>{{ guest }}</p>
-                          <p class="base_menu__lk_logout"><a href="{% url 'app_profiler:account_detail' user_id=request.user.id %}">Личный кабинет</a> <a href="{% url 'app_profiler:logout' %}">Выйти</a></p>
-                          <ul class="base_menu__links_container">
-                              {% if request.user.is_company %}
-                                  <li class="base_menu__li_container">
-                                      <a href="{% url 'app_companies:company_detail' company_id=request.user.id %}">
-                                          Кабинет арендодателя
-                                      </a>
-                                  </li>
-                              {% endif %}
-                          </ul>
-                      </form>
-                    </div>
-            {% else %}
-                <div class="dropdown" id="login">
-                        <a type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                            <button type="button" class="btn btn-light">Войти</button>
-                        </a>
-                        <div class="dropdown-menu">
-                            <form class="px-4 py-3" id="login-form" method="post">{% csrf_token %}
-                                <div class="mb-3">
-<!--                                    <lable class="login-form-lable">Логин</lable>-->
-                                    {{ auth_form.email }}
-                                </div>
-                                <div class="mb-3">
-<!--                                    <lable class="login-form-lable">Пароль</lable>-->
-                                    {{ auth_form.password }}
-                                </div>
-                                <div class="mb-3">
-                                    <div class="form-check" id="remember-me">
-                                        <input type="checkbox" class="form-check-input" id="dropdownCheck">
-                                        <label class="form-check-label" for="dropdownCheck">
-                                            Запомнить меня
-                                        </label>
-                                    </div>
-                                </div>
-                                <button type="submit" name="submit-login-form" class="btn btn-success">Войти</button>
-
-                            </form>
-                            <div class="dropdown-divider"></div>
-                            <button class="dropdown-item" id="open_pop_up">Впервые у нас? <b>Зарегистрироваться</b></button>
-                            <a class="dropdown-item" href="#">Забыли пароль?</a>
-                        </div>
-                </div>
-            {% endif %}
-        </menu>
-
-    </menu>
-
-</header>
 <body>
+{% block content %}
     <form class="search-form2" action="{% url 'app_premises:realty_list' %}" method="get">
         <menu class="search-form-input">
             <div class="container2">
@@ -182,59 +121,7 @@
                 <p>{{ realty_third.realty_country }}, {{ realty_third.realty_region }}, {{ realty_third.realty_address }}</p>
             </div>
         </div>
-
     </div>
-
-    <div id="pop_up" style="position: fixed; left: 50%; top: 50%;transform: translate(-50%, -50%); display: none; z-index: 100; padding: 5px;">
-            <button id="close_pop_up_btn" class="btn-close" aria-label="Close"></button>
-            <div class="register-popup-picture">
-
-            </div>
-            <form class="register-container" method="post">{% csrf_token %}
-                <div class="register-form-main-container">
-                    <p class="register-form-container">
-                        <p>{{ register_form.email }}</p>
-                    <p class="register-form-container">
-                        <p>{{ register_form.password1 }}</p>
-                    <p class="register-form-container">
-                        <p>{{ register_form.password2 }}</p>
-                    <p class="register-form-container">
-                        <p>{{ register_form.first_name }}</p>
-                    <p class="register-form-container">
-                        <p>{{ register_form.last_name }}</p>
-                    <p class="register-form-container">
-                        <p>{{ register_form.phone }}</p>
-                    <div class="form-check form-switch">
-                    <p class="register-form-container">
-                        <p>{{ register_form.is_company }}</p>
-                        <label class="form-check-label" for="flexSwitchCheckDefault">Являюсь арендодателем</label>
-                    </div>
-                    <div class="form-check form-switch">
-                        {{ register_form.is_active }}
-                        <label class="form-check-label" for="flexSwitchCheckDefault">Согласиться с <a href="">правилами сайта</a></label>
-                    </div>
-                </div>
-
-                <button type="submit" name="save-register-form" class="btn btn-light" id="register-button">Зарегистрироваться</button>
-
-            </form>
-        </div>
-
-    <script>
-        let pop_up   = document.getElementById('pop_up');
-        let open_btn  = document.getElementById('open_pop_up');
-        let close_btn = document.getElementById('close_pop_up_btn');
-
-        open_btn.addEventListener('click',()=>{
-            pop_up.style.display = 'block';
-        })
-
-        close_btn.addEventListener('click', ()=>{
-            pop_up.style.display = 'none';
-        })
-
-    </script>
-
+{% endblock %}
 </body>
 </html>
-{% endblock %}

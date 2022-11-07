@@ -1,14 +1,14 @@
 from django.conf import settings
 from django.urls import path
-from .views import CompanyEditFromView
+from .views import our_values_page
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 
-app_name = 'app_companies'
+app_name = 'app_rules'
 
 urlpatterns = [
-    path('<slug:company_slug>/', CompanyEditFromView.as_view(), name='company_detail'),
+    path('values/', our_values_page, name='our_values'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

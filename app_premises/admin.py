@@ -14,7 +14,7 @@ class RealtyObjectAdmin(admin.ModelAdmin):
                    ('realty_area', NumericRangeFilter), 'realty_type')
     readonly_fields = ['created_at', 'realty_book_count']
     fieldsets = (
-        ('Административная информация', {'fields': ('company', 'created_at', 'slug')}),
+        ('Административная информация', {'fields': ('company', 'created_at', 'slug', 'is_advertised')}),
         ('Общая информация', {'fields': ('realty_name', 'realty_to_city', 'realty_type',
                                          'count_of_persons', 'realty_area', 'full_description')}),
         ('Адрес', {'fields': ('realty_country', 'realty_region', 'realty_city', 'realty_address')}),
@@ -40,7 +40,7 @@ class ReservationAdmin(admin.ModelAdmin):
     list_select_related = ['realty', 'guest']
     list_filter = [('total_sum', NumericRangeFilter), ('check_in', DateRangeFilter), ('check_out', NumericRangeFilter),
                    'is_booked']
-    search_fields = ('realty__realty_name__startswith', 'guest__name')
+    search_fields = ('realty__realty_name__startswith', 'guest__name', 'book_number')
     readonly_fields = ['total_sum']
     fieldsets = (
         ('Внешние ключи', {'fields': ('realty', 'guest')}),

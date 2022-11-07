@@ -3,9 +3,10 @@ from __future__ import unicode_literals
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.urls import reverse
 from django.utils import timezone
 from django.conf import settings
-
+from pytils.translit import slugify
 
 _MANAGER_TYPE = [
     ('c', 'Юридическое лицо'),
@@ -16,6 +17,9 @@ _MANAGER_TYPE = [
 
 class CompanyProfile(models.Model):
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Управляющий')
+
+    slug = models.SlugField(max_length=30, unique=True, verbose_name='Название для slug')
+
     type = models.CharField(max_length=1, default='c', choices=_MANAGER_TYPE, verbose_name='Форма управления')
     full_company_name = models.CharField(max_length=100, blank=True, verbose_name='Полное наименование')
     short_company_name = models.CharField(max_length=100, blank=True, verbose_name='Сокращенное наименование')
@@ -28,6 +32,7 @@ class CompanyProfile(models.Model):
     bank_name = models.CharField(max_length=200, blank=True, verbose_name='Наименование банка')
     kor_account = models.CharField(max_length=22, blank=True, verbose_name='Корреспондентский счёт')
     bic = models.CharField(max_length=9, blank=True, verbose_name='БИК')
+
     director = models.CharField(max_length=50, verbose_name='Руководитель')
     company_phone = models.CharField(max_length=10, verbose_name='Номер телефона')
     company_email = models.CharField(max_length=50, verbose_name='Email')
@@ -38,6 +43,14 @@ class CompanyProfile(models.Model):
 
     def __str__(self):
         return self.short_company_name
+
+    def get_absolute_url(self):
+        return reverse("company_detail", kwargs={"slug": self.slug})
+
+    def save(self, *args, **kwargs):  # new
+        if self.slug is None:
+            self.slug = slugify(self.id)
+        return super().save(*args, **kwargs)
 
     class Meta:
         """Определение параметров в мета классе альбом"""

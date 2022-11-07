@@ -1,4 +1,5 @@
 import datetime
+import os
 
 from django.contrib.auth import authenticate, login
 from django.db.models import Q
@@ -24,6 +25,7 @@ def main_realty_list(request):
         - Страна
         - Город
     """
+
     if 'search' in request.GET or 'realty_list__search' in request.POST or request.method == 'GET':
         if request.GET.get('q') is None:
             query = request.POST.get('q')
@@ -145,9 +147,11 @@ def main_realty_list(request):
         if request.method == 'GET':
             searched_check_in = datetime.datetime.strptime(request.GET.get('check_in'), "%d.%m.%Y").date()
             searched_check_out = datetime.datetime.strptime(request.GET.get('check_out'), "%d.%m.%Y").date()
-        else:
+            print(searched_check_in, searched_check_out)
+        elif request.method == 'POST':
             searched_check_in = datetime.datetime.strptime(request.POST.get('check_in'), "%d.%m.%Y").date()
             searched_check_out = datetime.datetime.strptime(request.POST.get('check_out'), "%d.%m.%Y").date()
+            print(searched_check_in, searched_check_out)
 
         reservations_list = Reservation.objects.select_related('realty')
 
@@ -169,12 +173,19 @@ def main_realty_list(request):
         )
 
         return render(request, 'app_premises/realty_list.html',
-                      {'realty_list': realty_list, 'price_filter': price_filter, 'main_filter': main_filter,
-                       'realty_type_checkbox': realty_type_checkbox, 'hotel_filter_checkbox': hotel_filter_checkbox,
-                       'reservation_set': reservation_set, 'list_reserve_form': list_reserve_form,
-                       'room_filter_checkbox': room_filter_checkbox, 'food_options_checkbox': food_options_checkbox,
-                       'book_filter': book_filter, 'pay_filter': pay_filter,
-                       }
+                      {
+                          'realty_list': realty_list,
+                          'price_filter': price_filter,
+                          'main_filter': main_filter,
+                          'realty_type_checkbox': realty_type_checkbox,
+                          'hotel_filter_checkbox': hotel_filter_checkbox,
+                          'reservation_set': reservation_set,
+                          'list_reserve_form': list_reserve_form,
+                          'room_filter_checkbox': room_filter_checkbox,
+                          'food_options_checkbox': food_options_checkbox,
+                          'book_filter': book_filter,
+                          'pay_filter': pay_filter,
+                      }
                       )
 
 
@@ -203,6 +214,9 @@ class RealtyDetailView(generic.DetailView):
         pk = kwargs['object'].id
         current_user = self.request.user.id
         current_realty = RealtyObject.objects.get(id=pk)
+        current_company = CompanyProfile.objects.get(user=current_user)
+        realty_slug = current_realty.slug
+        advertised_realty = RealtyObject.objects.filter(is_advertised=True)
 
         # Получаем список опций конкретного отеля с категорией "В отеле"
         realty_in_hotel_options_name = [option.option_name for option in
@@ -211,6 +225,10 @@ class RealtyDetailView(generic.DetailView):
                                             current_realty.options.filter(category='В отеле')]
         realty_options_list_in_hotel = list(zip(realty_in_hotel_options_category, realty_in_hotel_options_name))
         context['hotel_options'] = realty_options_list_in_hotel
+        context['realty_slug'] = realty_slug
+        context['current_realty'] = current_realty
+        context['current_company'] = current_company
+        context['advertised_realty'] = advertised_realty
 
         # Получаем список опций конкретного отеля с категорией "В номере"
         realty_in_room_options_name = [option.option_name for option in
@@ -245,6 +263,19 @@ class RealtyDetailView(generic.DetailView):
                 comments_form.user_id = CustomUser.objects.get(id=request.user.id)
                 comments_form.realty_id = realty_id.id
                 comments_form.save()
+
+        if 'submit-login-form' in request.POST:
+            auth_form = AuthForm(request.POST)
+            if auth_form.is_valid():
+                email = auth_form.cleaned_data['email']
+                password = auth_form.cleaned_data['password']
+                user = authenticate(email=email, password=password)
+                if user:
+                    if user.is_active:
+                        login(request, user)
+                    else:
+                        auth_form.add_error('__all__', 'Проверьте правильность введёных данных')
+
         return redirect('app_premises:realty_detail', slug=self.kwargs.get('slug'))
 
 
@@ -252,7 +283,10 @@ class RealtyEditFromView(View):
     def get(self, request, slug):
         if 'delete_photo_button' in request.GET:
             pk = request.GET.get('delete_photo_button').split(', ')[1]
-            Photos.objects.get(id=pk).delete()
+            current_photo = Photos.objects.get(id=pk)
+            if os.path.isfile(f'media/{current_photo.photo}'):
+                current_photo.delete()
+                os.remove(f'media/{current_photo.photo}')
             return redirect('app_premises:realty_edit', slug=self.kwargs.get('slug'))
         if request.user.is_authenticated and request.user.is_company:
             current_manager = CompanyProfile.objects.get(user=request.user.id)
@@ -325,6 +359,7 @@ class ReservationFormView(View):
                              'total_sum': total_sum, 'is_booked': False})
                 realty_object_to_reserve_page = RealtyObject.objects.get(id=realty)
                 photos = Photos.objects.filter(realty_obj=realty).first()
+                reserve_register_form = RegisterForm()
 
                 return render(request, 'app_premises/reservation.html',
                               context={'reservation_form': reservation_form,
@@ -333,7 +368,7 @@ class ReservationFormView(View):
                                        'check_in': check_in,
                                        'check_out': check_out,
                                        'total_sum': total_sum,
-                                       'photos': photos,
+                                       'photos': photos, 'reserve_register_form': reserve_register_form
                                        }
                               )
 
@@ -426,8 +461,51 @@ class ReservationFormView(View):
                                        }
                               )
 
+        if 'reserve__register_form_submit' in request.POST:
+            reserve_register_form = RegisterForm(request.POST, initial={'phone': '+7'})
+            realty = request.GET.get('to-reserve-page').split(', ')[0]
+            current_realty_price = request.GET.get('to-reserve-page').split(', ')[1]
+            check_in = datetime.datetime.strptime(request.GET.get('to-reserve-page').split(', ')[2],
+                                                  "%Y-%m-%d").date()
+            check_out = datetime.datetime.strptime(request.GET.get('to-reserve-page').split(', ')[3],
+                                                   "%Y-%m-%d").date()
+            total_sum = (check_out - check_in).days * int(current_realty_price)
+            realty_object_to_reserve_page = RealtyObject.objects.get(id=realty)
+            photos = Photos.objects.filter(realty_obj=realty).first()
+            auth_form = AuthForm(request.POST)
+
+            if reserve_register_form.is_valid():
+                user = reserve_register_form.save()
+                last_name = reserve_register_form.cleaned_data.get('last_name')
+                first_name = reserve_register_form.cleaned_data.get('first_name')
+                phone = reserve_register_form.cleaned_data.get('phone')
+                email = reserve_register_form.cleaned_data.get('email')
+                raw_password = reserve_register_form.cleaned_data.get('password1')
+                is_active = reserve_register_form.cleaned_data.get('is_active')
+                is_company = reserve_register_form.cleaned_data.get('is_company')
+
+                user = authenticate(email=email, password=raw_password)
+                login(request, user)
+
+                current_user = CustomUser.objects.get(id=request.user.id)
+                reservation_form = ReservationForm(initial={'realty': realty, 'guest': current_user,
+                                                            'check_in': check_in,
+                                                            'check_out': check_out,
+                                                            'total_sum': total_sum, 'is_booked': False})
+
+                return render(request, 'app_premises/reservation.html',
+                              context={'reservation_form': reservation_form,
+                                       'realty_object_to_reserve_page': realty_object_to_reserve_page,
+                                       'check_in': check_in,
+                                       'check_out': check_out,
+                                       'total_sum': total_sum,
+                                       'photos': photos,
+                                       'current_user': current_user
+                                       }
+                              )
             else:
                 return HttpResponseRedirect('/')
+
         else:
             return HttpResponseRedirect('/')
 

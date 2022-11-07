@@ -1,10 +1,12 @@
-import os
-from PIL import Image
+from uuid import uuid4
+
 from django.conf import settings
 from django.core.validators import FileExtensionValidator
 from django.db import models
 from pytils.translit import slugify
 from django.urls import reverse
+import numpy as np
+
 
 #  Внешние импорты
 from app_profiler.models import CustomUser
@@ -89,6 +91,8 @@ class RealtyObject(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     realty_book_count = models.PositiveIntegerField(default=0, verbose_name='Бронирований')
 
+    is_advertised = models.BooleanField(default=False, verbose_name='Статус продвижения')
+
     def __str__(self):
         return self.realty_name
 
@@ -117,15 +121,14 @@ class RealtyObject(models.Model):
 
 
 class Reservation(models.Model):
-    realty = models.ForeignKey(to=RealtyObject,
-                               on_delete=models.CASCADE,
-                               verbose_name='Объект недвижимости'
-                               )
+    realty = models.ForeignKey(to=RealtyObject, on_delete=models.CASCADE, verbose_name='Объект недвижимости')
     guest = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Гости')
+    book_identifier = models.CharField(max_length=10, default=uuid4, unique=True, verbose_name='Номер бронирования')
     check_in = models.DateField(verbose_name='Дата заезда')
     check_out = models.DateField(verbose_name='Дата выселения')
     is_booked = models.BooleanField(default=False, verbose_name='Бронь')
     total_sum = models.IntegerField(default=0, verbose_name='Сумма')
+    booked_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата бронирования')
 
     def __str__(self):
         return self.realty.realty_name

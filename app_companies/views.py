@@ -1,43 +1,56 @@
-from django.shortcuts import render
+from django.contrib import messages
+from django.shortcuts import render, redirect
 from django.views import View
 from pytils.translit import slugify
 from .forms import CompanyProfileForm
 from .models import CompanyProfile
 from app_profiler.models import CustomUser
-
 from app_premises.forms import RealtyObjectForm
 
 """---РАЗДЕЛ ВЬЮШЕК ПО ОБЪЕКТАМ ПРОФИЛЕЙ---"""
 
 
 class CompanyEditFromView(View):
-    def get(self, request, company_id):
-        current_company = CompanyProfile.objects.get(user=company_id)
-        company_id = current_company.id
-        company_form = CompanyProfileForm(instance=current_company)
-        realty_form = RealtyObjectForm()
+    def get(self, request, company_slug):
+        current_company = CompanyProfile.objects.get(user=request.user.id)
+        current_slug = current_company.slug
+        if company_slug == current_slug:
+            current_company = CompanyProfile.objects.get(slug=company_slug)
+            if current_company.user.id == request.user.id:
+                company_id = current_company.id
+                company_form = CompanyProfileForm(instance=current_company)
+                realty_form = RealtyObjectForm()
+                return render(request, 'app_companies/edit_company.html',
+                              context={
+                                  'company_form': company_form,
+                                  'company_id': company_id,
+                                  'current_company': current_company,
+                                  'realty_form': realty_form,
+                                  'company_slug': company_slug,
+                              }
+                              )
+            else:
+                return redirect('app_companies:company_detail', company_slug=company_slug)
+        else:
+            current_company = CompanyProfile.objects.get(user=request.user.id)
+            return redirect('app_companies:company_detail', company_slug=current_company.slug)
 
-        return render(request, 'app_companies/edit_company.html',
-                      context={
-                          'company_form': company_form,
-                          'company_id': company_id,
-                          'current_company': current_company,
-                          'realty_form': realty_form,
-                      }
-                      )
-
-    def post(self, request, company_id):
-        current_company = CompanyProfile.objects.get(user=company_id)
-        company_id = current_company.id
+    def post(self, request, company_slug):
+        current_company = CompanyProfile.objects.get(slug=company_slug)
         company_form = CompanyProfileForm(request.POST, instance=current_company)
         realty_form = RealtyObjectForm(request.POST)
 
-        if 'account__save_form' in request.POST and company_form.is_valid():
-            company = company_form.save(commit=False)
-            company.save()
+        if 'account__save_form' in request.POST:
+            if company_form.is_valid():
+                company = company_form.save(commit=False)
+                company.slug = company_form.cleaned_data['slug'].lower()
+                company.save()
+                return redirect('app_companies:company_detail', company_slug=company_slug)
+            else:
+                messages.error(request, 'Ошибка при изменении ссылки на компанию')
+            return redirect('app_companies:account_detail', company_slug=company_slug)
 
         if 'account__save_realty_object' in request.POST and realty_form.is_valid():
-            print('ФОРМА ВАЛИДНА')
             realty = realty_form.save(commit=False)
             realty.company = realty_form.cleaned_data['company']
             realty.slug = slugify(realty_form.cleaned_data['realty_name'])
@@ -50,7 +63,7 @@ class CompanyEditFromView(View):
         return render(request, 'app_companies/edit_company.html',
                       context={
                           'company_form': company_form,
-                          'company_id': company_id,
+                          'company_slug': company_slug,
                           'current_company': current_company,
                           'realty_form': realty_form,
                       }
