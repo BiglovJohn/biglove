@@ -88,17 +88,35 @@
 </body>
 {% endblock %}
 {% block footer %}
-<footer>
+<footer class="base__footer_not_fixed">
     <div class="base__footer_container">
-        <a class="base__logo_footer" style="width: 4%;" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
-        <div class="base__footer">
-            <div class="base__copyright">
-                Copyright © 2022 Начилле.рф. Все права защищены.
-            </div>
-            <div class="base__footer_info">
-                Начилле.рф — часть ООО "Биглов-Групп".
-            </div>
+        <a class="base__logo_footer" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
+    </div>
+    <div class="base__footer">
+        <div class="base__copyright">
+            <a href="{% url 'app_rules:our_values' %}">Наши ценности</a>
         </div>
+        <div class="base__footer_info">
+            <a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a>
+        </div>
+    </div>
+
+    <!-- Модальное окно управления промо-акциями -->
+    <div class="modal fade" id="staticBackdrop5" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel5">Контакты</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+          </div>
+          <div class="modal-body">
+              <div>Телефон для справок: +7 (938) 416-66-72</div>
+              <div>Эл. почта: biglov.info@yandex.ru</div>
+          </div>
+          <div class="modal-footer">
+          </div>
+        </div>
+      </div>
     </div>
 </footer>
 {% endblock footer %}

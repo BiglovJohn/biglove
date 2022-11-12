@@ -108,6 +108,8 @@
                 <a class="company__realty_list_menu_link" title="Зарегистрировать объект" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><img class="company__realty_list_menu_img" src="../../static/img/icons/free-icon-add-house-15735.png"></a>
                     <!-- Кнопка-триггер модального окна статистических данных -->
                 <a class="company__realty_list_menu_link" title="Статистические данные" data-bs-toggle="modal" data-bs-target="#staticBackdrop2"><img class="company__realty_list_menu_img" src="../../static/img/icons/free-icon-financial-report-3344965.png"></a>
+                    <!-- Кнопка-триггер модального окна статистических данных -->
+                <a class="company__realty_list_menu_link" title="Список бронирований" data-bs-toggle="modal" data-bs-target="#staticBackdrop4"><img class="company__realty_list_menu_img" src="../../static/img/icons/free-icon-booking-5110947.png"></a>
                     <!-- Кнопка-триггер модального окна промо акций -->
                 <a class="company__realty_list_menu_link" title="Промо акции" data-bs-toggle="modal" data-bs-target="#staticBackdrop3"><img class="company__realty_list_menu_img" src="../../static/img/icons/free-icon-promotions-372754.png"></a>
             </div>
@@ -125,38 +127,6 @@
                     <a href="#">Зарегистрировать объект</a>
                 {% endif %}
             </ul>
-        </div>
-        <div class="company__show_reservation_list">
-            <h5 class="company__h5_realty_objects">Список бронирований</h5>
-            {% for reserve in reservations_list %}
-                {% if reserve.is_booked %}
-                    <div class="company__reserve_container">
-                        <div class="company__reserve_realty">
-                            {{ reserve }}
-                        </div>
-                        <div class="company__reserve_date">
-                            <div>С {{ reserve.check_in }} по {{ reserve.check_out }}</div>
-                        </div>
-                        <div>
-                            <div>Арендатор: {{ reserve.guest.first_name }} {{ reserve.guest.last_name }}</div>
-                            <div>Контактный телефон: {{ reserve.guest.phone }}</div>
-                            <div>Электронная почта: {{ reserve.guest.email }}</div>
-                            <div>Телеграм: {{ reserve.guest.telegram }}</div>
-                            <div class="user_detail__list_of_reservations_text_form">Идентификатор: {{ reserve.book_identifier }}</div>
-                        </div>
-                        <div class="reserve__sum_of_reservation">Сумма: {{ reserve.total_sum }} ₽</div>
-                    </div>
-                {% else %}
-                    <div>У вас нет активных бронирований</div>
-                {% endif %}
-            {% endfor %}
-            <div class="company__total_sum_of_active_reserves">
-                {% if total_company_sum %}
-                    <p>Общая сумма: {{ total_company_sum }}₽</p>
-                {% else %}
-                    <p>У вас пока нет активных бронирований</p>
-                {% endif %}
-            </div>
         </div>
     </div>
 
@@ -265,6 +235,55 @@
       </div>
     </div>
 
+    <!-- Модальное окно списка бронирований -->
+    <div class="modal fade" id="staticBackdrop4" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel4" aria-hidden="true">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel4">Статистические данные</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+          </div>
+              <div class="modal-body">
+                <h5 class="company__h5_realty_objects">Список бронирований</h5>
+                <div class="company__show_reservation_list">
+
+                {% for reserve in reservations_list %}
+                    {% if reserve.is_booked %}
+                        <div class="company__reserve_container">
+                            <div class="company__reserve_realty">
+                                {{ reserve }}
+                            </div>
+                            <div class="company__reserve_date">
+                                <div>С {{ reserve.check_in }} по {{ reserve.check_out }}</div>
+                            </div>
+                            <div>
+                                <div>Арендатор: {{ reserve.guest.first_name }} {{ reserve.guest.last_name }}</div>
+                                <div>Контактный телефон: {{ reserve.guest.phone }}</div>
+                                <div>Электронная почта: {{ reserve.guest.email }}</div>
+                                <div>Телеграм: {{ reserve.guest.telegram }}</div>
+                                <div class="user_detail__list_of_reservations_text_form">Идентификатор: {{ reserve.book_identifier }}</div>
+                                <div class="reserve__sum_of_reservation">Сумма: {{ reserve.total_sum }} ₽</div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div>У вас нет активных бронирований</div>
+                    {% endif %}
+                {% endfor %}
+              </div>
+              <div class="company__total_sum_of_active_reserves">
+                {% if total_company_sum %}
+                    <p>Общая сумма: {{ total_company_sum }}₽</p>
+                {% else %}
+                    <p>У вас пока нет активных бронирований</p>
+                {% endif %}
+              </div>
+          </div>
+          <div class="modal-footer">
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Модальное окно статистических данных -->
     <div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
       <div class="modal-dialog modal-xl">
@@ -273,8 +292,9 @@
             <h5 class="modal-title" id="staticBackdropLabel2">Статистические данные</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
           </div>
-          <div class="modal-body">
-            Каминсун
+              <div class="modal-body">
+                Каминсун
+              </div>
           </div>
           <div class="modal-footer">
           </div>
@@ -311,17 +331,35 @@
 
 </body>
 {% block footer %}
-<footer>
+<footer class="base__footer_not_fixed">
     <div class="base__footer_container">
-        <a class="base__logo_footer" style="width: 4%;" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
-<!--        <div class="base__footer">-->
-<!--            <div class="base__copyright">-->
-<!--                Copyright © 2022 Начилле.рф. Все права защищены.-->
-<!--            </div>-->
-<!--            <div class="base__footer_info">-->
-<!--                Начилле.рф — часть ООО "Биглов-Групп".-->
-<!--            </div>-->
-<!--        </div>-->
+        <a class="base__logo_footer" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
+    </div>
+    <div class="base__footer">
+        <div class="base__copyright">
+            <a href="{% url 'app_rules:our_values' %}">Наши ценности</a>
+        </div>
+        <div class="base__footer_info">
+            <a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a>
+        </div>
+    </div>
+
+    <!-- Модальное окно управления промо-акциями -->
+    <div class="modal fade" id="staticBackdrop5" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel5">Контакты</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+          </div>
+          <div class="modal-body">
+              <div>Телефон для справок: +7 (938) 416-66-72</div>
+              <div>Эл. почта: biglov.info@yandex.ru</div>
+          </div>
+          <div class="modal-footer">
+          </div>
+        </div>
+      </div>
     </div>
 </footer>
 {% endblock footer %}

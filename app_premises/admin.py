@@ -1,11 +1,10 @@
 from django.contrib import admin
 from rangefilter.filters import DateRangeFilter, NumericRangeFilter
+from .models import HolidayHouseObject, RealtyOptions, Reservation, Photos
 
-from .models import RealtyObject, RealtyOptions, Reservation, Photos
 
-
-@admin.register(RealtyObject)
-class RealtyObjectAdmin(admin.ModelAdmin):
+@admin.register(HolidayHouseObject)
+class HolidayHouseObjectAdmin(admin.ModelAdmin):
     list_display = ['id', 'short_company_name', 'realty_name', 'realty_type', 'realty_price', 'realty_area',
                     'realty_book_count']
     list_display_links = ['id', 'short_company_name']
@@ -17,7 +16,7 @@ class RealtyObjectAdmin(admin.ModelAdmin):
         ('Административная информация', {'fields': ('company', 'created_at', 'slug', 'is_advertised')}),
         ('Общая информация', {'fields': ('realty_name', 'realty_to_city', 'realty_type',
                                          'count_of_persons', 'realty_area', 'full_description')}),
-        ('Адрес', {'fields': ('realty_country', 'realty_region', 'realty_city', 'realty_address')}),
+        ('Адрес', {'fields': ('realty_country', 'realty_region', 'realty_city', 'realty_address', 'region_center')}),
         ('Финансовая информация', {'fields': ('realty_price',)}),
         ('Статистическая информация', {'fields': ('realty_book_count',)}),
         ('Удобства', {'fields': ('options', 'pay_type', 'food_options', 'book_cancel')}),
@@ -54,4 +53,4 @@ class PhotosAdmin(admin.ModelAdmin):
     list_display = ['id', 'realty_obj', 'created_at']
 
 
-admin.site.site_header = 'CHILL'
+admin.site.site_header = 'BIGLOV'

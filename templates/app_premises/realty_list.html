@@ -4,7 +4,7 @@
 <html lang="ru" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Список объектов{% endblock title %}</title>
+    <title>{% block title %}Посуточная аренда{% endblock title %}</title>
     <link type="text/css" rel="reset" href="../../static/css/reset.css">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -154,15 +154,77 @@
             </form>
 
         </menu>
-        <ul class="realty-list">
-            {% for obj in realty_list %}
+        <div class="realty_list__realty_container">
+            {% if adv_realty_list %}
+                <div class="relaty_list__adv_list">
+                    <ul class="realty-list">
+                        {% for adv_realty in adv_realty_list|slice:4 %}
+                            <div class="realty-card adv">
+                                <img class="realty_list__adv_top_stamp" src="../../static/img/icons/free-icon-top-753359.png">
+                                <div>
+                                  <img src="../../media/{{ adv_realty.photos.all.0.photo }}" class="d-block w-100" alt="...">
+                                </div>
+                                <div class="short-describe-text">
+                                    <h4 class="short-description-title"> <a href='{% url "app_premises:realty_detail" adv_realty.slug %}'>{{ adv_realty.realty_name }}</a></h4>
+                                    <p class="short-description-text">{{ adv_realty.realty_country }}, {{ adv_realty.realty_region }}, г. {{ adv_realty.realty_city }}, {{ adv_realty.realty_address }}</p>
+                                    <p class="short-description-text">Количество мест: {{ adv_realty.count_of_persons }}</p>
+                                    <ul class="realty-list-options-list">
+                                        <h6 class="realty_list__h6_comfort">Удобства</h6>
+                                        <div class="realty_list__options_container">
+                                            {% for option in adv_realty.options.all|slice:6 %}
+                                                <li class="options_without_title_li"><img class="options-icon"  src="../../static/img/icons/{{ option.icon_url }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ option.option_name }}"></li>
+                                            {% endfor %}
+                                        </div>
+                                    </ul>
+
+                                    <ul class="main_options_info">
+                                        {% if adv_realty.book_cancel == 'y' %}
+                                            <li style="color:green;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-calendar-5237130.png">{{ adv_realty.get_book_cancel_display }}</li>
+                                        {% elif adv_realty.book_cancel == 'n' %}
+                                            <li style="color:red;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-calendar-5237130.png">{{ adv_realty.get_book_cancel_display }}</li>
+                                        {% endif %}
+
+                                        {% if adv_realty.food_options == 'a' %}
+                                            <li style="color:green;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ adv_realty.get_food_options_display }}</li>
+                                        {% elif adv_realty.food_options == 'b' %}
+                                            <li style="color:green;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ adv_realty.get_food_options_display }}</li>
+                                        {% elif adv_realty.food_options == 'c' %}
+                                            <li style="color:green;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ adv_realty.get_food_options_display }}</li>
+                                        {% elif adv_realty.food_options == 'd' %}
+                                            <li style="color:green;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ adv_realty.get_food_options_display }}</li>
+                                        {% elif adv_realty.food_options == 'e' %}
+                                            <li style="color:red;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ adv_realty.get_food_options_display }}</li>
+                                        {% endif %}
+
+                                        {% if adv_realty.pay_type == 'o' %}
+                                            <li class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-credit-card-5950249.png">{{ adv_realty.get_pay_type_display }}</li>
+                                        {% else %}
+                                            <li class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/money.png">{{ adv_realty.get_pay_type_display }}</li>
+                                        {% endif %}
+                                    </ul>
+                                    <div class="price_book_status_container">
+                                        <p class="realty-list-price">От: {{ adv_realty.realty_price }} РУБ</p>
+                                        {% for reserve in reservation_set %}
+                                            {% if obj.id == reserve.obj_id %}
+                                                <div class="realty-booked">
+                                                    <p class="realty-booked-text">Забронировано</p>
+                                                    <p class="realty-booked-date-range">с {{ reserve.obj_check_in }} по {{ reserve.obj_check_out }}</p>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            <ul class="realty-list">
+                {% for obj in realty_list %}
                     <div class="realty-card">
                         <div>
                           <img src="../../media/{{ obj.photos.all.0.photo }}" class="d-block w-100" alt="...">
                         </div>
-
-<!--                        <img class="shor-describe-realty-img" width="250px" src="../../media/{{ obj.realty_picture }}" alt="Фото объекта">-->
-
                         <div class="short-describe-text">
                             <h4 class="short-description-title"> <a href='{% url "app_premises:realty_detail" obj.slug %}'>{{ obj.realty_name }}</a></h4>
                             <p class="short-description-text">{{ obj.realty_country }}, {{ obj.realty_region }}, г. {{ obj.realty_city }}, {{ obj.realty_address }}</p>
@@ -177,7 +239,6 @@
                             </ul>
 
                             <ul class="main_options_info">
-
                                 {% if obj.book_cancel == 'y' %}
                                     <li style="color:green;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-calendar-5237130.png">{{ obj.get_book_cancel_display }}</li>
                                 {% elif obj.book_cancel == 'n' %}
@@ -197,7 +258,7 @@
                                 {% endif %}
 
                                 {% if obj.pay_type == 'o' %}
-                                    <li class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/mir-logo-h14px.svg">{{ obj.get_pay_type_display }}</li>
+                                    <li class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-credit-card-5950249.png">{{ obj.get_pay_type_display }}</li>
                                 {% else %}
                                     <li class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/money.png">{{ obj.get_pay_type_display }}</li>
                                 {% endif %}
@@ -213,28 +274,44 @@
                                     {% endif %}
                                 {% endfor %}
                             </div>
-
                         </div>
-
                     </div>
-
-            {% endfor %}
-        </ul>
+                {% endfor %}
+            </ul>
+        </div>
     </aside>
 {% endblock content %}
 </body>
 {% block footer %}
-<footer>
+<footer class="base__footer_not_fixed">
     <div class="base__footer_container">
-        <a class="base__logo_footer" style="width: 4%;" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
-<!--        <div class="base__footer">-->
-<!--            <div class="base__copyright">-->
-<!--                Copyright © 2022 Начилле.рф. Все права защищены.-->
-<!--            </div>-->
-<!--            <div class="base__footer_info">-->
-<!--                Начилле.рф — часть ООО "Биглов-Групп".-->
-<!--            </div>-->
-<!--        </div>-->
+        <a class="base__logo_footer" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
+    </div>
+    <div class="base__footer">
+        <div class="base__copyright">
+            <a href="{% url 'app_rules:our_values' %}">Наши ценности</a>
+        </div>
+        <div class="base__footer_info">
+            <a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a>
+        </div>
+    </div>
+
+    <!-- Модальное окно управления промо-акциями -->
+    <div class="modal fade" id="staticBackdrop5" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel5">Контакты</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+          </div>
+          <div class="modal-body">
+              <div>Телефон для справок: +7 (938) 416-66-72</div>
+              <div>Эл. почта: biglov.info@yandex.ru</div>
+          </div>
+          <div class="modal-footer">
+          </div>
+        </div>
+      </div>
     </div>
 </footer>
 {% endblock footer %}

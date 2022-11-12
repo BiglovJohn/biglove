@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+{% load static %}
+<html lang="ru" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Аренда жилья{% endblock title %}</title>
+    <link type="text/css" rel="reset" href="../../static/css/reset.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <link type="text/css" rel="stylesheet" href="../../static/css/style.css">
+    <link type="text/css" rel="stylesheet" href="../../static/css/stylesheet.css">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+    <!-- Fengyuan Chen's Datepicker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
+
+</head>
+<body>
+{% block content %}
+    <aside class="realty-list-container">
+        <menu class="realty-type-filters">
+
+            <form class="block-type" action="{% url 'app_ltrent:lt_realty_list' %}" method="post">{% csrf_token %}
+                <menu class="search-realty-list-block-type">
+                    <div class="container2">
+                        <div class="row height d-flex justify-content-center align-items-center">
+                            <div class="col-md-8" id="search-form-input">
+                                <div class="search2">
+                                    <i class="fa fa-search"></i>
+                                    <input name="lt" type="text" class="form-control search-date" id="search-form" placeholder="Введите название города" autocomplete="off">
+<!--                                    <button name="search" class="btn btn-info" id="realty-search-button"></button>-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </menu>
+
+                <menu class="block-type">
+                    <p class="realty-menu-text">Сортировка</p>
+                    <div class="main-filter">{{ main_filter }}</div>
+                </menu>
+
+                <menu class="block-type">
+                    <p class="realty-menu-text">Диапазон цен, ₽</p>
+                    <div class="price-filter">{{ price_filter.as_p }}</div>
+                </menu>
+
+                <menu class="block-type">
+                    <p class="realty-menu-text">Общая площадь, м²</p>
+                    <div class="price-filter">{{ area_filter.as_p }}</div>
+                </menu>
+
+                <menu class="block-type">
+                    <p class="realty-menu-text">Этаж</p>
+                    <div class="price-filter">{{ floor_filter.as_p }}</div>
+                </menu>
+
+                <menu class="block-type">
+                    <p class="realty-menu-text">Правила</p>
+                    <div class="form-checkbox">
+                        {{ rules_checkbox.rule_option.0 }}
+                        {{ rules_checkbox.rule_option.1 }}
+                        {{ rules_checkbox.rule_option.2 }}
+                    </div>
+                </menu>
+
+                <menu class="block-type">
+                    <p class="realty-menu-text">Санузел</p>
+                    <div class="form-checkbox">
+                        {{ bathroom_checkbox.as_p }}
+                    </div>
+                </menu>
+
+                <menu class="block-type">
+                    <p class="realty-menu-text">Мебель</p>
+                    <div class="form-checkbox">
+                        {% for furniture in furniture_checkbox %}
+                            {{ furniture.4 }}
+                            {{ furniture.3 }}
+                            {{ furniture.0 }}
+                            {{ furniture.2 }}
+                            {{ furniture.6 }}
+                            {{ furniture.1 }}
+                            {{ furniture.5 }}
+                            {{ furniture.9 }}
+                        {% endfor %}
+                    </div>
+                </menu>
+
+                <menu class="block-type">
+                    <p class="realty-menu-text">Техника</p>
+                    <div class="form-checkbox">
+                        {% for technique in technique_checkbox %}
+                            {{ technique.9 }}
+                            {{ technique.3 }}
+                            {{ technique.2 }}
+                            {{ technique.1 }}
+                            {{ technique.11 }}
+                            {{ technique.0 }}
+                            {{ technique.6 }}
+                            {{ technique.10 }}
+                        {% endfor %}
+                    </div>
+                </menu>
+
+                <input class="filter-input" type="submit" name="lt_realty_list__search" value="Найти">
+            </form>
+
+        </menu>
+        <div class="realty_list__realty_container">
+            {% if adv_lt_realty_list %}
+                <div class="relaty_list__adv_list">
+                    <ul class="realty-list">
+                        {% for adv_realty in adv_lt_realty_list|slice:4 %}
+                            <div class="realty-card adv">
+                                <img class="realty_list__adv_top_stamp" src="../../static/img/icons/free-icon-top-753359.png">
+                                <div>
+                                    {% if adv_realty.photos.all.0.photo %}
+                                        <img src="../../media/{{ adv_realty.photos.all.0.photo }}" class="d-block w-100" alt="...">
+                                    {% else %}
+                                        <a href='{% url "app_ltrent:lt_realty_detail" adv_realty.id %}'><img src="../../media/empty_realty_picture.png" alt="Абложка"></a>
+                                    {% endif %}
+                                </div>
+                                <div class="short-describe-text">
+                                    <div>
+                                        <div class="lt_realty_list__main_text"><a href='{% url "app_ltrent:lt_realty_detail" adv_realty.id %}'>{{ adv_realty.get_realty_type_display }}, {{ adv_realty.realty_area }}м², {{ adv_realty.floor }} эт.</a></div>
+                                    </div>
+                                    <p class="short-description-text">г. {{ adv_realty.realty_city }}, р-н {{ adv_realty.city_area }}, {{ adv_realty.micro_city_area }}</p>
+                                    <p class="short-description-text">{{ adv_realty.realty_address }}, {{ adv_realty.house_number }}, {{ adv_realty.floor }} этаж</p>
+                                    <p class="short-description-text">Обновлено {{ adv_realty.updated_at }}</p>
+                                    <ul class="realty-list-options-list">
+                                        <div class="long_term__options_container">
+                                            <div class="long_term__options_container_sub">
+                                                <h6 class="realty_list__h6_comfort">Мебель</h6>
+                                                <div class="realty_list__options_container">
+                                                    {% for obj_furniture in adv_realty.furniture.all|slice:5 %}
+                                                        <li class="options_without_title_li"><img class="options-icon" title="{{ obj_furniture.name }}" src="../../static/img/icons/{{ obj_furniture.icon_url }}"></li>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                            <div class="long_term__options_container_sub">
+                                                <h6 class="realty_list__h6_comfort">Техника</h6>
+                                                <div class="realty_list__options_container">
+                                                    {% for obj_furniture in adv_realty.technique.all|slice:5 %}
+                                                        <li class="options_without_title_li"><img class="options-icon" title="{{ obj_furniture.name }}" src="../../static/img/icons/{{ obj_furniture.icon_url }}"></li>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </ul>
+
+                                    <ul class="main_options_info">
+                                        {% if adv_realty.children %}
+                                            <li style="color:green;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-children-3885025.png">Можно с детьми</li>
+                                        {% elif not adv_realty.children %}
+                                            <li style="color:red;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-children-3885025.png">Без детей</li>
+                                        {% endif %}
+
+                                        {% if adv_realty.animals %}
+                                            <li style="color:green;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-pet-489399.png">Можно с животными</li>
+                                        {% elif not adv_realty.animals %}
+                                            <li style="color:green;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-pet-489399.png">Без животных</li>
+                                        {% endif %}
+
+                                        {% if adv_realty.smoke %}
+                                            <li style="color:green;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-smoking-area-2707222.png">Можно курить</li>
+                                        {% elif not adv_realty.smoke %}
+                                            <li style="color:red;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-smoking-761498.png">Нельзя курить</li>
+                                        {% endif %}
+                                    </ul>
+                                    <div class="price_book_status_container">
+                                        <p class="realty-list-price">{{ adv_realty.realty_price }} ₽</p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            <ul class="realty-list">
+                {% for obj in lt_realty_list %}
+                    <div class="realty-card">
+                        <div>
+                          {% if obj.photos.all.0.photo %}
+                            <img src="../../media/{{ obj.photos.all.0.photo }}" class="d-block w-100" alt="...">
+                          {% else %}
+                            <a href='{% url "app_ltrent:lt_realty_detail" obj.id %}'><img src="../../media/empty_realty_picture.png" alt="Абложка"></a>
+                          {% endif %}
+                        </div>
+                        <div class="short-describe-text">
+                            <div>
+                                <div class="lt_realty_list__main_text"><a href='{% url "app_ltrent:lt_realty_detail" obj.id %}'>{{ obj.get_realty_type_display }}, {{ obj.realty_area }}м², {{ obj.floor }} эт.</a></div>
+                            </div>
+                            <p class="short-description-text">г. {{ obj.realty_city }}, р-н {{ obj.city_area }}, {{ obj.micro_city_area }}</p>
+                            <p class="short-description-text">{{ obj.realty_address }}, {{ obj.house_number }}, {{ obj.floor }} этаж</p>
+                            <p class="short-description-text">Обновлено {{ obj.updated_at }}</p>
+                            <ul class="realty-list-options-list">
+                                <div class="long_term__options_container">
+                                    <div class="long_term__options_container_sub">
+                                        <h6 class="realty_list__h6_comfort">Мебель</h6>
+                                        <div class="realty_list__options_container">
+                                            {% for obj_furniture in obj.furniture.all|slice:5 %}
+                                                <li class="options_without_title_li"><img class="options-icon" title="{{ obj_furniture.name }}" src="../../static/img/icons/{{ obj_furniture.icon_url }}"></li>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="long_term__options_container_sub">
+                                        <h6 class="realty_list__h6_comfort">Техника</h6>
+                                        <div class="realty_list__options_container">
+                                            {% for obj_furniture in obj.technique.all|slice:5 %}
+                                                <li class="options_without_title_li"><img class="options-icon" title="{{ obj_furniture.name }}" src="../../static/img/icons/{{ obj_furniture.icon_url }}"></li>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </ul>
+
+                            <ul class="main_options_info">
+                                {% if obj.children %}
+                                    <li style="color:green;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-children-3885025.png">Можно с детьми</li>
+                                {% elif not obj.children %}
+                                    <li style="color:red;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-children-3885025.png">Без детей</li>
+                                {% endif %}
+
+                                {% if obj.animals %}
+                                    <li style="color:green;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-pet-489399.png">Можно с животными</li>
+                                {% elif not obj.animals %}
+                                    <li style="color:red;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-pet-489399.png">Без животных</li>
+                                {% endif %}
+
+                                {% if obj.smoke %}
+                                    <li style="color:green;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-smoking-area-2707222.png">Можно курить</li>
+                                {% elif not obj.smoke %}
+                                    <li style="color:red;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-smoking-761498.png">Нельзя курить</li>
+                                {% endif %}
+                            </ul>
+                            <div class="price_book_status_container">
+                                <p class="realty-list-price">{{ obj.realty_price }} ₽</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </ul>
+        </div>
+    </aside>
+{% endblock content %}
+</body>
+{% block footer %}
+<footer class="base__footer_not_fixed">
+    <div class="base__footer_container">
+        <a class="base__logo_footer" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
+    </div>
+    <div class="base__footer">
+        <div class="base__copyright">
+            <a href="{% url 'app_rules:our_values' %}">Наши ценности</a>
+        </div>
+        <div class="base__footer_info">
+            <a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a>
+        </div>
+    </div>
+
+    <!-- Модальное окно управления промо-акциями -->
+    <div class="modal fade" id="staticBackdrop5" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel5">Контакты</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+          </div>
+          <div class="modal-body">
+              <div>Телефон для справок: +7 (938) 416-66-72</div>
+              <div>Эл. почта: biglov.info@yandex.ru</div>
+          </div>
+          <div class="modal-footer">
+          </div>
+        </div>
+      </div>
+    </div>
+</footer>
+{% endblock footer %}
+</html>

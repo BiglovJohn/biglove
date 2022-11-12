@@ -2,8 +2,8 @@ import datetime
 
 from django.db.models import Count, Sum
 from pytils.translit import slugify
-from .forms import RealtyObjectForm, ReservationForm
-from .models import RealtyObject, RealtyOptions, Reservation, Photos
+from .forms import HolidayHouseForm, ReservationForm
+from .models import HolidayHouseObject, RealtyOptions, Reservation, Photos
 
 
 def render_reservation_form(request):
@@ -63,9 +63,9 @@ def render_reservation_form(request):
 
 def render_realty_objects(request):
     """Вывод объектов на главную страницу по популярности"""
-    realty_first = RealtyObject.objects.order_by('-realty_book_count')[0]
-    realty_second = RealtyObject.objects.order_by('-realty_book_count')[1]
-    realty_third = RealtyObject.objects.order_by('-realty_book_count')[2]
+    realty_first = HolidayHouseObject.objects.order_by('-realty_book_count')[0]
+    realty_second = HolidayHouseObject.objects.order_by('-realty_book_count')[1]
+    realty_third = HolidayHouseObject.objects.order_by('-realty_book_count')[2]
     photos_first = Photos.objects.filter(realty_obj_id=realty_first.id)
     photos_second = Photos.objects.filter(realty_obj_id=realty_second.id)
     photos_third = Photos.objects.filter(realty_obj_id=realty_third.id)
@@ -77,7 +77,7 @@ def render_realty_objects(request):
 
 def render_realty_object_to_profile(request):
     """Вывод объектов УК в профиль"""
-    realty_objects_to_profile = RealtyObject.objects.filter(company=request.user.id)
+    realty_objects_to_profile = HolidayHouseObject.objects.filter(company=request.user.id)
     reservations_list = Reservation.objects.filter(
         realty__in=realty_objects_to_profile).select_related('realty').select_related('guest')
     total_company_sum = Reservation.objects.filter(realty__in=realty_objects_to_profile).aggregate(Sum('total_sum'))[

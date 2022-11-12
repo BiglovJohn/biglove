@@ -2,7 +2,7 @@ import datetime
 from django import forms
 from django.core.exceptions import ValidationError
 
-from .models import RealtyObject, Reservation, RealtyOptions, Photos
+from .models import HolidayHouseObject, Reservation, RealtyOptions, Photos
 
 
 list_of_id_in_hotel = [option.id for option in RealtyOptions.objects.filter(category='В отеле')]
@@ -60,14 +60,14 @@ tomorrow = today + datetime.timedelta(days=1)
 """Форма для создания объекта недвижимости"""
 
 
-class RealtyObjectForm(forms.ModelForm):
+class HolidayHouseForm(forms.ModelForm):
     class Meta:
-        model = RealtyObject
+        model = HolidayHouseObject
         fields = '__all__'
         exclude = ['created_at', 'realty_book_count', 'slug']
 
     def __init__(self, *args, **kwargs):
-        super(RealtyObjectForm, self).__init__(*args, **kwargs)
+        super(HolidayHouseForm, self).__init__(*args, **kwargs)
         """Работа с классами формы"""
         self.fields['realty_name'].widget.attrs['class'] = 'create-realty-input'
         self.fields['realty_country'].widget.attrs['class'] = 'create-realty-input'
@@ -78,7 +78,10 @@ class RealtyObjectForm(forms.ModelForm):
         self.fields['count_of_persons'].widget.attrs['class'] = 'create-realty-input-short'
         self.fields['realty_price'].widget.attrs['class'] = 'create-realty-input-short'
         self.fields['realty_area'].widget.attrs['class'] = 'create-realty-input-short'
-        # self.fields['manager'] = forms.ModelChoiceField(
+        self.fields['region_center'].widget.attrs['class'] = 'create-realty-input-short'
+        self.fields['arriving_time'].widget.attrs['class'] = 'create-realty-input'
+        self.fields['departure_time'].widget.attrs['class'] = 'create-realty-input'
+        # self.fields['company'] = forms.ModelChoiceField(
         #     required=True,
         #     queryset=ManagerProfile.objects.filter(referring_user=1))
 

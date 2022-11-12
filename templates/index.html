@@ -4,7 +4,7 @@
 <html class="index__html" lang="ru" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Chill{% endblock title %}</title>
+    <title>{% block title %}Biglov | Официальный сайт | Снять квартиру, забронировать отель, авто{% endblock title %}</title>
     <link type="text/css" rel="reset" href="../../static/css/reset.css">
     <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
 
@@ -23,8 +23,19 @@
     <script src="../../static/js/datepicker.ru-RU.js"></script>
 
 </head>
-<body>
 {% block content %}
+<body class="index__body">
+
+    <div class="index-conteiner">
+        <div class="index-main-text">
+            <h2 class="index-h2-text">Бронируй, властвуй, отдыхай!</h2>
+            <div class="index-conteiner-h3-img">
+                <h3 class="index-h3-text">Контролируй свой отдых, </h3>
+                <img class="just-chill-index" src="static/img/just-chill.png" alt="JUST_CHILL">
+            </div>
+        </div>
+    </div>
+
     <form class="search-form2" action="{% url 'app_premises:realty_list' %}" method="get">
         <menu class="search-form-input">
             <div class="container2">
@@ -32,13 +43,13 @@
                     <div class="col-md-8" id="search-form-input">
                         <div class="search2">
                             <i class="fa fa-search"></i>
-                            <input name="q" type="text" class="form-control" id="search-form" placeholder="Введите название города" autocomplete="off">
+                            <input name="q" type="text" class="form-control" id="search-form" placeholder="Куда отправимся?" autocomplete="off">
                         </div>
                     </div>
                 </div>
             </div>
             <div class="index-search-button-container2">
-                <button name="search" class="btn btn-info" id="base-search-button">Поиск</button>
+                <button name="search" class="btn btn-info" id="base-search-button">Проверить цены</button>
             </div>
         </menu>
         <menu class="search-form2-datepicker">
@@ -72,56 +83,101 @@
         </menu>
     </form>
 
-    <div class="index-conteiner">
-        <div class="index-main-text">
-            <h2 class="index-h2-text">Бронируй, властвуй, отдыхай!</h2>
-            <div class="index-conteiner-h3-img">
-                <h3 class="index-h3-text">Контролируй свой отдых, </h3>
-                <img class="just-chill-index" src="static/img/just-chill.png" alt="JUST_CHILL">
+    <div class="index__adv_long_term">
+        <div class="index__adv_main_container">
+            <div class="index__adv_text">
+                <div>
+                    Планируете переезд?
+                    <div class="index__adv_text_sub">Найдите жилье своей мечты на <b style="color: #0f90e4">Biglov.ru</b></div>
+                </div>
+                <a id="base__menu_buttons1" type="" href="{% url 'app_ltrent:lt_realty_list' %}" class="btn btn-success">Найти жилье на длительный срок</a>
+            </div>
+        </div>
+        <div class="index__adv_main_container2">
+            <div class="index__adv_text">
+                <div>
+                    Сайт находится в процессе разработки. Ваши отзывы крайне важны! Если нашли "баг" - сообщите нам!
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="index-top-realty">
-        <div class="index-top-container">
-            <a href="{% url 'app_premises:realty_detail' realty_first.slug %}">
-                <div class="popular_place"><img class="index__popular_img" src="../../static/img/icons/free-icon-gold-cup-2502694.png"></div>
-                <img class="index-top-picture" src="../../media/{{ photos_first.0.photo }}" alt="Фото объекта">
-            </a>
-            <div class="index-top-describe">
-                <a href="{% url 'app_premises:realty_detail' realty_first.slug %}">
-                    <p style="font-size: 1.2em; font-weight: bold; color: black;">{{ realty_first.realty_name }}</p>
+    <div class="index__realty_adv_container">
+        <h3 class="auto__adv_place_h3_text">Популярные направления</h3>
+        <div class="index__top_realty">
+            <div class="index-top-container">
+                <a class="index__realty_top_status" href="{% url 'app_premises:realty_detail' realty_first.slug %}">
+                    <div class="popular_place"><img class="index__popular_img" src="../../static/img/icons/free-icon-gold-cup-2502694.png"></div>
+                    <img class="index-top-picture" src="../../media/{{ photos_first.0.photo }}" alt="Фото объекта">
                 </a>
-                <p>{{ realty_first.realty_country }}, {{ realty_first.realty_region }}, {{ realty_first.realty_address }}</p>
+                <div class="index-top-describe">
+                    <a href="{% url 'app_premises:realty_detail' realty_first.slug %}">
+                        <p style="font-size: 1.2em; font-weight: bold; color: black;">{{ realty_first.realty_name }}</p>
+                    </a>
+                    <p>{{ realty_first.realty_country }}, {{ realty_first.realty_region }}, {{ realty_first.realty_address }}</p>
+                </div>
             </div>
-        </div>
 
-        <div class="index-top-container">
-            <a href="{% url 'app_premises:realty_detail' realty_second.slug %}">
-                <div class="popular_place2"><img class="index__popular_img" src="../../static/img/icons/free-icon-silver-cup-2502698.png"></div>
-                <img class="index-top-picture" src="../../media/{{ photos_second.0.photo }}" alt="Фото объекта">
-            </a>
-            <div class="index-top-describe">
-                <a href="{% url 'app_premises:realty_detail' realty_second.slug %}">
-                    <p style="font-size: 1.2em; font-weight: bold; color: black;">{{ realty_second.realty_name }}</p>
+            <div class="index-top-container">
+                <a class="index__realty_top_status" href="{% url 'app_premises:realty_detail' realty_second.slug %}">
+                    <div class="popular_place2"><img class="index__popular_img" src="../../static/img/icons/free-icon-silver-cup-2502698.png"></div>
+                    <img class="index-top-picture" src="../../media/{{ photos_second.0.photo }}" alt="Фото объекта">
                 </a>
-                <p>{{ realty_second.realty_country }}, {{ realty_second.realty_region }}, {{ realty_second.realty_address }}</p>
+                <div class="index-top-describe">
+                    <a href="{% url 'app_premises:realty_detail' realty_second.slug %}">
+                        <p style="font-size: 1.2em; font-weight: bold; color: black;">{{ realty_second.realty_name }}</p>
+                    </a>
+                    <p>{{ realty_second.realty_country }}, {{ realty_second.realty_region }}, {{ realty_second.realty_address }}</p>
+                </div>
             </div>
-        </div>
 
-        <div class="index-top-container">
-            <a href="{% url 'app_premises:realty_detail' realty_third.slug %}">
-                <div class="popular_place3"><img class="index__popular_img" src="../../static/img/icons/free-icon-bronze-medal-179250.png"></div>
-                <img class="index-top-picture" src="../../media/{{ photos_third.0.photo }}" alt="Фото объекта">
-            </a>
-            <div class="index-top-describe">
-                <a href="{% url 'app_premises:realty_detail' realty_third.slug %}">
-                    <p style="font-size: 1.2em; font-weight: bold; color: black;">{{ realty_third.realty_name }}</p>
+            <div class="index-top-container">
+                <a class="index__realty_top_status" href="{% url 'app_premises:realty_detail' realty_third.slug %}">
+                    <div class="popular_place3"><img class="index__popular_img" src="../../static/img/icons/free-icon-bronze-medal-179250.png"></div>
+                    <img class="index-top-picture" src="../../media/{{ photos_third.0.photo }}" alt="Фото объекта">
                 </a>
-                <p>{{ realty_third.realty_country }}, {{ realty_third.realty_region }}, {{ realty_third.realty_address }}</p>
+                <div class="index-top-describe">
+                    <a href="{% url 'app_premises:realty_detail' realty_third.slug %}">
+                        <p style="font-size: 1.2em; font-weight: bold; color: black;">{{ realty_third.realty_name }}</p>
+                    </a>
+                    <p>{{ realty_third.realty_country }}, {{ realty_third.realty_region }}, {{ realty_third.realty_address }}</p>
+                </div>
             </div>
         </div>
     </div>
-{% endblock %}
 </body>
+{% endblock %}
+{% block footer %}
+<footer class="base__footer_not_fixed">
+    <div class="base__footer_container">
+        <a class="base__logo_footer" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
+    </div>
+    <div class="base__footer">
+        <div class="base__copyright">
+            <a href="{% url 'app_rules:our_values' %}">Наши ценности</a>
+        </div>
+        <div class="base__footer_info">
+            <a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a>
+        </div>
+    </div>
+
+    <!-- Модальное окно управления промо-акциями -->
+    <div class="modal fade" id="staticBackdrop5" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel5">Контакты</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+          </div>
+          <div class="modal-body">
+              <div>Телефон для справок: +7 (938) 416-66-72</div>
+              <div>Эл. почта: biglov.info@yandex.ru</div>
+          </div>
+          <div class="modal-footer">
+          </div>
+        </div>
+      </div>
+    </div>
+</footer>
+{% endblock footer %}
 </html>

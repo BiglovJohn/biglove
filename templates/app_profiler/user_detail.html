@@ -15,7 +15,7 @@
 </head>
 <body>
     {% block content %}
-    <div style="display: block; height: 50px;"></div>
+<!--    <div style="display: block; height: 50px;"></div>-->
     <div class="user_detail__main_container">
         <div class="user_detail__forms_container">
             <form class="account__form_container" method="post">{% csrf_token %}
@@ -31,22 +31,22 @@
                         {{ account_form.password.as_hidden }}
                         {{ account_form.slug.as_hidden }}
                         <div class="account__names">
-                            <label>Ваше имя:</label>
+                            <label class="user_detail__label_font_size">Ваше имя:</label>
                             {{ account_form.first_name }}
                         </div>
                         <div class="account__names">
-                            <label>Ваша фамилия:</label>
+                            <label class="user_detail__label_font_size">Ваша фамилия:</label>
                             {{ account_form.last_name }}
                         </div>
                     </div>
 
                     <div class="account__birth_and_gender_container">
                         <div class="account__names">
-                            <label>Дата рождения:</label>
+                            <label class="user_detail__label_font_size">Дата рождения:</label>
                             {{ account_form.birthday }}
                         </div>
                         <div style="width: 45%;">
-                            <label for="id_gender">Пол:</label>
+                            <label class="user_detail__label_font_size" for="id_gender">Пол:</label>
                             <select class="edit-account-input" name="gender" id="id_gender" aria-label="Пример выбора по умолчанию">
                             {% for gender in account_form.gender %}
                                 {{ gender }}
@@ -57,11 +57,11 @@
 
                     <div class="account__phone_and_email_container">
                         <div class="account__names">
-                            <label>Номер телефона:</label>
+                            <label class="user_detail__label_font_size">Номер телефона:</label>
                             {{ account_form.phone }}
                         </div>
                         <div class="account__names">
-                            <label>Электронная почта:</label>
+                            <label class="user_detail__label_font_size">Электронная почта:</label>
                             {{ account_form.email }}
                         </div>
                     </div>
@@ -95,15 +95,15 @@
                     <h4>Сменить пароль</h4>
                     <div class="account__name_container">
                         <div class="account__names">
-                            <label>Старый пароль:</label>
+                            <label class="user_detail__label_font_size">Старый пароль:</label>
                             {{ change_password_form.old_password }}
                         </div>
                         <div class="account__names">
-                            <label>Новый пароль:</label>
+                            <label class="user_detail__label_font_size">Новый пароль:</label>
                             {{ change_password_form.new_password1 }}
                         </div>
                         <div class="account__names">
-                            <label>Подтвердите новый пароль:</label>
+                            <label class="user_detail__label_font_size">Подтвердите новый пароль:</label>
                             {{ change_password_form.new_password2 }}
                         </div>
                     </div>
@@ -112,58 +112,39 @@
 
             </form>
         </div>
-        <div class="user_detail__list_of_reservations">
-            {% if user_reservations %}
-                {% for reserve in user_reservations %}
-                    {% if reserve.is_booked %}
-                        <h5>Ваши дествующие бронирования</h5>
-                        <div class="user_detail__reservations_list_container">
-                            <div class="user_detail__reserve-img-container">
-                                <img class="user_detail__reserve-img" src="../../media/{{ reserve.realty.photos.all.0.photo }}">
-                                <div class="reserve__hotel_info">
-                                    <h5 class="user_detail__list_of_reservations_form_text">{{ reserve }}</h5>
-                                    <div class="user_detail__list_of_reservations_text_form">{{ reserve.realty.realty_region }}, {{ reserve.realty.realty_city }}, {{ reserve.realty.realty_address }}</div>
-                                    <div class="user_detail__list_of_reservations_text_form">Количество мест: {{ reserve.realty.count_of_persons }}</div>
-                                    <div class="user_detail__list_of_reservations_text_form">Общая площадь помещения: {{ reserve.realty.realty_area }} кв.м.</div>
-                                    <div class="user_detail__list_of_reservations_text_form">Идентификатор: {{ reserve.book_identifier }}</div>
-                                </div>
-                                <div class="user_detail__date_range">
-                                    <div>
-                                        <div>Заезд с </div>
-                                        <div>{{ reserve.check_in }}</div>
-                                    </div>
-                                    <div>
-                                        <div>Выезд до </div>
-                                        <div>{{ reserve.check_out }}</div>
-                                    </div>
-                                    <button class="btn btn-danger user_detail__cancel_the_reservation">Отменить</button>
-                                </div>
-                            </div>
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            {% else %}
-                <div class="user_detail__no_reservations_container">
-                    <img class="user_detail__no_reservations_img" src="../../static/img/no_reservations.png">
-                    <div>А кто это у нас тут ещё ничего не забронировал?</div>
-                </div>
-            {% endif %}
-        </div>
     </div>
     {% endblock %}
 </body>
 {% block footer %}
-<footer>
+<footer class="base__footer_not_fixed">
     <div class="base__footer_container">
-        <a class="base__logo_footer" style="width: 4%;" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
-<!--        <div class="base__footer">-->
-<!--            <div class="base__copyright">-->
-<!--                Copyright © 2022 Начилле.рф. Все права защищены.-->
-<!--            </div>-->
-<!--            <div class="base__footer_info">-->
-<!--                Начилле.рф — часть ООО "Биглов-Групп".-->
-<!--            </div>-->
-<!--        </div>-->
+        <a class="base__logo_footer" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
+    </div>
+    <div class="base__footer">
+        <div class="base__copyright">
+            <a href="{% url 'app_rules:our_values' %}">Наши ценности</a>
+        </div>
+        <div class="base__footer_info">
+            <a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a>
+        </div>
+    </div>
+
+    <!-- Модальное окно управления промо-акциями -->
+    <div class="modal fade" id="staticBackdrop5" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel5">Контакты</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+          </div>
+          <div class="modal-body">
+              <div>Телефон для справок: +7 (938) 416-66-72</div>
+              <div>Эл. почта: biglov.info@yandex.ru</div>
+          </div>
+          <div class="modal-footer">
+          </div>
+        </div>
+      </div>
     </div>
 </footer>
 {% endblock footer %}

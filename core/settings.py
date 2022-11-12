@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
 
     #  Приложения библиотек
     'drf_yasg',
@@ -48,11 +49,14 @@ INSTALLED_APPS = [
 
     #  Пользовательские приложения
     'app_index',
+    'app_data',
     'app_premises',
+    'app_ltrent',
     'app_profiler',
     'app_companies',
     'app_comments',
     'app_rules',
+    'app_auto',
 ]
 
 AUTH_USER_MODEL = 'app_profiler.CustomUser'
@@ -94,6 +98,8 @@ TEMPLATES = [
                 # 'app_profiler.context_processors.render_change_password',
                 'app_companies.context_processors.render_current_company_slug',
                 'app_rules.context_processors.render_rules_list',
+
+                'app_data.context_processors.render_location_info',
             ],
         },
     },

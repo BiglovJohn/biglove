@@ -7,9 +7,9 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import generic, View
-from .models import RealtyObject, Reservation, Photos, RealtyOptions
+from .models import HolidayHouseObject, Reservation, Photos, RealtyOptions
 from .forms import ReservationForm, PriseFilterForm, DropdownFilterForm, RealtyTypeCheckBoxForm, \
-    OptionFilterForm, InRoomOptionFilterForm, FoodOptionFilterForm, RealtyObjectForm, PhotosForm, BookCancelForm, \
+    OptionFilterForm, InRoomOptionFilterForm, FoodOptionFilterForm, HolidayHouseForm, PhotosForm, BookCancelForm, \
     PayTypeForm
 
 from app_profiler.models import CustomUser
@@ -17,6 +17,7 @@ from app_profiler.forms import RegisterForm, AuthForm
 from app_comments.forms import CommentsForm
 from app_comments.models import Comments
 from app_companies.models import CompanyProfile
+from app_ltrent.models import LongTermRentObject
 
 
 def main_realty_list(request):
@@ -32,8 +33,8 @@ def main_realty_list(request):
         else:
             query = request.GET.get('q')
 
-        realty_list = RealtyObject.objects.filter(
-            Q(realty_country__iregex=query) | Q(realty_city__iregex=query))
+        realty_list = HolidayHouseObject.objects.filter(
+            Q(realty_country__iregex=query) | Q(realty_city__iregex=query) | Q(realty_region__iregex=query))
 
         """Фильтрация 'Сначала дорогое', ..."""
         main_filter = DropdownFilterForm(request.POST)
@@ -72,7 +73,7 @@ def main_realty_list(request):
             else:
                 realty_list = realty_list.filter(realty_type__in=type_result_list)
 
-        all_realty = RealtyObject.objects.all()  # Список всех объектов недвижимости для работы с фильтрами
+        all_realty = HolidayHouseObject.objects.all()  # Список всех объектов недвижимости для работы с фильтрами
 
         """Фильтрация по опциям питания"""
         food_options_checkbox = FoodOptionFilterForm(request.POST)
@@ -172,6 +173,8 @@ def main_realty_list(request):
         }
         )
 
+        adv_realty_list = realty_list.filter(is_advertised=True)
+
         return render(request, 'app_premises/realty_list.html',
                       {
                           'realty_list': realty_list,
@@ -185,6 +188,7 @@ def main_realty_list(request):
                           'food_options_checkbox': food_options_checkbox,
                           'book_filter': book_filter,
                           'pay_filter': pay_filter,
+                          'adv_realty_list': adv_realty_list,
                       }
                       )
 
@@ -194,10 +198,10 @@ def main_realty_list(request):
 
 class RealtyDetailView(generic.DetailView):
     """Детальная информация по каждому объекту"""
-    model = RealtyObject
+    model = HolidayHouseObject
     template_name = 'realty_detail.html'
     context_object_name = 'realty'
-    queryset = RealtyObject.objects.prefetch_related('options')
+    queryset = HolidayHouseObject.objects.prefetch_related('options')
 
     def get_success_url(self):
         return reverse('detail_view', kwargs={'pk': self.object.pk})
@@ -213,10 +217,20 @@ class RealtyDetailView(generic.DetailView):
         context = super(RealtyDetailView, self).get_context_data(**kwargs)
         pk = kwargs['object'].id
         current_user = self.request.user.id
-        current_realty = RealtyObject.objects.get(id=pk)
-        current_company = CompanyProfile.objects.get(user=current_user)
+        current_account = CustomUser.objects.get(id=current_user)
+        current_realty = HolidayHouseObject.objects.get(id=pk)
+        current_company = CompanyProfile.objects.none()
+        """ Объекты для раздела 'так же у этой компании' """
+        adv_realty_list_curr_company = HolidayHouseObject.objects.filter(company=current_realty.company.id).exclude(id=pk)
+        adv_lt_realty = LongTermRentObject.objects.filter(company=current_realty.company.id)
+        context['adv_lt_realty'] = adv_lt_realty
+        context['adv_realty_list_curr_company'] = adv_realty_list_curr_company
+
+        if self.request.user.is_authenticated:
+            current_company = CompanyProfile.objects.get(user=current_user)
+
         realty_slug = current_realty.slug
-        advertised_realty = RealtyObject.objects.filter(is_advertised=True)
+        advertised_realty = HolidayHouseObject.objects.filter(is_advertised=True)
 
         # Получаем список опций конкретного отеля с категорией "В отеле"
         realty_in_hotel_options_name = [option.option_name for option in
@@ -229,6 +243,7 @@ class RealtyDetailView(generic.DetailView):
         context['current_realty'] = current_realty
         context['current_company'] = current_company
         context['advertised_realty'] = advertised_realty
+        context['current_account'] = current_account
 
         # Получаем список опций конкретного отеля с категорией "В номере"
         realty_in_room_options_name = [option.option_name for option in
@@ -257,7 +272,7 @@ class RealtyDetailView(generic.DetailView):
     def post(self, request, *args, **kwargs):
         if request.method == "POST" and 'detail__send_feedback' in request.POST:
             slug = self.kwargs.get('slug')
-            realty_id = RealtyObject.objects.get(slug=slug)
+            realty_id = HolidayHouseObject.objects.get(slug=slug)
             comments_form = CommentsForm(request.POST)
             if comments_form.is_valid():
                 comments_form.user_id = CustomUser.objects.get(id=request.user.id)
@@ -290,10 +305,10 @@ class RealtyEditFromView(View):
             return redirect('app_premises:realty_edit', slug=self.kwargs.get('slug'))
         if request.user.is_authenticated and request.user.is_company:
             current_manager = CompanyProfile.objects.get(user=request.user.id)
-            realty_edit = RealtyObject.objects.get(slug=slug)
+            realty_edit = HolidayHouseObject.objects.get(slug=slug)
 
             if realty_edit.company == current_manager:
-                realty_edit_form = RealtyObjectForm(instance=realty_edit)
+                realty_edit_form = HolidayHouseForm(instance=realty_edit)
                 upload_photos_form = PhotosForm(request.FILES, initial={'realty_obj': realty_edit.id})
                 return render(request, 'app_premises/edit_realty.html',
                               context={'realty_edit_form': realty_edit_form, 'slug': slug, 'realty_edit': realty_edit,
@@ -309,11 +324,12 @@ class RealtyEditFromView(View):
 
     def post(self, request, slug):
         if request.method == 'POST':
-            realty_edit = RealtyObject.objects.get(slug=slug)
-            realty_edit_form = RealtyObjectForm(request.POST, instance=realty_edit)
+            realty_edit = HolidayHouseObject.objects.get(slug=slug)
+            realty_edit_form = HolidayHouseForm(request.POST, instance=realty_edit)
             upload_photos_form = PhotosForm(request.POST, request.FILES, initial={'realty_obj': realty_edit.id})
             if realty_edit_form.is_valid():
                 files = request.FILES.getlist('photo')
+                print('ФОРМА ВАЛИДНА')
                 realty_edit.save()
                 for photo in files:
                     Photos.objects.create(realty_obj=realty_edit, photo=photo)
@@ -357,7 +373,7 @@ class ReservationFormView(View):
                 reservation_form = ReservationForm(
                     initial={'realty': realty, 'guest': current_user, 'check_in': check_in, 'check_out': check_out,
                              'total_sum': total_sum, 'is_booked': False})
-                realty_object_to_reserve_page = RealtyObject.objects.get(id=realty)
+                realty_object_to_reserve_page = HolidayHouseObject.objects.get(id=realty)
                 photos = Photos.objects.filter(realty_obj=realty).first()
                 reserve_register_form = RegisterForm()
 
@@ -381,7 +397,7 @@ class ReservationFormView(View):
                 check_out = datetime.datetime.strptime(request.GET.get('to-reserve-page').split(', ')[3],
                                                        "%Y-%m-%d").date()
                 total_sum = (check_out - check_in).days * int(current_realty_price)
-                realty_object_to_reserve_page = RealtyObject.objects.get(id=realty)
+                realty_object_to_reserve_page = HolidayHouseObject.objects.get(id=realty)
                 photos = Photos.objects.filter(realty_obj=realty).first()
                 reservation_form = ReservationForm(initial={'realty': realty, 'check_in': check_in,
                                                             'check_out': check_out, 'total_sum': total_sum,
@@ -417,7 +433,7 @@ class ReservationFormView(View):
             if reservation_form.is_valid():
                 reservation = reservation_form.save(commit=False)
                 reservation.guest = current_user
-                reservation.realty = RealtyObject.objects.get(id=realty)
+                reservation.realty = HolidayHouseObject.objects.get(id=realty)
                 reservation.is_booked = True
                 reservation.save()
             else:
@@ -425,15 +441,16 @@ class ReservationFormView(View):
 
             return HttpResponseRedirect('/')
 
-        if 'reserve__submit_login_form' in request.POST:
+        if 'submit-login-form' in request.POST:
             realty = request.GET.get('to-reserve-page').split(', ')[0]
             current_realty_price = request.GET.get('to-reserve-page').split(', ')[1]
             check_in = datetime.datetime.strptime(request.GET.get('to-reserve-page').split(', ')[2], "%Y-%m-%d").date()
             check_out = datetime.datetime.strptime(request.GET.get('to-reserve-page').split(', ')[3], "%Y-%m-%d").date()
             total_sum = (check_out - check_in).days * int(current_realty_price)
-            realty_object_to_reserve_page = RealtyObject.objects.get(id=realty)
+            realty_object_to_reserve_page = HolidayHouseObject.objects.get(id=realty)
             photos = Photos.objects.filter(realty_obj=realty).first()
             auth_form = AuthForm(request.POST)
+            print('Я ТУТ')
             if auth_form.is_valid():
                 email = auth_form.cleaned_data['email']
                 password = auth_form.cleaned_data['password']
@@ -470,7 +487,7 @@ class ReservationFormView(View):
             check_out = datetime.datetime.strptime(request.GET.get('to-reserve-page').split(', ')[3],
                                                    "%Y-%m-%d").date()
             total_sum = (check_out - check_in).days * int(current_realty_price)
-            realty_object_to_reserve_page = RealtyObject.objects.get(id=realty)
+            realty_object_to_reserve_page = HolidayHouseObject.objects.get(id=realty)
             photos = Photos.objects.filter(realty_obj=realty).first()
             auth_form = AuthForm(request.POST)
 

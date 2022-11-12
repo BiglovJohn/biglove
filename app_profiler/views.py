@@ -7,7 +7,7 @@ from requests import put
 
 from .forms import GuestForm, PasswordChangeCustomForm
 from .models import CustomUser
-from app_premises.models import RealtyObject, Reservation
+from app_premises.models import HolidayHouseObject, Reservation
 
 """Разлогин, изменение пароля"""
 
@@ -84,6 +84,16 @@ class AccountEditFromView(View):
                           'user_reservations': user_reservations,
                       }
                       )
+
+
+class AccountReservationListView(View):
+    def get(self, request, slug):
+        user_reservations = Reservation.objects.filter(guest=request.user.id)
+        return render(request, 'app_profiler/user_reservation_list.html', context={'user_reservations': user_reservations, })
+
+    def post(self, request, slug):
+        user_reservations = Reservation.objects.filter(guest=request.user.id)
+        return render(request, 'app_profiler/user_reservation_list.html', context={'user_reservations': user_reservations, })
 
 
 """---КОНЕЦ РАЗДЕЛА ВЬШЕК ПО ОБЪЕКТАМ НЕДВИЖИМОСТИ---"""

@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 {% extends "base.html" %}
 {% load static %}
+{% load humanize %}
 <html lang="ru" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}{{ realty.realty_name }}{%endblock title %}</title>
+    <title>{% block title %}{{ realty.get_realty_type_display }} {{ realty.realty_name }} | Аренда в г. {{ realty.realty_city }} | Загородная недвижимость{%endblock title %}</title>
     <link type="text/css" rel="reset" href="../static/css/reset.css">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -23,72 +24,138 @@
 </head>
 <body>
 {% block content %}
-    {% if request.user.is_company %}
-        {% if current_realty.company == current_company %}
-            <a style="width: 10%;" href="{% url 'app_premises:realty_edit' slug=realty_slug %}">
-                <img class="edit__realty" src="../static/img/icons/free-icon-settings-2735296.png" alt="Редактировать">
-            </a>
-        {% endif %}
-    {% endif %}
     <ul class="realty_list">
+        <div class="realty_detail__top_text">
+            <p class="realty_name">{{ realty.get_realty_type_display }} {{ realty.realty_name }}, {{ realty.realty_area }} м², {{ realty.realty_to_city }}</b> км. от г. {{ realty.region_center }}</p>
+            <p class="realty_address">{{ realty.realty_country }}, {{ realty.realty_region }}, {{ realty.realty_city }}, {{ realty.realty_address }}</p>
+        </div>
         <aside class="realty-detail-img-container">
-            <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-              <div class="carousel-indicators">
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-              </div>
-              <div class="carousel-inner">
-                <div class="carousel-item active">
-                  <img src="../../media/{{ detail_photos.0.photo }}" class="d-block w-100" alt="...">
+            <div class="realty_detail__photo_and_menu_container">
+                <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+                  <div class="carousel-inner">
+                    <div class="carousel-item active">
+                      <img src="../../media/{{ detail_photos.0.photo }}" class="d-block w-100" alt="...">
+                    </div>
+                      {% for photo in detail_photos %}
+                        <div class="carousel-item">
+                          <img src="../../media/{{ photo.photo }}" class="d-block w-100" alt="...">
+                        </div>
+                      {% endfor %}
+                  </div>
+                  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"  data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Предыдущий</span>
+                  </button>
+                  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls"  data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Следующий</span>
+                  </button>
                 </div>
-                  {% if detail_photos.1 %}
-                    <div class="carousel-item">
-                      <img src="../../media/{{ detail_photos.1.photo }}" class="d-block w-100" alt="...">
-                    </div>
-                  {% endif %}
-                  {% if detail_photos.2 %}
-                    <div class="carousel-item">
-                      <img src="../../media/{{ detail_photos.2.photo }}" class="d-block w-100" alt="...">
-                    </div>
-                  {% endif %}
-              </div>
-              <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"  data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Предыдущий</span>
-              </button>
-              <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"  data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Следующий</span>
-              </button>
-            </div>
 
-            <div class="detail-info-container">
+                <div class="offcanvas offcanvas-start detail__show_comments" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+                  <div class="offcanvas-header" id="detail__offcanvas_comments_header">
+                    <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Отзывы о "{{ realty }}"</h5>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Закрыть"></button>
+                  </div>
+                  <div class="offcanvas-body">
+                    <form class="detail__comments_container" method="post">{% csrf_token %}
+                        {% for comment in comments|slice:8 %}
+                            <div class="detail__comments_text_container">
+                                <b class="detail__comment_username">{{ comment }}:</b>
+                                <p class="detail__comments_text_space">{{ comment.comment_text }}</p>
+                            </div>
+                            {% if request.user.is_company %}
+                                <p class="detail__publish_at"><b style="color: black;">Ответ компании</b> {{ comment.publish_at }}</p>
+                            {% else %}
+                                <p class="detail__publish_at">{{ comment.publish_at }}</p>
+                            {% endif %}
+                        {% endfor %}
+                        <div class="detail__comment_text_and_user">
+                            {{ comment_form.realty.as_hidden }}
+                            {{ comment_form.user.as_hidden }}
+                            {{ comment_form.comment_text }}
+                            <button type="submit" class="btn btn-outline-light" id="detail__button_send_message" name="detail__send_feedback"></button>
+                        </div>
+                    </form>
+                  </div>
+                </div>
 
-                <div class="detail__comments_and_info_container">
-                    <div class="detail__menu_feedback_container">
-                        <a class="btn btn-light" id="detail__show_comments" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling"><img class="detail__menu_icon" src="../../static/img/icons/free-icon-good-feedback-3594679.png"></a>
-                        <label class="detail__menu_icon_label" for="detail__show_comments">Отзывы</label>
-                    </div>
-                    <!-- Кнопка вызова модального окна с описанием -->
-                    <div class="detail__menu_description_container">
-                        <a type="button" id="detail__show_description" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><img class="detail__menu_icon" src="../../static/img/icons/free-icon-edit-info-7033287.png"></a>
-                        <label class="detail__menu_icon_label" for="detail__show_description">Описание</label>
-                    </div>
-                    <!-- Кнопка вызова модального окна с опциями -->
-                    <div class="detail__menu_options_container">
-                        <a type="button" id="detail__show_options" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#staticBackdrop2"><img class="detail__menu_icon" src="../../static/img/icons/free-icon-options-8111047.png"></a>
-                        <label class="detail__menu_icon_label" for="detail__show_options">Удобства</label>
+                <ul class="realty_detail__list_info">
+                    <h5 class="options-list-title" id="staticBackdropLabel3">Основные параметры:</h5>
+                    <p class="realty-bed">Количество спальных мест: <b>{{ realty.count_of_persons }}</b></p>
+
+                    <ul class="main_options_info">
+                        {% if realty.book_cancel == 'y' %}
+                            <li style="color:green;" class="main_option_elem"><img class="realty_detail__main_option_img" src="../../static/img/icons/free-icon-calendar-5237130.png">{{ realty.get_book_cancel_display }}</li>
+                        {% elif realty.book_cancel == 'n' %}
+                            <li style="color:red;" class="main_option_elem"><img class="realty_detail__main_option_img" src="../../static/img/icons/free-icon-calendar-5237130.png">{{ realty.get_book_cancel_display }}</li>
+                        {% endif %}
+
+                        {% if realty.food_options == 'a' %}
+                            <li style="color:green;" class="main_option_elem"><img class="realty_detail__main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ realty.get_food_options_display }}</li>
+                        {% elif realty.food_options == 'b' %}
+                            <li style="color:green;" class="main_option_elem"><img class="realty_detail__main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ realty.get_food_options_display }}</li>
+                        {% elif realty.food_options == 'c' %}
+                            <li style="color:green;" class="main_option_elem"><img class="realty_detail__main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ realty.get_food_options_display }}</li>
+                        {% elif realty.food_options == 'd' %}
+                            <li style="color:green;" class="main_option_elem"><img class="realty_detail__main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ realty.get_food_options_display }}</li>
+                        {% elif realty.food_options == 'e' %}
+                            <li style="color:red;" class="main_option_elem"><img class="realty_detail__main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ realty.get_food_options_display }}</li>
+                        {% endif %}
+
+                        {% if realty.pay_type == 'o' %}
+                            <li class="main_option_elem"><img class="realty_detail__main_option_img" src="../../static/img/icons/free-icon-credit-card-5950249.png">{{ realty.get_pay_type_display }}</li>
+                        {% else %}
+                            <li class="main_option_elem"><img class="realty_detail__main_option_img" src="../../static/img/icons/money.png">{{ realty.get_pay_type_display }}</li>
+                        {% endif %}
+                    </ul>
+
+                    <div class="realty-options-list-container">
+                        <h5 class="options-list-title">Основные удобства:</h5>
+                        <ul class="realty-options-list">
+                            {% for option in realty.options.all|slice:6 %}
+                                <li class="option-list"><img class="detail__options_icon" src="../../static/img/icons/{{ option.icon_url }}">{{ option }}</li>
+                            {% endfor %}
+                        </ul>
+                        <a id="detail__show_description2" href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop2">Посмотреть все</a>
                     </div>
 
-                    <div class="offcanvas offcanvas-start detail__show_comments" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
-                      <div class="offcanvas-header" id="detail__offcanvas_comments_header">
-                        <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Отзывы о "{{ realty }}"</h5>
-                        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Закрыть"></button>
-                      </div>
-                      <div class="offcanvas-body">
-                        <form class="detail__comments_container" method="post">{% csrf_token %}
-                            {% for comment in comments|slice:8 %}
+                    <div>
+                        <h5 class="options-list-title">Описание:</h5>
+                        <p style="font-size: 0.9em; text-align: justify;">{{ realty.full_description | safe | linebreaks | slice:400 }}...</p>
+                        <a id="detail__show_description" href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Читать полностью</a>
+                    </div>
+                    {% if adv_realty_list_curr_company %}
+                        <div class="realty_detail__adv_another_realty_of-company" style="margin-top: 10px;">
+                            <h5 class="options-list-title">Другие предложения компании</h5>
+                            <ul class="realty_detail__list_of_realty">
+                                {% for another_realty in adv_realty_list_curr_company %}
+                                    <div>
+                                        <img class="company__list_of_control_realty" src="../../media/{{ another_realty.photos.all.0.photo }}">
+                                        <a class="link-to-realty-from-profile" href="{% url 'app_premises:realty_detail' slug=another_realty.slug %}"><li class="company__realty_object">{{ another_realty }}</li></a>
+                                    </div>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+                    {% if adv_lt_realty %}
+                        <div class="realty_detail__adv_another_realty_of-company" style="margin-top: 10px;">
+                            <h5 class="options-list-title">Сдается на длительный срок:</h5>
+                            <ul class="realty_detail__list_of_realty">
+                                {% for another_lt_realty in adv_lt_realty %}
+                                    <div>
+                                        <img class="company__list_of_control_realty" src="../../media/{{ another_lt_realty.photos.all.0.photo }}">
+                                        <a class="link-to-realty-from-profile" href="{% url 'app_ltrent:lt_realty_detail' pk=another_lt_realty.id %}"><li class="company__realty_object">{{ another_lt_realty }}</li></a>
+                                    </div>
+                                {% endfor %}
+                            </ul>
+                    {% endif %}
+
+                    <form class="detail__comments_container" method="post">{% csrf_token %}
+                        <h5 class="options-list-title">Отзывы:</h5>
+                        {% if comments %}
+                            {% for comment in comments|slice:2 %}
                                 <div class="detail__comments_text_container">
                                     <b class="detail__comment_username">{{ comment }}:</b>
                                     <p class="detail__comments_text_space">{{ comment.comment_text }}</p>
@@ -99,51 +166,55 @@
                                     <p class="detail__publish_at">{{ comment.publish_at }}</p>
                                 {% endif %}
                             {% endfor %}
-                            <div class="detail__comment_text_and_user">
-                                {{ comment_form.realty.as_hidden }}
-                                {{ comment_form.user.as_hidden }}
-                                {{ comment_form.comment_text }}
-                                <button type="submit" class="btn btn-outline-light" id="detail__button_send_message" name="detail__send_feedback"></button>
-                            </div>
-                        </form>
-                      </div>
-                    </div>
-                </div>
-
-                <ul class="realty-list-info">
-                    <p class="realty_name">{{ realty.get_realty_type_display }} {{ realty.realty_name }}</p>
-                    <p class="realty_address">{{ realty.realty_country }}, {{ realty.realty_region }}, {{ realty.realty_address }}</p>
-                    <p class="realty_distance"><b>{{ realty.realty_to_city }}</b> км. от {{ realty.realty_region_center }}</p>
-                    <p class="realty_area"><b>Площадь: {{ realty.realty_area }} кв.м.</b></p>
-                    <p class="realty-bed">Количество спальных мест: <b>{{ realty.count_of_persons }}</b></p>
-                    <p class="realty_price">От: {{ realty.realty_price }} РУБ.</p>
+                        {% else %}
+                            <div>Тут еще нет комментариев</div>
+                        {% endif %}
+                        <div class="detail__comment_text_and_user">
+                            {{ comment_form.realty.as_hidden }}
+                            {{ comment_form.user.as_hidden }}
+                            {{ comment_form.comment_text }}
+                            <button type="submit" class="btn btn-outline-light" id="detail__button_send_message2" name="detail__send_feedback"></button>
+                        </div>
+                    </form>
+                    <a href="" id="detail__show_comments" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Читать все отзывы</a>
                 </ul>
-                <div class="realty-options-list-container">
-                    <p class="options-list-title">Основные удобства:</p>
-                    <ul class="realty-options-list">
-                        {% for option in realty.options.all|slice:6 %}
-                            <li class="option-list"><img class="detail__options_icon" src="../../static/img/icons/{{ option.icon_url }}">{{ option }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
+
+            </div>
+            <div class="realty_detail__sticky_menu_container">
+                <ul class="realty-list-info">
+                    <p class="realty_price">{{ realty.realty_price|intcomma }} ₽ в сутки</p>
+                    <div class="realty_detail__edit_link">
+                        {% if request.user.is_authenticated %}
+                            {% if request.user.is_company %}
+                                {% if current_realty.company == current_company %}
+                                    <a id="detail__show_edit_form" href="{% url 'app_premises:realty_edit' slug=realty_slug %}">
+                                        <img class="edit__realty" src="../static/img/icons/free-icon-settings-2735296.png" alt="Редактировать">
+                                    </a>
+                                    <label class="detail__menu_icon_label" for="detail__show_edit_form">Редактировать</label>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </ul>
 
                 <div class="check-the-reservation">
                     <form class="realty-detail-check-reserve-container" method="get" action="?">
-                        {% if not 'check-is-reserve-available' in request.GET %}
-                            {{ detail_reserve_form.check_in }} - {{ detail_reserve_form.check_out }} <button class="btn btn-light" type="submit" value="{{ realty.id }}, {{ realty.realty_price }}" id="check-detail-button" name="check-is-reserve-available">Проверить</button>
-                        {% elif 'check-is-reserve-available' in request.GET %}
-                            {{ detail_reserve_form_filled.check_in }} - {{ detail_reserve_form_filled.check_out }} <button class="btn btn-light" type="submit" value="{{ realty.id }}, {{ realty.realty_price }}" id="check-detail-button2" name="check-is-reserve-available">Проверить</button>
-
-
-                                {% if pk == reservation_set_detail.0.obj_id %}
-                                    <div class="realty-detail-booked">
-                                        <p class="realty-booked-text">Забронировано</p>
-                                        <p class="realty-booked-date-range">с {{ reservation_set_detail.0.obj_check_in }} по {{ reservation_set_detail.0.obj_check_out }}</p>
-                                    </div>
-                                {% else %}
-                                    <p class="reserve-detail-end-form"> Итого: {{ detail_reserve_form_filled.total_sum }} <b style="font-size: 1.2em; color: black;">₽</b></p>
-                                {% endif %}
-
+                        <div>
+                            {% if not 'check-is-reserve-available' in request.GET %}
+                                {{ detail_reserve_form.check_in }} - {{ detail_reserve_form.check_out }} <button class="btn btn-light" type="submit" value="{{ realty.id }}, {{ realty.realty_price }}" id="check-detail-button" name="check-is-reserve-available">Проверить</button>
+                            {% elif 'check-is-reserve-available' in request.GET %}
+                                {{ detail_reserve_form_filled.check_in }} - {{ detail_reserve_form_filled.check_out }} <button class="btn btn-light" type="submit" value="{{ realty.id }}, {{ realty.realty_price }}" id="check-detail-button2" name="check-is-reserve-available">Проверить</button>
+                        </div>
+                        <div style="width: 100%;">
+                            {% if pk == reservation_set_detail.0.obj_id %}
+                                <div class="realty-detail-booked">
+                                    <p class="realty-booked-text">Забронировано</p>
+                                    <p class="realty-booked-date-range">с {{ reservation_set_detail.0.obj_check_in }} по {{ reservation_set_detail.0.obj_check_out }}</p>
+                                </div>
+                            {% else %}
+                                <p class="reserve-detail-end-form"> {{ detail_reserve_form_filled.total_sum }} <b>₽</b></p>
+                            {% endif %}
+                        </div>
                         {% endif %}
                     </form>
 
@@ -176,24 +247,25 @@
                       });
                     </script>
                 </div>
+
+                <div class="lt_realty_detail__phone_and_email_container">
+                    <h5 style="margin: 0 10px; font-weight: bold;">Контактные данные:</h5>
+                    <div class="realty_detail__phone_and_email">Телефон: {{ realty.company.company_phone }}</div>
+                    <div class="realty_detail__phone_and_email">Эл. почта: {{ realty.company.company_email }}</div>
+                </div>
+
+                <div class="lt_realty_detail__account_data_container">
+                    <h5 style="margin: 0 10px; font-weight: bold;">Информация об арендодателе:</h5>
+                    <div class="realty_detail__name_and_created_at">{{ current_account.first_name }} (Арендодатель)</div>
+                    <div class="realty_detail__name_and_created_at"> На Biglov.ru с {{ current_account.created_at }}</div>
+                </div>
             </div>
+
+
+
         </aside>
     </ul>
-    <div class="realty_detail__adv_main_container">
-        <h4 class="realty_detail__h4_adv">Вам может быть интересно</h4>
-        <div class="realty_detail__advertising">
-            {% if not realty.is_advertised %}
-                {% for adv_realty in advertised_realty %}
-                    {% if realty.realty_region == adv_realty.realty_region %}
-                        <div class="realty_detail__adv_container">
-                            <img class="realty_detain__adv_img" src="../media/{{ adv_realty.photos.all.0.photo }}">
-                            <a href="{% url 'app_premises:realty_detail' slug=adv_realty.slug %}">{{ adv_realty }}</a>
-                        </div>
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-        </div>
-    </div>
+
     <div id="pop_up4" style="position: fixed; left: 50%; top: 50%;transform: translate(-50%, -50%); display: none; z-index: 100; padding: 5px;">
         <button id="close_pop_up_btn4" class="btn-close" aria-label="Close"></button>
         <div>
@@ -275,4 +347,37 @@
 
 {% endblock content %}
 </body>
+{% block footer %}
+<footer class="base__footer_not_fixed">
+    <div class="base__footer_container">
+        <a class="base__logo_footer" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
+    </div>
+    <div class="base__footer">
+        <div class="base__copyright">
+            <a href="{% url 'app_rules:our_values' %}">Наши ценности</a>
+        </div>
+        <div class="base__footer_info">
+            <a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a>
+        </div>
+    </div>
+
+    <!-- Модальное окно управления промо-акциями -->
+    <div class="modal fade" id="staticBackdrop5" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel5">Контакты</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+          </div>
+          <div class="modal-body">
+              <div>Телефон для справок: +7 (938) 416-66-72</div>
+              <div>Эл. почта: biglov.info@yandex.ru</div>
+          </div>
+          <div class="modal-footer">
+          </div>
+        </div>
+      </div>
+    </div>
+</footer>
+{% endblock footer %}
 </html>

@@ -5,7 +5,7 @@ from pytils.translit import slugify
 from .forms import CompanyProfileForm
 from .models import CompanyProfile
 from app_profiler.models import CustomUser
-from app_premises.forms import RealtyObjectForm
+from app_premises.forms import HolidayHouseForm
 
 """---РАЗДЕЛ ВЬЮШЕК ПО ОБЪЕКТАМ ПРОФИЛЕЙ---"""
 
@@ -19,7 +19,7 @@ class CompanyEditFromView(View):
             if current_company.user.id == request.user.id:
                 company_id = current_company.id
                 company_form = CompanyProfileForm(instance=current_company)
-                realty_form = RealtyObjectForm()
+                realty_form = HolidayHouseForm()
                 return render(request, 'app_companies/edit_company.html',
                               context={
                                   'company_form': company_form,
@@ -38,7 +38,7 @@ class CompanyEditFromView(View):
     def post(self, request, company_slug):
         current_company = CompanyProfile.objects.get(slug=company_slug)
         company_form = CompanyProfileForm(request.POST, instance=current_company)
-        realty_form = RealtyObjectForm(request.POST)
+        realty_form = HolidayHouseForm(request.POST)
 
         if 'account__save_form' in request.POST:
             if company_form.is_valid():

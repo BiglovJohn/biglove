@@ -3,7 +3,7 @@
 <html lang="ru" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title%}Chill{% endblock title%}</title>
+    <title>{% block title%}Biblov{% endblock title%}</title>
     <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
     <link type="text/css" rel="reset" href="../../static/css/reset.css">
 
@@ -16,6 +16,9 @@
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src=" https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js "></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js"></script>
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css" rel="stylesheet" type="text/css">
 
     <!-- Fengyuan Chen's Datepicker -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
@@ -24,18 +27,21 @@
 
 </head>
 <header class="basemenu">
-    <menu class="menu1">
-        <a class="base-logo" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
-        <menu class="base-menu-buttons">
-            {% if request.user.is_authenticated %}
+    <nav class="menu1">
+        <nav class="base__logo_and_menu">
+            <a class="base-logo" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
+            <div class="base-menu-buttons">
+                {% if request.user.is_authenticated %}
                     <div class="dropdown">
                       <a data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
                         {{ guest }} <img class="open-profile-button" src="../static/img/icons/icons8-login-66.png" alt="Войти в кабинет">
                       </a>
                       <form class="dropdown-menu p-4" id="base_menu__container">
                           <p>{{ guest }}</p>
-                          <p class="base_menu__lk_logout"><a href="{% url 'app_profiler:account_detail' slug=request.user.slug %}">Личный кабинет</a> <a href="{% url 'app_profiler:logout' %}">Выйти</a></p>
-                          <p><a data-bs-toggle="modal" data-bs-target="#staticBackdropRules" href="#">Правила сайта</a></p>
+                          <p class="base_menu__lk_logout">
+                              <a href="{% url 'app_profiler:account_detail' slug=request.user.slug %}">Личный кабинет</a>
+                              <a href="{% url 'app_profiler:logout' %}">Выйти</a>
+                          </p>
                           <ul class="base_menu__links_container">
                               {% if request.user.is_company %}
                                   <li class="base_menu__li_container">
@@ -43,42 +49,48 @@
                                           Кабинет арендодателя
                                       </a>
                                   </li>
+                                  <li class="base_menu__li_container"><a href="{% url 'app_profiler:account_reserves' slug=request.user.slug %}">Мои бронирования</a></li>
+                                  <li class="base_menu__li_container"><a data-bs-toggle="modal" data-bs-target="#staticBackdropRules" href="#">Правила сайта</a></li>
                               {% endif %}
                           </ul>
                       </form>
                     </div>
-            {% else %}
-                <div class="dropdown" id="login">
-                        <a type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                            <button type="button" class="btn btn-light">Войти</button>
-                        </a>
-                        <div class="dropdown-menu">
-                            <form class="px-4 py-3" id="login-form" method="post">{% csrf_token %}
-                                <div class="mb-3">
-                                    {{ auth_form.email }}
-                                </div>
-                                <div class="mb-3">
-                                    {{ auth_form.password }}
-                                </div>
-                                <div class="mb-3">
-                                    <div class="form-check" id="remember-me">
-                                        <input type="checkbox" class="form-check-input" id="dropdownCheck">
-                                        <label class="form-check-label" for="dropdownCheck">
-                                            Запомнить меня
-                                        </label>
+                {% else %}
+                    <div class="dropdown" id="login">
+                            <a type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <button type="button" class="btn btn-light">Войти</button>
+                            </a>
+                            <div class="dropdown-menu">
+                                <form class="px-4 py-3" id="login-form" method="post">{% csrf_token %}
+                                    <div class="mb-3">
+                                        {{ auth_form.email }}
                                     </div>
-                                </div>
-                                <button type="submit" name="submit-login-form" class="btn btn-success">Войти</button>
-                            </form>
-                            <div class="dropdown-divider"></div>
-                            <button class="dropdown-item" id="open_pop_up">Впервые у нас? <b>Зарегистрироваться</b></button>
-                            <a class="dropdown-item" href="#">Забыли пароль?</a>
-                        </div>
-                </div>
-            {% endif %}
-        </menu>
-
-    </menu>
+                                    <div class="mb-3">
+                                        {{ auth_form.password }}
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="form-check" id="remember-me">
+                                            <input type="checkbox" class="form-check-input" id="dropdownCheck">
+                                            <label class="form-check-label" for="dropdownCheck">
+                                                Запомнить меня
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <button type="submit" name="submit-login-form" class="btn btn-success">Войти</button>
+                                </form>
+                                <div class="dropdown-divider"></div>
+                                <button class="dropdown-item" id="open_pop_up">Впервые у нас? <b>Зарегистрироваться</b></button>
+                                <a class="dropdown-item" href="#">Забыли пароль?</a>
+                            </div>
+                    </div>
+                {% endif %}
+            </div>
+        </nav>
+        <nav class="base__main_menu">
+            <a id="base__menu_buttons1" type="" href="{% url 'app_index:index' %}" class="btn btn-outline-light">Жилье</a>
+            <a id="base__menu_buttons2" type="" href="{% url 'app_auto:auto_index' %}" class="btn btn-outline-light">Авто</a>
+        </nav>
+    </nav>
 
 </header>
 
@@ -139,43 +151,61 @@
           </div>
         </div>
 
-<script>
-    let pop_up   = document.getElementById('pop_up');
-    let open_btn  = document.getElementById('open_pop_up');
-    let close_btn = document.getElementById('close_pop_up_btn');
+    <script>
+        let pop_up   = document.getElementById('pop_up');
+        let open_btn  = document.getElementById('open_pop_up');
+        let close_btn = document.getElementById('close_pop_up_btn');
 
-    open_btn.addEventListener('click',()=>{
-        pop_up.style.display = 'block';
-    })
+        open_btn.addEventListener('click',()=>{
+            pop_up.style.display = 'block';
+        })
 
-    close_btn.addEventListener('click', ()=>{
-        pop_up.style.display = 'none';
-    })
+        close_btn.addEventListener('click', ()=>{
+            pop_up.style.display = 'none';
+        })
 
-</script>
+    </script>
 
-<script>
-    var myModal = document.getElementById('myModal')
-    var myInput = document.getElementById('myInput')
+    <script>
+        var myModal = document.getElementById('myModal')
+        var myInput = document.getElementById('myInput')
 
-    myModal.addEventListener('shown.bs.modal', function () {
-      myInput.focus()
-    })
-</script>
+        myModal.addEventListener('shown.bs.modal', function () {
+          myInput.focus()
+        })
+    </script>
+
+    <!-- Модальное окно управления промо-акциями -->
+    <div class="modal fade" id="staticBackdrop5" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel5">Контакты</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+          </div>
+          <div class="modal-body">
+              <div>Телефон для справок: +7 (938) 416-66-72</div>
+              <div>Эл. почта: biglov.info@yandex.ru</div>
+          </div>
+          <div class="modal-footer">
+          </div>
+        </div>
+      </div>
+    </div>
 
 </body>
 {% block footer %}
 <footer class="base__footer_all">
     <div class="base__footer_container">
-        <a class="base__logo_footer" style="width: 4%;" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
-<!--        <div class="base__footer">-->
-<!--            <div class="base__copyright">-->
-<!--                Copyright © 2022 Начилле.рф. Все права защищены.-->
-<!--            </div>-->
-<!--            <div class="base__footer_info">-->
-<!--                Начилле.рф — часть ООО "Биглов-Групп".-->
-<!--            </div>-->
-<!--        </div>-->
+        <a class="base__logo_footer" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
+    </div>
+    <div class="base__footer">
+        <div class="base__copyright">
+            <a href="{% url 'app_rules:our_values' %}">Наши ценности</a>
+        </div>
+        <div class="base__footer_info">
+            <a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a>
+        </div>
     </div>
 </footer>
 {% endblock footer %}

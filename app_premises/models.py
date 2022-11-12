@@ -1,12 +1,9 @@
 from uuid import uuid4
-
 from django.conf import settings
 from django.core.validators import FileExtensionValidator
 from django.db import models
 from pytils.translit import slugify
 from django.urls import reverse
-import numpy as np
-
 
 #  Внешние импорты
 from app_profiler.models import CustomUser
@@ -22,6 +19,8 @@ _REALTY_TYPE = [
     ('v', 'Вилла'),
     ('kp', 'Кемпинг'),
     ('gp', 'Глэмпинг'),
+    ('kv', 'Квартира'),
+    ('dm', 'Дом'),
 ]
 
 _PAY_TYPE = [
@@ -69,29 +68,40 @@ class RealtyOptions(models.Model):
         verbose_name_plural = 'Опции'
 
 
-class RealtyObject(models.Model):
-    company = models.ForeignKey(to=CompanyProfile, default=None, on_delete=models.CASCADE, related_name='company',
-                                verbose_name='Пользователь')
-    realty_name = models.CharField(max_length=100, verbose_name='Название объекта')
-    slug = models.SlugField(unique=True, default=None, verbose_name="URL")
+class RealtyObjectBaseClass(models.Model):
     realty_country = models.CharField(max_length=250, default='Россия', verbose_name='Страна')
     realty_region = models.CharField(max_length=250, default='Московская область', verbose_name='Регион')
     realty_city = models.CharField(max_length=250, default='Москва', verbose_name='Населенный пункт')
-    realty_address = models.CharField(max_length=250, help_text='Улица, дом, корпус...', verbose_name='Адрес')
-    realty_to_city = models.CharField(max_length=10, blank=True, verbose_name='Расстояние до города')
+    realty_address = models.CharField(max_length=250, verbose_name='Адрес')
     realty_type = models.CharField(max_length=2, choices=_REALTY_TYPE, verbose_name='Тип объекта')
-    count_of_persons = models.PositiveIntegerField(default=1, verbose_name='Количество спальных мест')
     full_description = models.TextField(max_length=2000, blank=True, verbose_name='Описание')
     realty_price = models.PositiveIntegerField(verbose_name='Цена')
+    is_advertised = models.BooleanField(default=False, verbose_name='Статус продвижения')
+
+    class Meta:
+        abstract = True
+        ordering = ['id']
+        verbose_name = 'Объект'
+        verbose_name_plural = 'Объекты'
+
+
+class HolidayHouseObject(RealtyObjectBaseClass):
+    company = models.ForeignKey(to=CompanyProfile, default=1, on_delete=models.CASCADE, related_name='hh_companies',
+                                verbose_name='Пользователь')
+    realty_name = models.CharField(max_length=100, verbose_name='Название объекта')
+    slug = models.SlugField(unique=True, default=None, verbose_name="URL")
+    count_of_persons = models.PositiveIntegerField(default=1, verbose_name='Количество спальных мест')
     realty_area = models.PositiveIntegerField(blank=True, verbose_name='Площадь')
+    region_center = models.CharField(max_length=30, blank=True, verbose_name='Региональный центр')
+    realty_to_city = models.CharField(max_length=10, blank=True, verbose_name='Расстояние до города')
     book_cancel = models.CharField(max_length=1, choices=_BOOK_CANCEL, default='n', verbose_name='Отмена бронирования')
     pay_type = models.CharField(max_length=1, choices=_PAY_TYPE, default='o', verbose_name='Способ оплаты')
     food_options = models.CharField(max_length=1, choices=_FOOD_OPTIONS, default='e', verbose_name='Опции питания')
     options = models.ManyToManyField(to=RealtyOptions, blank=True, verbose_name='Опции', related_name='option_list')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+    arriving_time = models.TimeField(default='14:00', verbose_name='Время заселения')
+    departure_time = models.TimeField(default='12:00', verbose_name='Время выезда')
     realty_book_count = models.PositiveIntegerField(default=0, verbose_name='Бронирований')
-
-    is_advertised = models.BooleanField(default=False, verbose_name='Статус продвижения')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
 
     def __str__(self):
         return self.realty_name
@@ -114,14 +124,14 @@ class RealtyObject(models.Model):
 
     class Meta:
         """Определение параметров в мета классе альбом"""
-        db_table = 'premises_db'
+        db_table = 'holiday_house_db'
         ordering = ['created_at']
         verbose_name = 'Недвижимость'
         verbose_name_plural = 'Недвижимость'
 
 
 class Reservation(models.Model):
-    realty = models.ForeignKey(to=RealtyObject, on_delete=models.CASCADE, verbose_name='Объект недвижимости')
+    realty = models.ForeignKey(to=HolidayHouseObject, on_delete=models.CASCADE, verbose_name='Объект недвижимости')
     guest = models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Гости')
     book_identifier = models.CharField(max_length=10, default=uuid4, unique=True, verbose_name='Номер бронирования')
     check_in = models.DateField(verbose_name='Дата заезда')
@@ -142,9 +152,9 @@ class Reservation(models.Model):
 
 
 class Photos(models.Model):
-    """Класс для описания модели фото"""
+    """ Класс для описания модели фото """
 
-    realty_obj = models.ForeignKey(to=RealtyObject,
+    realty_obj = models.ForeignKey(to=HolidayHouseObject,
                                    on_delete=models.CASCADE,
                                    default=1,
                                    related_name='photos',
@@ -162,7 +172,7 @@ class Photos(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Дата загрузки')
 
     class Meta:
-        """Определение параметров в мета классе фото"""
+        """ Определение параметров в мета классе фото """
         db_table = 'db.photo'
         ordering = ['created_at']
         verbose_name = 'Фотография'

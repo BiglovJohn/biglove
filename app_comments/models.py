@@ -1,11 +1,11 @@
 from django.db import models
 from app_profiler.models import CustomUser
-from app_premises.models import RealtyObject
+from app_premises.models import HolidayHouseObject
 
 
 class Comments(models.Model):
     user = models.ForeignKey(to=CustomUser, on_delete=models.CASCADE, verbose_name='Пользователь')
-    realty = models.ForeignKey(to=RealtyObject, on_delete=models.CASCADE, verbose_name='Объект недвижимости')
+    realty = models.ForeignKey(to=HolidayHouseObject, on_delete=models.CASCADE, verbose_name='Объект недвижимости')
     comment_text = models.TextField(max_length=1000, verbose_name='Комментарий')
     publish_at = models.DateTimeField(auto_now_add=True, verbose_name='Опубликовано')
 
