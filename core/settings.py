@@ -25,7 +25,7 @@ SECRET_KEY = ENV.SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = ENV.DEBUG
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['78.106.80.185', '127.0.0.1', 'localhost']
 
 # Application definition
 

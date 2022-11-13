@@ -160,7 +160,7 @@
                 <form method="post" enctype="multipart/form-data">{% csrf_token %}
                     {{ upload_photos_form.realty_obj.as_hidden }}
                     {{ upload_photos_form.photo }}
-                    <button type="submit" name="realty_edit_submitting_photo" class="btn btn-success" id="detail__save_realty_form_photo">Сохранить</button>
+                    <button type="submit" name="lt_realty_edit_submitting_photo" class="btn btn-success" id="detail__save_realty_form_photo">Сохранить</button>
                 </form>
             </div>
             <div class="edit__realty_photos_container">
@@ -168,7 +168,7 @@
                 <div class="realty_edit__img_plate">
                     {% for photo in realty_edit.photos.all %}
                         <form method="get" enctype="multipart/form-data">
-                            <button style="position: absolute; width: 30px" type="submit" class="btn-close btn-close-white" aria-label="Закрыть" value="{{ photo.photo}}, {{ photo.pk }}" name="delete_photo_button"></button>
+                            <button style="position: absolute; width: 30px" type="submit" class="btn-close btn-close-white" aria-label="Закрыть" value="{{ photo.photo}}, {{ photo.pk }}" name="delete_lt_photo_button"></button>
                             <img class="edit__realty_photo_delete" src="../../media/{{ photo.photo }}">
                         </form>
                     {% endfor %}

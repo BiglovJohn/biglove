@@ -249,9 +249,9 @@ class LongTermRealtyDetailView(generic.DetailView):
 
 class LonTermRealtyEditFromView(View):
     def get(self, request, pk):
-        if 'delete_photo_button' in request.GET:
+        if 'delete_lt_photo_button' in request.GET:
             pk = request.GET.get('delete_photo_button').split(', ')[1]
-            current_photo = Photos.objects.get(id=pk)
+            current_photo = LongTermPhotos.objects.get(id=pk)
             if os.path.isfile(f'media/{current_photo.photo}'):
                 current_photo.delete()
                 os.remove(f'media/{current_photo.photo}')
@@ -284,13 +284,13 @@ class LonTermRealtyEditFromView(View):
                 files = request.FILES.getlist('photo')
                 realty_edit.save()
                 for photo in files:
-                    Photos.objects.create(realty_obj=realty_edit, photo=photo)
+                    LongTermPhotos.objects.create(realty_obj=realty_edit, photo=photo)
 
-            elif 'realty_edit_submitting_photo' in request.POST:
+            elif 'lt_realty_edit_submitting_photo' in request.POST:
                 if upload_photos_form.is_valid():
                     files = request.FILES.getlist('photo')
                     for photo in files:
-                        Photos.objects.create(realty_obj=realty_edit, photo=photo)
+                        LongTermPhotos.objects.create(realty_obj=realty_edit, photo=photo)
                     return redirect('app_ltrent:lt_realty_edit', pk=pk)
 
                 else:
