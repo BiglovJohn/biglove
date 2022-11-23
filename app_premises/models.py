@@ -6,8 +6,9 @@ from pytils.translit import slugify
 from django.urls import reverse
 
 #  Внешние импорты
-from app_profiler.models import CustomUser
+
 from app_companies.models import CompanyProfile
+from app_data.models import Ip
 
 _REALTY_TYPE = [
     ('h', 'Отель'),
@@ -103,6 +104,8 @@ class HolidayHouseObject(RealtyObjectBaseClass):
     realty_book_count = models.PositiveIntegerField(default=0, verbose_name='Бронирований')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
 
+    views_count = models.ManyToManyField(Ip, related_name="realty_views", blank=True)
+
     def __str__(self):
         return self.realty_name
 
@@ -111,6 +114,9 @@ class HolidayHouseObject(RealtyObjectBaseClass):
             return self.company.short_company_name[:25] + '...'
         else:
             return self.company.short_company_name
+
+    def total_views(self):
+        return self.views_count.count()
 
     def get_absolute_url(self):
         return reverse("realty_detail", kwargs={"slug": self.slug})
@@ -139,6 +145,8 @@ class Reservation(models.Model):
     is_booked = models.BooleanField(default=False, verbose_name='Бронь')
     total_sum = models.IntegerField(default=0, verbose_name='Сумма')
     booked_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата бронирования')
+    is_canceled = models.BooleanField(default=False, verbose_name='Отменённая')
+    canceled_at = models.DateTimeField(auto_now=True, verbose_name='Дата отмены')
 
     def __str__(self):
         return self.realty.realty_name

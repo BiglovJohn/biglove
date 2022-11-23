@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import FileExtensionValidator
 from app_premises.models import RealtyObjectBaseClass
 from app_companies.models import CompanyProfile
+from app_data.models import Ip
 
 _REALTY_TYPE = [
     ('kv', '1-к комнатная квартира'),
@@ -81,10 +82,11 @@ class LongTermRentObject(RealtyObjectBaseClass):
     realty_type = models.CharField(max_length=2, choices=_REALTY_TYPE, verbose_name='Тип объекта')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата обновления')
-    is_active = models.BooleanField(default=False, verbose_name='Активно')
+    is_active = models.BooleanField(default=True, verbose_name='Активно')
     children = models.BooleanField(blank=True, default=False, verbose_name='Можно с детьми')
     animals = models.BooleanField(blank=True, default=False, verbose_name='Можно с животными')
     smoke = models.BooleanField(blank=True, default=False, verbose_name='Можно курить')
+    views_count = models.ManyToManyField(Ip, related_name="lt_realty_views", blank=True)
 
     furniture = models.ManyToManyField(to=FurnitureModel,
                                        blank=True,
@@ -105,6 +107,9 @@ class LongTermRentObject(RealtyObjectBaseClass):
             return self.company.short_company_name[:25] + '...'
         else:
             return self.company.short_company_name
+
+    def total_views(self):
+        return self.views_count.count()
 
     class Meta:
         """ Определение параметров в мета классе альбом """

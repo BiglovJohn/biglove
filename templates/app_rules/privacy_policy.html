@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+{% load static %}
+<html lang="ru" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} Biglov.ru | Политика конфиденциальности {% endblock title %}</title>
+</head>
+{% block content %}
+<body>
+    <div>
+        <h3 class="privacy__h3_text">Политика сервиса Biglov.ru в области обработки и обеспечения безопасности персональных данных клиентов</h3>
+        <div class="rules__main_container">
+            {% for rule in privacy %}
+                <ul>
+                    <li class="rules__privacy_sub_category_text">{{ rule.sub_category }}</li>
+                    <div>{{ rule.text | safe | linebreaks }}</div>
+                </ul>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+{% endblock content %}
+{% block footer %}
+<footer class="base__footer_not_fixed">
+    <div class="base__footer_container">
+        <a class="base__logo_footer" href="/"><img class="logo-main_footer" src="../../static/img/logo.png" alt="Логотип"></a>
+    </div>
+    <div class="base__footer">
+        <div class="base__copyright">
+            <a href="{% url 'app_rules:our_values' %}">Наши ценности</a>
+        </div>
+        <div class="base__footer_info">
+            <a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a>
+        </div>
+    </div>
+
+    <!-- Модальное окно управления промо-акциями -->
+    <div class="modal fade" id="staticBackdrop5" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel5">Контакты</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+          </div>
+          <div class="modal-body">
+              <div>Телефон для справок: +7 (938) 416-66-72</div>
+              <div>Эл. почта: biglov.info@yandex.ru</div>
+          </div>
+          <div class="modal-footer">
+          </div>
+        </div>
+      </div>
+    </div>
+</footer>
+{% endblock footer %}
+</html>

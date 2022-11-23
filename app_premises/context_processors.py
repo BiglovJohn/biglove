@@ -2,8 +2,9 @@ import datetime
 
 from django.db.models import Count, Sum
 from pytils.translit import slugify
-from .forms import HolidayHouseForm, ReservationForm
+from .forms import ReservationIndexSearchForm
 from .models import HolidayHouseObject, RealtyOptions, Reservation, Photos
+from app_ltrent.models import LongTermRentObject
 
 
 def render_reservation_form(request):
@@ -13,7 +14,7 @@ def render_reservation_form(request):
             Если он жмакнул кнопку с GET запросом по имени search со страницы index и юзер не компания, то получаем
              форму резервирования и список броней текущего пользователя.
         """
-        reserve_form = ReservationForm()
+        reserve_form = ReservationIndexSearchForm()
         reservation_list = Reservation.objects.filter(guest=request.user.id)
         return {'reserve_form': reserve_form, 'reservation_list': reservation_list}
     elif 'check-is-reserve-available' in request.GET:
@@ -34,7 +35,7 @@ def render_reservation_form(request):
         check_out = datetime.datetime.strptime(request.GET.get('check_out'), "%d.%m.%Y").date()
         total_sum = (check_out - check_in).days * int(reserve_sum)
         current_user = request.user.id
-        detail_reserve_form_filled = ReservationForm(
+        detail_reserve_form_filled = ReservationIndexSearchForm(
             initial={'realty': pk, 'guest': current_user, 'check_in': check_in, 'check_out': check_out,
                      'total_sum': total_sum})
 
@@ -57,7 +58,7 @@ def render_reservation_form(request):
                 'pk': int(pk), 'check_in': str(check_in), 'check_out': str(check_out)}
 
     else:
-        reserve_form = ReservationForm()
+        reserve_form = ReservationIndexSearchForm()
         return {'reserve_form': reserve_form}
 
 
@@ -78,12 +79,14 @@ def render_realty_objects(request):
 def render_realty_object_to_profile(request):
     """Вывод объектов УК в профиль"""
     realty_objects_to_profile = HolidayHouseObject.objects.filter(company=request.user.id)
+    lt_realty_objects_to_profile = LongTermRentObject.objects.filter(company=request.user.id)
     reservations_list = Reservation.objects.filter(
         realty__in=realty_objects_to_profile).select_related('realty').select_related('guest')
     total_company_sum = Reservation.objects.filter(realty__in=realty_objects_to_profile).aggregate(Sum('total_sum'))[
         'total_sum__sum']
 
     return {'realty_objects_to_profile': realty_objects_to_profile,
+            'lt_realty_objects_to_profile': lt_realty_objects_to_profile,
             'reservations_list': reservations_list,
             'total_company_sum': total_company_sum}
 

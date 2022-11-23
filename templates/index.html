@@ -3,16 +3,17 @@
 {% load static %}
 <html class="index__html" lang="ru" xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Biglov | Официальный сайт | Снять квартиру, забронировать отель, авто{% endblock title %}</title>
-    <link type="text/css" rel="reset" href="../../static/css/reset.css">
-    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+    <link href="{% static 'css/reset.css' %}" type="text/css" rel="reset">
+    <link href="{% static 'favicon.ico' %}" rel="shortcut icon" type="image/png">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="../../static/css/style.css">
-    <link type="text/css" rel="stylesheet" href="../../static/css/stylesheet.css">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'css/stylesheet.css' %}" type="text/css" rel="stylesheet">
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -30,8 +31,7 @@
         <div class="index-main-text">
             <h2 class="index-h2-text">Бронируй, властвуй, отдыхай!</h2>
             <div class="index-conteiner-h3-img">
-                <h3 class="index-h3-text">Контролируй свой отдых, </h3>
-                <img class="just-chill-index" src="static/img/just-chill.png" alt="JUST_CHILL">
+                <img class="just-chill-index" src="{% static 'img/just-chill.png' %}" alt="JUST_CHILL">
             </div>
         </div>
     </div>
@@ -60,7 +60,7 @@
 
             <script>
               $(function () {
-                $("#id_check_in").datepicker({
+                $("#main_search_in").datepicker({
                   format:'dd.mm.yyyy',
                   startDate:'today',
                   autoHide:'True',
@@ -72,7 +72,7 @@
 
             <script>
               $(function () {
-                $("#id_check_out").datepicker({
+                $("#main_search_out").datepicker({
                   format:'dd.mm.yyyy',
                   startDate: 'today',
                   autoHide:'True',
@@ -114,7 +114,7 @@
                     <a href="{% url 'app_premises:realty_detail' realty_first.slug %}">
                         <p style="font-size: 1.2em; font-weight: bold; color: black;">{{ realty_first.realty_name }}</p>
                     </a>
-                    <p>{{ realty_first.realty_country }}, {{ realty_first.realty_region }}, {{ realty_first.realty_address }}</p>
+                    <p>{{ realty_first.realty_region }}, {{ realty_third.realty_city }}</p>
                 </div>
             </div>
 
@@ -127,7 +127,7 @@
                     <a href="{% url 'app_premises:realty_detail' realty_second.slug %}">
                         <p style="font-size: 1.2em; font-weight: bold; color: black;">{{ realty_second.realty_name }}</p>
                     </a>
-                    <p>{{ realty_second.realty_country }}, {{ realty_second.realty_region }}, {{ realty_second.realty_address }}</p>
+                    <p>{{ realty_second.realty_region }}, {{ realty_third.realty_city }}</p>
                 </div>
             </div>
 
@@ -140,7 +140,7 @@
                     <a href="{% url 'app_premises:realty_detail' realty_third.slug %}">
                         <p style="font-size: 1.2em; font-weight: bold; color: black;">{{ realty_third.realty_name }}</p>
                     </a>
-                    <p>{{ realty_third.realty_country }}, {{ realty_third.realty_region }}, {{ realty_third.realty_address }}</p>
+                    <p>{{ realty_third.realty_region }}, {{ realty_third.realty_city }}</p>
                 </div>
             </div>
         </div>
@@ -150,7 +150,7 @@
 {% block footer %}
 <footer class="base__footer_not_fixed">
     <div class="base__footer_container">
-        <a class="base__logo_footer" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
+        <a class="base__logo_footer" href="/"><img class="logo-main_footer" src="../../static/img/logo.png" alt="Логотип"></a>
     </div>
     <div class="base__footer">
         <div class="base__copyright">

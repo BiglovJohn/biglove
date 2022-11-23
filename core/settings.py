@@ -15,6 +15,8 @@ from .env import *
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+settings_dir = os.path.dirname(__file__)
+PROJECT_ROOT = os.path.abspath(os.path.dirname(settings_dir))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -25,7 +27,8 @@ SECRET_KEY = ENV.SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = ENV.DEBUG
 
-ALLOWED_HOSTS = ['78.106.80.185', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'dcb6-213-171-0-50.eu.ngrok.io']
+CSRF_TRUSTED_ORIGINS = ['https://*.dcb6-213-171-0-50.eu.ngrok.io', 'https://*.127.0.0.1']
 
 # Application definition
 
@@ -98,7 +101,6 @@ TEMPLATES = [
                 # 'app_profiler.context_processors.render_change_password',
                 'app_companies.context_processors.render_current_company_slug',
                 'app_rules.context_processors.render_rules_list',
-
                 'app_data.context_processors.render_location_info',
             ],
         },
@@ -156,15 +158,15 @@ STATIC_URL = '/static/'
 if not DEBUG:
     STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 else:
-    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+    STATICFILES_DIRS = (os.path.join(PROJECT_ROOT, 'static'),)
 
-# LOGIN_REDIRECT_URL = f'/'
+# LOGIN_REDIRECT_URL = '/'
 # REGISTER_REDIRECT_URL = '/manager/1/edit'
 LOGOUT_REDIRECT_URL = '/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-MEDIA_URL = '/media/'
+MEDIA_URL = 'media/'
 
 SESSION_COOKIE_AGE = 30 * 24 * 60 * 60
 

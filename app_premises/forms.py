@@ -64,7 +64,7 @@ class HolidayHouseForm(forms.ModelForm):
     class Meta:
         model = HolidayHouseObject
         fields = '__all__'
-        exclude = ['created_at', 'realty_book_count', 'slug']
+        exclude = ['created_at', 'realty_book_count', 'is_favorites', 'views_count']
 
     def __init__(self, *args, **kwargs):
         super(HolidayHouseForm, self).__init__(*args, **kwargs)
@@ -86,6 +86,32 @@ class HolidayHouseForm(forms.ModelForm):
         #     queryset=ManagerProfile.objects.filter(referring_user=1))
 
 
+class CreateHolidayHouseForm(forms.ModelForm):
+    class Meta:
+        model = HolidayHouseObject
+        fields = '__all__'
+        exclude = ['created_at', 'realty_book_count', 'is_favorites', 'views_count', 'slug']
+
+    def __init__(self, *args, **kwargs):
+        super(CreateHolidayHouseForm, self).__init__(*args, **kwargs)
+        """Работа с классами формы"""
+        self.fields['realty_name'].widget.attrs['class'] = 'hh_realty_create__input'
+        self.fields['realty_country'].widget.attrs['class'] = 'hh_realty_create__input'
+        self.fields['realty_region'].widget.attrs['class'] = 'hh_realty_create__input'
+        self.fields['realty_city'].widget.attrs['class'] = 'hh_realty_create__input'
+        self.fields['realty_address'].widget.attrs['class'] = 'hh_realty_create__input'
+        self.fields['realty_to_city'].widget.attrs['class'] = 'hh_realty_create__input'
+        self.fields['count_of_persons'].widget.attrs['class'] = 'hh_realty_create__input'
+        self.fields['realty_price'].widget.attrs['class'] = 'hh_realty_create__input'
+        self.fields['realty_area'].widget.attrs['class'] = 'hh_realty_create__input'
+        self.fields['region_center'].widget.attrs['class'] = 'hh_realty_create__input'
+        self.fields['arriving_time'].widget.attrs['class'] = 'hh_realty_create__input'
+        self.fields['departure_time'].widget.attrs['class'] = 'hh_realty_create__input'
+        # self.fields['company'] = forms.ModelChoiceField(
+        #     required=True,
+        #     queryset=ManagerProfile.objects.filter(referring_user=1))
+
+
 class ReservationForm(forms.ModelForm):
     class Meta:
         model = Reservation
@@ -100,13 +126,22 @@ class ReservationForm(forms.ModelForm):
         self.fields['check_in'].widget.attrs['autocomplete'] = 'Off'
         self.fields['check_out'].widget.attrs['autocomplete'] = 'Off'
 
-    # def clean_check_in(self):
-    #     check_in = self.cleaned_data['check_in']
-    #     check_out = self.cleaned_data['check_out']
-    #     print(check_out)
-    #
-    #     if check_in >= check_out:
-    #         raise ValidationError('Ошибка в датах')
+
+class ReservationIndexSearchForm(forms.ModelForm):
+    class Meta:
+        model = Reservation
+        fields = ('check_in', 'check_out', 'total_sum')
+        exclude = ['realty', 'guest', 'is_booked']
+
+    def __init__(self, *args, **kwargs):
+        super(ReservationIndexSearchForm, self).__init__(*args, **kwargs)
+        self.fields['total_sum'].widget.attrs['readonly'] = True
+        self.fields['check_in'].widget.attrs['placeholder'] = today.strftime("%d.%m.%Y")
+        self.fields['check_out'].widget.attrs['placeholder'] = tomorrow.strftime("%d.%m.%Y")
+        self.fields['check_in'].widget.attrs['autocomplete'] = 'Off'
+        self.fields['check_out'].widget.attrs['autocomplete'] = 'Off'
+        self.fields['check_in'].widget.attrs['id'] = 'main_search_in'
+        self.fields['check_out'].widget.attrs['id'] = 'main_search_out'
 
 
 class PhotosForm(forms.ModelForm):

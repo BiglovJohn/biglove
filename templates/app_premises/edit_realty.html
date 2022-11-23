@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ realty_edit }}</title>
+    <title>{% block title %}Biglov.ru | {{ realty_edit }}{% endblock title %}</title>
     <link type="text/css" rel="reset" href="../../static/css/reset.css">
     <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
 
@@ -85,7 +85,7 @@
                         {{ realty_edit_form.options }}
                       </div>
                       <div class="modal-footer">
-                          <button type="submit" name="realty_edit_submitting" class="btn btn-success" id="create-realty-button4">Сохранить</button>
+                          <button type="submit" name="realty_edit_submitting_options" class="btn btn-success" id="create-realty-button4">Сохранить</button>
                           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закрыть</button>
                       </div>
                     </div>
@@ -167,7 +167,7 @@
                 <p>Ваши фотографии</p>
                 <div class="realty_edit__img_plate">
                     {% for photo in realty_edit.photos.all %}
-                        <form method="get" enctype="multipart/form-data">
+                        <form style="position: relative;" method="get" enctype="multipart/form-data">
                             <button style="position: absolute; width: 30px" type="submit" class="btn-close btn-close-white" aria-label="Закрыть" value="{{ photo.photo}}, {{ photo.pk }}" name="delete_photo_button"></button>
                             <img class="edit__realty_photo_delete" src="../../media/{{ photo.photo }}">
                         </form>
@@ -175,9 +175,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div style="width: 100%; height: 150px;">
-
     </div>
 
 <!--    &lt;!&ndash; Модальное окно &ndash;&gt;-->
@@ -344,7 +341,7 @@
 {% block footer %}
 <footer class="base__footer_not_fixed">
     <div class="base__footer_container">
-        <a class="base__logo_footer" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
+        <a class="base__logo_footer" href="/"><img class="logo-main_footer" src="../../static/img/logo.png" alt="Логотип"></a>
     </div>
     <div class="base__footer">
         <div class="base__copyright">

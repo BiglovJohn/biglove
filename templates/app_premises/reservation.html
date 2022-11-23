@@ -35,11 +35,11 @@
             </div>
             <div class="reserve__date_range">
                 <div>
-                    <div>Заезд с </div>
+                    <div>Заезд с {{ realty_object_to_reserve_page.arriving_time }}</div>
                     <div>{{ check_in }}</div>
                 </div>
                 <div>
-                    <div>Выезд до </div>
+                    <div>Выезд до {{ realty_object_to_reserve_page.departure_time }}</div>
                     <div>{{ check_out }}</div>
                 </div>
             </div>
@@ -67,7 +67,7 @@
             </div>
             <div class="reserve__menu_book_pay_type_elem">
                 {% if realty_object_to_reserve_page.pay_type == 'o' %}
-                    <li class="reserve__pay_type_menu"><img class="reserve__main_option_img" src="../../static/img/icons/mir-logo-h14px.svg">{{ realty_object_to_reserve_page.get_pay_type_display }}</li>
+                    <li class="reserve__pay_type_menu"><img class="reserve__main_option_img" src="../../static/img/icons/free-icon-credit-card-5950249.png">{{ realty_object_to_reserve_page.get_pay_type_display }}</li>
                 {% else %}
                     <li class="reserve__pay_type_menu"><img class="reserve__main_option_img" src="../../static/img/icons/money.png">{{ realty_object_to_reserve_page.get_pay_type_display }}</li>
                 {% endif %}
@@ -76,7 +76,7 @@
     </div>
     <div class="reserve-end-container">
         {% if request.user.is_authenticated %}
-            <form style="width: 60%; margin: 1% auto 7% auto;" method="post">{% csrf_token %}
+            <form class="reservation__form_end" method="post">{% csrf_token %}
                 <div class="end_reserve_form_text_container">
                     <div class="reserve__main_guest_head_text">Контактные данные гостя</div>
                     <div class="reserve__main_guest_sub_info">Проверьте пожалуйста все поля перед бронированием</div>
@@ -98,7 +98,7 @@
             </form>
         {% elif not request.user.is_authenticated %}
             <!--Форма регистрации для неавторизованного пользователя при попытке бронирования-->
-            <form style="width: 60%; margin: 1% auto 5% auto;" method="post">{% csrf_token %}
+            <form class="reservation__form_end" method="post">{% csrf_token %}
                 <form class="register-container">
                     <div class="reserve__register_form_main_container">
                         <div class="reserve__register_form_email_phone">
@@ -163,7 +163,7 @@
 {% block footer %}
 <footer class="base__footer_not_fixed">
     <div class="base__footer_container">
-        <a class="base__logo_footer" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
+        <a class="base__logo_footer" href="/"><img class="logo-main_footer" src="../../static/img/logo.png" alt="Логотип"></a>
     </div>
     <div class="base__footer">
         <div class="base__copyright">

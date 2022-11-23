@@ -5,7 +5,7 @@ from .models import LongTermRentObject, FurnitureModel, TechniqueModel, LongTerm
 
 @admin.register(LongTermRentObject)
 class LongTermRentObjectAdmin(admin.ModelAdmin):
-    list_display = ['id', 'short_company_name', 'realty_type']
+    list_display = ['id', 'short_company_name', 'realty_type', 'total_views']
     list_display_links = ['id', 'short_company_name']
     list_select_related = ['company']
     list_filter = (('created_at', DateRangeFilter), ('realty_price', NumericRangeFilter), 'realty_type')

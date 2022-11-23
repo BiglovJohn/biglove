@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Регистрация объекта{%endblock title %}</title>
+    <title>{% block title %}Biglov.ru | Регистрация объекта{%endblock title %}</title>
     <link type="text/css" rel="reset" href="../../static/css/reset.css">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -20,14 +20,109 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
 </head>
 <body>
-    {% block content %}
-        <form class="create-realty-form" method="post">
-            {% csrf_token %}
-            {{ realty_form.as_p }}
-            <button type="submit">fuf</button>
-        </form>
-    {% endblock %}
+{% block content %}
+    {% if request.user.is_authenticated %}
+        {% if request.user.is_company %}
+              <form class="create-realty-form" method="post" enctype="multipart/form-data">{% csrf_token %}
+                  <div class="input__wrapper">
+                          <div class="create-realty-container">
+                              <div class="create-realty-menu1">
+
+                                  <div class="create-realty-form-container">
+                                      <h5 class="realty_create_h5_text">Фотографии</h5>
+                                      {{ upload_photos_form.photo }}
+                                  </div>
+                                  <div class="edit_realty__form_container">
+                                    <h5 class="realty_create_h5_text">Расположение:</h5>
+                                    <div class="realty_create__form_element_container">Страна: {{ lt_realty_form.realty_country }}</div>
+                                    <div class="realty_create__form_element_container">Регион: {{ lt_realty_form.realty_region }}</div>
+                                    <div class="realty_create__form_element_container">Город (поселок): {{ lt_realty_form.realty_city }}</div>
+                                    <div class="realty_create__form_element_container">Район: {{ lt_realty_form.city_area }}</div>
+                                    <div class="realty_create__form_element_container">Микрорайон: {{ lt_realty_form.micro_city_area }}</div>
+                                    <div class="realty_create__form_element_container">Улица: {{ lt_realty_form.realty_address }}</div>
+                                    <div class="realty_create__form_element_container">Дом: {{ lt_realty_form.house_number }}</div>
+                                    <div class="realty_create__form_element_container">Лит/корп/блок: {{ lt_realty_form.house_korpus }}</div>
+                                  </div>
+                                  <div class="edit_realty__form_container">
+                                      <h5 class="realty_create_h5_text">Статус объявления:</h5>
+                                      <div class="realty_create__form_element_container">Активно: {{ lt_realty_form.is_active }}</div>
+                                  </div>
+                              </div>
+                              <div class="create-realty-menu2">
+                                  <div class="create-realty-form-container">
+                                      <h5 class="realty_create_h5_text">Основные параметры</h5>
+                                      <div class="realty_create__form_element_container">Тип объекта: {{ lt_realty_form.realty_type }}</div>
+                                      <div class="realty_create__form_element_container">Количество комнат: {{ lt_realty_form.rooms_count }}</div>
+                                      <div class="realty_create__form_element_container">Этаж: {{ lt_realty_form.floor }}</div>
+                                      <div class="realty_create__form_element_container">Всего этажей: {{ lt_realty_form.floor_count }}</div>
+                                      <div class="realty_create__form_element_container">Площадь помещения: {{ lt_realty_form.realty_area }} м²</div>
+                                      <div class="realty_create__form_element_container">Санузел: {{ lt_realty_form.bathroom }}</div>
+                                      <div class="realty_create__form_element_container">Цена: {{ lt_realty_form.realty_price }} ₽</div>
+                                      <div class="realty_create__form_element_container">Депозит: {{ lt_realty_form.deposit }} ₽</div>
+                                  </div>
+                                  <h5 class="realty_create_h5_text">Правила</h5>
+                                  <div class="realty_create__form_element_container">Можно с детьми: {{ lt_realty_form.children }}</div>
+                                  <div class="realty_create__form_element_container">Можно с животными: {{ lt_realty_form.animals }}</div>
+                                  <div class="realty_create__form_element_container">Можно курить: {{ lt_realty_form.smoke }}</div>
+                                {{ lt_realty_form.company.as_hidden }}
+                              </div>
+                              <div class="create-realty-menu2">
+                                  <div class="create-realty-form-container technique">
+                                      <h5 class="realty_create_h5_text">Техника:</h5>
+                                      <div class="realty_create__form_element_container">{{ lt_realty_form.technique }}</div>
+                                  </div>
+                                  <div class="create-realty-form-container furniture">
+                                      <h5 class="realty_create_h5_text">Мебель:</h5>
+                                      <div class="realty_create__form_element_container">{{ lt_realty_form.furniture }}</div>
+                                  </div>
+                              </div>
+                        </div>
+                        <div class="lt_realty_create__textarea">
+                            <h5 class="realty_create_h5_text">Описание:</h5>
+                            {{ lt_realty_form.full_description }}
+                        </div>
+                        <div>
+                            <button type="submit" name="lt_realty_create__save_realty_object" class="btn btn-success" id="create-realty-button">Зарегистрировать объект</button>
+                            <div class="lt_realty_create__bottom_text_confirmation">Нажимая «Зарегистрировать объект» я подтверждаю корректность введенных данных.</div>
+                        </div>
+                  </div>
+              </form>
+
+        {% endif %}
+    {% endif %}
+{% endblock %}
 </body>
-<footer>
+{% block footer %}
+<footer class="base__footer_not_fixed">
+    <div class="base__footer_container">
+        <a class="base__logo_footer" href="/"><img class="logo-main_footer" src="../../static/img/logo.png" alt="Логотип"></a>
+    </div>
+    <div class="base__footer">
+        <div class="base__copyright">
+            <a href="{% url 'app_rules:our_values' %}">Наши ценности</a>
+        </div>
+        <div class="base__footer_info">
+            <a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a>
+        </div>
+    </div>
+
+    <!-- Модальное окно управления промо-акциями -->
+    <div class="modal fade" id="staticBackdrop5" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel5">Контакты</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+          </div>
+          <div class="modal-body">
+              <div>Телефон для справок: +7 (938) 416-66-72</div>
+              <div>Эл. почта: biglov.info@yandex.ru</div>
+          </div>
+          <div class="modal-footer">
+          </div>
+        </div>
+      </div>
+    </div>
 </footer>
+{% endblock footer %}
 </html>

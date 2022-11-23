@@ -12,7 +12,7 @@ class LocationModel(models.Model):
         return self.city
 
     class Meta:
-        """ Определение параметров в мета классе альбом """
+        """ Определение параметров в мета классе локации """
         db_table = 'location_db'
         ordering = ['city']
         verbose_name = 'Локация'
@@ -20,6 +20,8 @@ class LocationModel(models.Model):
 
 
 """ Заполнение БД данными локаций """
+
+
 # with open('russian-cities.json', 'r', encoding='utf-8') as file:
 #     data = json.load(file)
 #     for element_info in data:
@@ -33,3 +35,16 @@ class LocationModel(models.Model):
 #                                          city=element_info['name'])
 #         else:
 #             pass
+
+class Ip(models.Model):  # наша таблица где будут айпи адреса
+    ip = models.CharField(max_length=100)
+    visited_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+
+    def __str__(self):
+        return self.ip
+
+    class Meta:
+        db_table = 'ip_addresses_db'
+        ordering = ['visited_at']
+        verbose_name = 'IP адрес'
+        verbose_name_plural = 'IP адреса'

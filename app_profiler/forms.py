@@ -27,15 +27,20 @@ class AuthForm(forms.Form):
 
 
 class RegisterForm(UserCreationForm):
+    user = CustomUser.objects.last()
+    user_id = user.id
+
     """Переопределение формы регистрации главного родителя"""
     last_name = forms.CharField(max_length=25, required=False, label='Фамилия')
     first_name = forms.CharField(max_length=25, required=False, label='Имя')
-    phone = forms.CharField(max_length=11, required=True, label='Номер телефона')
+    phone = forms.CharField(max_length=12, required=True, label='Номер телефона')
     email = forms.EmailField(label='Электронная почта', required=True)
     password1 = forms.CharField(widget=forms.PasswordInput(), required=True)
     password2 = forms.CharField(widget=forms.PasswordInput(), required=True)
     is_active = forms.BooleanField(required=True)
     is_company = forms.BooleanField(required=False)
+    slug = forms.CharField(max_length=30, initial=f'user{user_id}', label='Ник', required=True)
+    birthday = forms.DateField(required=False)
 
     def __init__(self, *args, **kwargs):
         super(RegisterForm, self).__init__(*args, **kwargs)
@@ -46,24 +51,30 @@ class RegisterForm(UserCreationForm):
         self.fields['password2'].widget.attrs['class'] = 'register-input'
         self.fields['first_name'].widget.attrs['class'] = 'register-input'
         self.fields['last_name'].widget.attrs['class'] = 'register-input'
+        self.fields['slug'].widget.attrs['class'] = 'register-input'
         self.fields['phone'].widget.attrs['class'] = 'register-input'
         self.fields['email'].widget.attrs['class'] = 'register-input'
         self.fields['is_active'].widget.attrs['class'] = 'form-check-input'
         self.fields['is_active'].widget.attrs['id'] = 'flexSwitchCheckDefault'
         self.fields['is_company'].widget.attrs['class'] = 'form-check-input'
         self.fields['is_company'].widget.attrs['id'] = 'flexSwitchCheckDefault'
+        self.fields['birthday'].widget.attrs['class'] = 'register-input'
+
+        self.fields['slug'].widget.attrs['autocomplete'] = 'Off'
 
         """Задаём placeholder для полей регистрации"""
         self.fields['password1'].widget.attrs['placeholder'] = 'Введите пароль'
         self.fields['password2'].widget.attrs['placeholder'] = 'Подтвердите пароль'
         self.fields['first_name'].widget.attrs['placeholder'] = 'Введите имя'
         self.fields['last_name'].widget.attrs['placeholder'] = 'Введите фамилию'
+        self.fields['slug'].widget.attrs['placeholder'] = 'Придумайте имя пользователя'
         self.fields['phone'].widget.attrs['placeholder'] = '+7(ХХХ)ХХХ-ХХ-ХХ'
         self.fields['email'].widget.attrs['placeholder'] = 'example@example.ru'
 
     class Meta:
         model = CustomUser
-        fields = ['email', 'password1', 'password2', 'first_name', 'last_name', 'phone', 'is_active', 'is_company']
+        fields = ['email', 'password1', 'password2', 'first_name', 'slug', 'birthday', 'last_name', 'phone',
+                  'is_active', 'is_company']
 
 
 class CustomUserChangeForm(UserChangeForm):

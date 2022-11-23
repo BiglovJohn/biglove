@@ -3,13 +3,17 @@ from __future__ import unicode_literals
 from django.core.validators import RegexValidator
 from django.db import models
 from django.core.mail import send_mail
-from django.utils import timezone
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from .managers import UserManager
 from pytils.translit import slugify
 from django.urls import reverse
 
+from app_premises.models import HolidayHouseObject
+from app_ltrent.models import LongTermRentObject
+from django.conf import settings
 
 _LOYALTY_SYSTEM = [
     ('d', 'Джун'),
@@ -40,7 +44,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=30, blank=True, verbose_name='Фамилия')
     phone = models.CharField(max_length=12, default='', help_text='Номер телефона')
 
-    birthday = models.DateField(default=timezone.now, blank=True, verbose_name='Дата рождения')
+    birthday = models.DateField(blank=True, null=True, verbose_name='Дата рождения')
     gender = models.CharField(max_length=1, choices=_GENDER, default='m', blank=True, verbose_name='Пол')
     book_count = models.PositiveIntegerField(default=0, verbose_name='Бронирований')
     status = models.CharField(max_length=1, choices=_LOYALTY_SYSTEM, default='d', verbose_name='Статус клиента')
@@ -67,7 +71,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def save(self, *args, **kwargs):  # new
         if self.slug is None:
-            self.slug = slugify(self.id)
+            self.slug = slugify(self.slug)
         return super().save(*args, **kwargs)
 
     def get_full_name(self):
@@ -84,26 +88,34 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
 
-# @receiver(post_save, sender=settings.AUTH_USER_MODEL)
-# def save_user_profile(sender, instance, **kwargs):
-#     instance.save()
+class Favorite(models.Model):
+    user = models.ForeignKey(
+        to=CustomUser,
+        on_delete=models.CASCADE,
+        related_name='favorite',
+        verbose_name='Пользователь'
+    )
+    hotel_objects = models.ManyToManyField(
+        to=HolidayHouseObject,
+        blank=True,
+        related_name='favorite_hotels',
+        verbose_name='Избранные отели'
+    )
+    long_term_objects = models.ManyToManyField(
+        to=LongTermRentObject,
+        blank=True,
+        related_name='favorite_lt_objects',
+        verbose_name='Избранное жильё'
+    )
+
+    class Meta:
+        db_table = 'favorite_list_db'
+        verbose_name = 'Избранныё'
+        verbose_name_plural = 'Избранные'
 
 
-# class Guest(models.Model): referring_user = models.ForeignKey(to=settings.AUTH_USER_MODEL,
-# on_delete=models.CASCADE, verbose_name='Пользователь') first_name = models.CharField(max_length=50,
-# verbose_name='Имя') last_name = models.CharField(max_length=50, verbose_name='Фамилия') phone_number =
-# models.CharField(max_length=10, verbose_name='Номер телефона') email = models.CharField(max_length=50, blank=True,
-# null=True, verbose_name='Электронная почта') guest_birthday = models.DateField(default=timezone.now, blank=True,
-# verbose_name='Дата рождения') guest_gender = models.CharField(max_length=1, choices=_GENDER, blank=True,
-# verbose_name='Пол') guest_book_count = models.PositiveIntegerField(default=0, verbose_name='Бронирований')
-# guest_status = models.CharField(max_length=1, choices=_LOYALTY_SYSTEM, default='d', verbose_name='Статус клиента')
-#
-#     def __str__(self):
-#         return self.first_name + ' ' + self.last_name
-#
-#     class Meta:
-#         """Определение параметров в мета классе альбом"""
-#         db_table = 'guest_db'
-#         ordering = ['last_name']
-#         verbose_name = 'Гость'
-#         verbose_name_plural = 'Гости'
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        user = CustomUser.objects.get(id=instance.id)
+        Favorite.objects.create(user=user)

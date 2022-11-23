@@ -2,23 +2,18 @@
 {% load static %}
 <html lang="ru" xmlns="http://www.w3.org/1999/html">
 <head>
-    <meta charset="UTF-8">
-    <title>{% block title%}Biblov{% endblock title%}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title%}Biglov{% endblock title%}</title>
     <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
-    <link type="text/css" rel="reset" href="../../static/css/reset.css">
+    <link type="text/css" rel="reset" href="{% static 'css/reset.css' %}">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="../../static/css/style.css">
-    <link type="text/css" rel="stylesheet" href="../static/css/stylesheet.css">
-
-
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src=" https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js "></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js"></script>
-    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link type="text/css" rel="stylesheet" href="{% static 'css/stylesheet.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     <!-- Fengyuan Chen's Datepicker -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
@@ -26,20 +21,24 @@
     <script src="../../static/js/datepicker.ru-RU.js"></script>
 
 </head>
-<header class="basemenu">
+<header class="basemenu" id="header">
     <nav class="menu1">
         <nav class="base__logo_and_menu">
             <a class="base-logo" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
             <div class="base-menu-buttons">
                 {% if request.user.is_authenticated %}
                     <div class="dropdown">
-                      <a data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
-                        {{ guest }} <img class="open-profile-button" src="../static/img/icons/icons8-login-66.png" alt="Войти в кабинет">
+                      <a class="base_menu__a_guest_and_img" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                          <div class="base_menu__guest_name">{{ guest }}</div><img class="open-profile-button" src="{% static 'img/icons/icons8-login-66.png' %}" alt="Войти в кабинет">
                       </a>
                       <form class="dropdown-menu p-4" id="base_menu__container">
                           <p>{{ guest }}</p>
                           <p class="base_menu__lk_logout">
-                              <a href="{% url 'app_profiler:account_detail' slug=request.user.slug %}">Личный кабинет</a>
+                              {% if request.user.slug %}
+                                <a href="{% url 'app_profiler:account_detail' slug=request.user.slug %}">Личный кабинет</a>
+                              {% else %}
+                                <a href="{% url 'app_profiler:account_detail' id=request.user.id %}">Личный кабинет</a>
+                              {% endif %}
                               <a href="{% url 'app_profiler:logout' %}">Выйти</a>
                           </p>
                           <ul class="base_menu__links_container">
@@ -49,9 +48,10 @@
                                           Кабинет арендодателя
                                       </a>
                                   </li>
-                                  <li class="base_menu__li_container"><a href="{% url 'app_profiler:account_reserves' slug=request.user.slug %}">Мои бронирования</a></li>
-                                  <li class="base_menu__li_container"><a data-bs-toggle="modal" data-bs-target="#staticBackdropRules" href="#">Правила сайта</a></li>
                               {% endif %}
+                                  <li class="base_menu__li_container"><a href="{% url 'app_profiler:account_reserves' slug=request.user.slug %}">Мои бронирования</a></li>
+                                  <li class="base_menu__li_container"><a href="{% url 'app_rules:rules' %}">Правила сайта</a></li>
+                                  <li class="base_menu__li_container"><a href="{% url 'app_rules:privacy_policy' %}">Политика конфиденциальности</a></li>
                           </ul>
                       </form>
                     </div>
@@ -76,7 +76,7 @@
                                             </label>
                                         </div>
                                     </div>
-                                    <button type="submit" name="submit-login-form" class="btn btn-success">Войти</button>
+                                    <button type="submit" id="base__login_form" name="submit-login-form" class="btn btn-success">Войти</button>
                                 </form>
                                 <div class="dropdown-divider"></div>
                                 <button class="dropdown-item" id="open_pop_up">Впервые у нас? <b>Зарегистрироваться</b></button>
@@ -88,18 +88,15 @@
         </nav>
         <nav class="base__main_menu">
             <a id="base__menu_buttons1" type="" href="{% url 'app_index:index' %}" class="btn btn-outline-light">Жилье</a>
-            <a id="base__menu_buttons2" type="" href="{% url 'app_auto:auto_index' %}" class="btn btn-outline-light">Авто</a>
+<!--            <a id="base__menu_buttons2" type="" href="{% url 'app_auto:auto_index' %}" class="btn btn-outline-light">Авто</a>-->
         </nav>
     </nav>
-
 </header>
 
 <body>
     {% block content %}{% endblock content %}
         <div id="pop_up" style="position: fixed; left: 50%; top: 50%;transform: translate(-50%, -50%); display: none; z-index: 100; padding: 5px;">
             <button id="close_pop_up_btn" class="btn-close" aria-label="Close"></button>
-            <div class="register-popup-picture">
-            </div>
             <form class="register-container" method="post">{% csrf_token %}
                 <div class="register-form-main-container">
                     <p class="register-form-container">
@@ -113,7 +110,11 @@
                     <p class="register-form-container">
                         <p>{{ register_form.last_name }}</p>
                     <p class="register-form-container">
+                        <p>{{ register_form.slug }}</p>
+                    <p class="register-form-container">
                         <p>{{ register_form.phone }}</p>
+                    <p class="register-form-container">
+                        <p>{{ register_form.birthday }}</p>
                     <div class="form-check form-switch">
                     <p class="register-form-container">
                         <p>{{ register_form.is_company }}</p>
@@ -121,34 +122,13 @@
                     </div>
                     <div class="form-check form-switch">
                         {{ register_form.is_active }}
-                        <label class="form-check-label" for="flexSwitchCheckDefault">Согласиться с <a style="color: blue;" data-bs-toggle="modal" data-bs-target="#staticBackdropRules">правилами сайта</a></label>
+                        <label class="form-check-label" for="flexSwitchCheckDefault">
+                            Согласиться с <a style="color: blue;" href="{% url 'app_rules:rules' %}" target="_ blank">правилами сайта</a> и <a style="color: blue;" href="{% url 'app_rules:privacy_policy' %}" target="_ blank">Политикой конфиденциальности</a>
+                        </label>
                     </div>
                 </div>
                 <button type="submit" name="save-register-form" class="btn btn-light" id="register-button">Зарегистрироваться</button>
             </form>
-        </div>
-
-        <!-- Modal -->
-        <div class="modal fade" id="staticBackdropRules" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-scrollable modal-xl">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h4 class="modal-title" id="staticBackdropLabel">Правила оказания услуг клиентам</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                {% for rule in rules_list %}
-                    <ul>
-                        <li>{{ rule.sub_category }}</li>
-                        <div>{{ rule.text | safe | linebreaks }}</div>
-                    </ul>
-                {% endfor %}
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
-              </div>
-            </div>
-          </div>
         </div>
 
     <script>
@@ -175,7 +155,7 @@
         })
     </script>
 
-    <!-- Модальное окно управления промо-акциями -->
+    <!-- Модальное окно контакты -->
     <div class="modal fade" id="staticBackdrop5" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -192,12 +172,12 @@
         </div>
       </div>
     </div>
-
+    <a href="#header"><img class="base__arrow_top" src="../../static/img/icons/free-icon-arrowhead-up-3838683.png"></a>
 </body>
 {% block footer %}
 <footer class="base__footer_all">
     <div class="base__footer_container">
-        <a class="base__logo_footer" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
+        <a class="base__logo_footer" href="/"><img class="logo-main_footer" src="../../static/img/logo.png" alt="Логотип"></a>
     </div>
     <div class="base__footer">
         <div class="base__copyright">

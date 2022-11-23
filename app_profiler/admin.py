@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CustomUser
+from .models import CustomUser, Favorite
 
 
 @admin.register(CustomUser)
@@ -11,7 +11,8 @@ class CustomUserAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Учетные данные пользователя', {'fields': ('email', 'password', 'created_at')}),
         ('Статусы', {'fields': ('is_superuser', 'is_staff', 'is_company', 'is_active')}),
-        ('Общая информация', {'fields': ('first_name', 'last_name', 'slug', 'phone', 'gender', 'birthday')}),
+        ('Общая информация', {'fields': ('first_name', 'last_name', 'slug', 'phone', 'gender', 'birthday',
+                                         'is_favorite')}),
         ('Статистическая информация', {'fields': ('status', 'book_count')}),
         ('Доступы и группы', {'fields': ('groups', 'user_permissions')})
     )
@@ -32,6 +33,12 @@ class CustomUserAdmin(admin.ModelAdmin):
     mark_as_middle.short_description = 'Поревести всех в статус Мид'
     mark_as_middle_plus.short_description = 'Поревести всех в статус Мид+'
     mark_as_senior.short_description = 'Поревести всех в статус Синьор'
+
+
+@admin.register(Favorite)
+class FavoriteAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user']
+    fields = ('user', 'hotel_objects', 'long_term_objects')
 
 
 # @admin.register(Guest)

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 {% extends "base.html" %}
-
+{% load static %}
 <html lang="ru" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
@@ -12,6 +12,7 @@
 
     <link rel="stylesheet" href="../../static/css/style.css">
     <link type="text/css" rel="stylesheet" href="../../static/css/stylesheet.css">
+
 </head>
 <body>
     {% block content %}
@@ -43,7 +44,7 @@
                     <div class="account__birth_and_gender_container">
                         <div class="account__names">
                             <label class="user_detail__label_font_size">Дата рождения:</label>
-                            {{ account_form.birthday }}
+                            {{ account_form.birthday }} {{ account_form.birthday.errors }}
                         </div>
                         <div style="width: 45%;">
                             <label class="user_detail__label_font_size" for="id_gender">Пол:</label>
@@ -103,22 +104,42 @@
                             {{ change_password_form.new_password1 }}
                         </div>
                         <div class="account__names">
-                            <label class="user_detail__label_font_size">Подтвердите новый пароль:</label>
+                            <label class="user_detail__label_font_size">Подтвердите пароль:</label>
                             {{ change_password_form.new_password2 }}
                         </div>
                     </div>
                     <button type="submit" class="btn btn-success" id="account__change_password" name="account__change_password_form">Сохранить</button>
                 </div>
-
             </form>
         </div>
+        <div class="user_detail__favorites_container">
+            <h4 style="text-align: center;">Избранное</h4>
+            <div class="user_detail__favorite_list_container">
+                {% if favorite_list %}
+                    {% for object in favorite_list %}
+                        {% for element in object.hotel_objects.all %}
+                            <div>
+                                <img class="user_detail__favorite_list_img" src="../../media/{{ element.photos.all.0.photo }}">
+                                <a href="{% url 'app_premises:realty_detail' slug=element.slug %}">{{ element }}</a>
+                            </div>
+                        {% endfor %}
+                        {% for element in object.long_term_objects.all %}
+                            <div>
+                                <img class="user_detail__favorite_list_img" src="../../media/{{ element.photos.all.0.photo }}">
+                                <a href="{% url 'app_ltrent:lt_realty_detail' pk=element.id %}">{{ element }}</a>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
     </div>
-    {% endblock %}
+{% endblock %}
 </body>
 {% block footer %}
 <footer class="base__footer_not_fixed">
     <div class="base__footer_container">
-        <a class="base__logo_footer" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
+        <a class="base__logo_footer" href="/"><img class="logo-main_footer" src="../../static/img/logo.png" alt="Логотип"></a>
     </div>
     <div class="base__footer">
         <div class="base__copyright">

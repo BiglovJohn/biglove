@@ -1,6 +1,7 @@
-from .models import RulesModel
+from .models import RulesModel, PrivacyPolicyModel
 
 
 def render_rules_list(request):
     rules_list = RulesModel.objects.all()
-    return {'rules_list': rules_list}
+    privacy = PrivacyPolicyModel.objects.all()
+    return {'rules_list': rules_list, 'privacy': privacy}

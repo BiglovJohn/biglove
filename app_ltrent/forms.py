@@ -1,5 +1,5 @@
 from django import forms
-from .models import FurnitureModel, TechniqueModel, LongTermRentObject
+from .models import FurnitureModel, TechniqueModel, LongTermRentObject, LongTermPhotos
 
 list_of_furniture_id = [furniture.id for furniture in FurnitureModel.objects.all()]
 list_of_furniture_names = [furniture.name for furniture in FurnitureModel.objects.all()]
@@ -19,26 +19,38 @@ class LongTermRentObjectForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(LongTermRentObjectForm, self).__init__(*args, **kwargs)
         """Работа с классами формы"""
-        self.fields['realty_country'].widget.attrs['class'] = 'create-realty-input'
-        self.fields['realty_region'].widget.attrs['class'] = 'create-realty-input'
-        self.fields['realty_city'].widget.attrs['class'] = 'create-realty-input'
-        self.fields['realty_address'].widget.attrs['class'] = 'create-realty-input'
-        self.fields['city_area'].widget.attrs['class'] = 'create-realty-input'
-        self.fields['micro_city_area'].widget.attrs['class'] = 'create-realty-input'
-        self.fields['house_number'].widget.attrs['class'] = 'create-realty-input-short'
-        self.fields['house_korpus'].widget.attrs['class'] = 'create-realty-input-short'
+        self.fields['realty_country'].widget.attrs['class'] = 'lt_realty_create__input'
+        self.fields['realty_region'].widget.attrs['class'] = 'lt_realty_create__input'
+        self.fields['realty_city'].widget.attrs['class'] = 'lt_realty_create__input'
+        self.fields['realty_address'].widget.attrs['class'] = 'lt_realty_create__input'
+        self.fields['city_area'].widget.attrs['class'] = 'lt_realty_create__input'
+        self.fields['micro_city_area'].widget.attrs['class'] = 'lt_realty_create__input'
+        self.fields['house_number'].widget.attrs['class'] = 'lt_realty_create__input'
+        self.fields['house_korpus'].widget.attrs['class'] = 'lt_realty_create__input'
         self.fields['house_korpus'].widget.attrs['placeholder'] = 'Лит. А | Корп. 1 | Блок Б'
 
-        self.fields['rooms_count'].widget.attrs['class'] = 'create-realty-input-short'
-        self.fields['floor'].widget.attrs['class'] = 'create-realty-input-short'
-        self.fields['floor_count'].widget.attrs['class'] = 'create-realty-input-short'
-        self.fields['deposit'].widget.attrs['class'] = 'create-realty-input-short'
+        self.fields['rooms_count'].widget.attrs['class'] = 'lt_realty_create__input'
+        self.fields['floor'].widget.attrs['class'] = 'lt_realty_create__input'
+        self.fields['floor_count'].widget.attrs['class'] = 'lt_realty_create__input'
+        self.fields['deposit'].widget.attrs['class'] = 'lt_realty_create__input'
 
-        self.fields['realty_price'].widget.attrs['class'] = 'create-realty-input-short'
-        self.fields['realty_area'].widget.attrs['class'] = 'create-realty-input-short'
+        self.fields['realty_price'].widget.attrs['class'] = 'lt_realty_create__input'
+        self.fields['realty_area'].widget.attrs['class'] = 'lt_realty_create__input'
         # self.fields['company'] = forms.ModelChoiceField(
         #     required=True,
         #     queryset=ManagerProfile.objects.filter(referring_user=1))
+
+
+class LongTermPhotosForm(forms.ModelForm):
+
+    class Meta:
+        model = LongTermPhotos
+        fields = ('photo', )
+        exclude = ['long_term_obj', 'created_at']
+
+    def __init__(self, *args, **kwargs):
+        super(LongTermPhotosForm, self).__init__(*args, **kwargs)
+        self.fields['photo'].widget.attrs['multiple'] = True
 
 
 class DropdownFilterLongTermForm(forms.Form):

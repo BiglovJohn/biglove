@@ -1,3 +1,8 @@
 from django.contrib import admin
+from .models import Ip
 
-# Register your models here.
+
+@admin.register(Ip)
+class IpAdmin(admin.ModelAdmin):
+    list_display = ['id']
+

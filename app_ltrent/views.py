@@ -3,22 +3,24 @@ import os
 
 from django.contrib.auth import authenticate, login
 from django.db.models import Q
-from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import generic, View
 from app_premises.models import Reservation, RealtyOptions, HolidayHouseObject
 from app_premises.forms import ReservationForm, PriseFilterForm, DropdownFilterForm, RealtyTypeCheckBoxForm, \
-    OptionFilterForm, InRoomOptionFilterForm, FoodOptionFilterForm, HolidayHouseForm, PhotosForm, BookCancelForm, \
+    OptionFilterForm, InRoomOptionFilterForm, FoodOptionFilterForm, HolidayHouseForm, BookCancelForm, \
     PayTypeForm
 
-from app_profiler.models import CustomUser
+from app_profiler.models import CustomUser, Favorite
 from app_profiler.forms import RegisterForm, AuthForm
 from app_comments.forms import CommentsForm
 from app_companies.models import CompanyProfile
+from app_data.models import Ip
+from app_data.views import get_client_ip
 
 from .forms import DropdownFilterLongTermForm, AreaFilterForm, FloorFilterForm, RulesFilterForm, BathroomFilterForm, \
-    FurnitureFilterForm, TechniqueFilterForm, LongTermRentObjectForm
+    FurnitureFilterForm, TechniqueFilterForm, LongTermRentObjectForm, LongTermPhotosForm
 from .models import LongTermRentObject, LongTermPhotos
 from app_premises.views import permission_denied
 
@@ -32,6 +34,8 @@ def main_lt_realty_list(request):
 
     if 'lt_realty_list__search' in request.POST:
         query = request.POST.get('lt')
+
+        searched_city = query
 
         lt_realty_list = LongTermRentObject.objects.filter(
             Q(realty_country__iregex=query) | Q(realty_city__iregex=query) | Q(
@@ -119,7 +123,6 @@ def main_lt_realty_list(request):
                 lt_realty_list = lt_realty_list.filter(id__in=furniture__result_list)
 
         """ Фильтрация по технике """
-
         technique_checkbox = TechniqueFilterForm(request.POST)
 
         technique__result_list = []
@@ -137,13 +140,20 @@ def main_lt_realty_list(request):
         all_lt_realty = LongTermRentObject.objects.all()  # Список всех объектов недвижимости для работы с фильтрами
         adv_lt_realty_list = lt_realty_list.filter(is_advertised=True)
 
+        """ Проверяем залогинен пользователь или нет, если да , то берём его список избранного и передаём в шаблон """
+        favorite_list = Favorite.objects.none()
+        if request.user.is_authenticated:
+            favorite_list = Favorite.objects.filter(user=request.user.id).prefetch_related('hotel_objects',
+                                                                                           'long_term_objects')
+
         return render(request, 'app_ltrent/lt_realty_list.html',
                       {
                           'lt_realty_list': lt_realty_list, 'price_filter': price_filter, 'main_filter': main_filter,
                           'adv_lt_realty_list': adv_lt_realty_list, 'area_filter': area_filter,
                           'floor_filter': floor_filter, 'rules_checkbox': rules_checkbox,
                           'bathroom_checkbox': bathroom_checkbox, 'furniture_checkbox': furniture_checkbox,
-                          'technique_checkbox': technique_checkbox,
+                          'technique_checkbox': technique_checkbox, 'searched_city': searched_city,
+                          'favorite_list': favorite_list,
                       }
                       )
 
@@ -159,6 +169,12 @@ def main_lt_realty_list(request):
     realty_type_checkbox = RealtyTypeCheckBoxForm()
     adv_lt_realty_list = lt_realty_list.filter(is_advertised=True)
 
+    """ Проверяем залогинен пользователь или нет, если да , то берём его список избранного и передаём в шаблон """
+    favorite_list = Favorite.objects.none()
+    if request.user.is_authenticated:
+        favorite_list = Favorite.objects.filter(user=request.user.id).prefetch_related('hotel_objects',
+                                                                                       'long_term_objects')
+
     return render(request, 'app_ltrent/lt_realty_list.html',
                   {
                       'lt_realty_list': lt_realty_list,
@@ -172,7 +188,7 @@ def main_lt_realty_list(request):
                       'bathroom_checkbox': bathroom_checkbox,
                       'furniture_checkbox': furniture_checkbox,
                       'technique_checkbox': technique_checkbox,
-                  }
+                      'favorite_list': favorite_list}
                   )
 
 
@@ -199,12 +215,23 @@ class LongTermRealtyDetailView(generic.DetailView):
         """Передача дополнительных моделей в шаблон через контекст"""
         context = super(LongTermRealtyDetailView, self).get_context_data(**kwargs)
         pk = kwargs['object'].id
-        current_user = self.request.user.id
-        current_account = CustomUser.objects.get(id=current_user)
         current_realty = LongTermRentObject.objects.get(id=pk)
-        current_company = CompanyProfile.objects.get(user=current_user)
         advertised_realty = LongTermRentObject.objects.filter(is_advertised=True)
-        deposit_sum = current_realty.deposit * current_realty.realty_price
+        current_company = current_realty.company
+        current_account = CustomUser.objects.none()
+
+        """ Получаем IP адреса пользователей и уникальные пишем в БД """
+        ip = get_client_ip(self.request)
+
+        if Ip.objects.filter(ip=ip).exists():
+            current_realty.views_count.add(Ip.objects.get(ip=ip))
+        else:
+            Ip.objects.create(ip=ip)
+            current_realty.views_count.add(Ip.objects.get(ip=ip))
+
+        if self.request.user.is_authenticated:
+            current_user = self.request.user.id
+            current_account = CustomUser.objects.get(id=current_user)
 
         """ Наборы данных для вывода в раздел 'так же у этой компании' в детальной информации объектов """
 
@@ -217,7 +244,6 @@ class LongTermRealtyDetailView(generic.DetailView):
         context['current_company'] = current_company
         context['advertised_realty'] = advertised_realty
         context['detail_photos'] = LongTermPhotos.objects.filter(long_term_obj=pk)
-        context['deposit_sum'] = deposit_sum
         context['current_account'] = current_account
 
         return context
@@ -249,6 +275,7 @@ class LongTermRealtyDetailView(generic.DetailView):
 
 class LonTermRealtyEditFromView(View):
     def get(self, request, pk):
+
         if 'delete_lt_photo_button' in request.GET:
             pk = request.GET.get('delete_photo_button').split(', ')[1]
             current_photo = LongTermPhotos.objects.get(id=pk)
@@ -262,7 +289,7 @@ class LonTermRealtyEditFromView(View):
 
             if realty_edit.company == current_manager:
                 realty_edit_form = LongTermRentObjectForm(instance=realty_edit)
-                upload_photos_form = PhotosForm(request.FILES, initial={'realty_obj': realty_edit.id})
+                upload_photos_form = LongTermPhotosForm(request.FILES, initial={'realty_obj': realty_edit.id})
                 return render(request, 'app_ltrent/lt_edit_realty.html',
                               context={'realty_edit_form': realty_edit_form, 'pk': pk, 'realty_edit': realty_edit,
                                        'upload_photos_form': upload_photos_form
@@ -279,18 +306,29 @@ class LonTermRealtyEditFromView(View):
         if request.method == 'POST':
             realty_edit = LongTermRentObject.objects.get(id=pk)
             realty_edit_form = LongTermRentObjectForm(request.POST, instance=realty_edit)
-            upload_photos_form = PhotosForm(request.POST, request.FILES, initial={'realty_obj': realty_edit.id})
+            upload_photos_form = LongTermPhotosForm(request.POST, request.FILES, initial={'realty_obj': realty_edit.id})
             if realty_edit_form.is_valid():
+                realty_edit_form.save(commit=False)
+                if 'realty_edit_submitting_technique' in request.POST:
+                    realty_edit.technique.clear()
+                    technique_list = realty_edit_form.cleaned_data['technique']
+                    realty_edit.technique.add(*technique_list)
+
+                if 'realty_edit_submitting_furniture' in request.POST:
+                    realty_edit.furniture.clear()
+                    furniture_list = realty_edit_form.cleaned_data['furniture']
+                    realty_edit.furniture.add(*furniture_list)
+
                 files = request.FILES.getlist('photo')
                 realty_edit.save()
                 for photo in files:
-                    LongTermPhotos.objects.create(realty_obj=realty_edit, photo=photo)
+                    LongTermPhotos.objects.create(long_term_obj=realty_edit, photo=photo)
 
             elif 'lt_realty_edit_submitting_photo' in request.POST:
                 if upload_photos_form.is_valid():
                     files = request.FILES.getlist('photo')
                     for photo in files:
-                        LongTermPhotos.objects.create(realty_obj=realty_edit, photo=photo)
+                        LongTermPhotos.objects.create(long_term_obj=realty_edit, photo=photo)
                     return redirect('app_ltrent:lt_realty_edit', pk=pk)
 
                 else:
@@ -306,177 +344,44 @@ class LonTermRealtyEditFromView(View):
                           )
 
 
+class LongTermObjectFormView(View):
+
+    def get(self, request):
+        current_company = CompanyProfile.objects.get(user=request.user.id)
+        lt_realty_form = LongTermRentObjectForm(initial={'company': current_company})
+        upload_photos_form = LongTermPhotosForm(request.FILES)
+        return render(request, 'app_ltrent/lt_create_realty.html',
+                      context={'lt_realty_form': lt_realty_form, 'upload_photos_form': upload_photos_form})
+
+    def post(self, request):
+        context = {}
+        current_company = CompanyProfile.objects.get(user=request.user.id)
+        if 'lt_realty_create__save_realty_object' in request.POST:
+            lt_realty_form = LongTermRentObjectForm(request.POST, request.FILES)
+            upload_photos_form = LongTermPhotosForm(request.FILES)
+            if lt_realty_form.is_valid() and upload_photos_form.is_valid():
+                lt_realty = lt_realty_form.save(commit=False)
+                files = request.FILES.getlist('photo')
+                lt_realty.save()
+                for photo in files:
+                    LongTermPhotos.objects.create(long_term_obj=lt_realty, photo=photo)
+            return redirect('app_companies:company_detail', company_slug=current_company.slug)
+        else:
+            lt_realty_form = LongTermRentObjectForm()
+        context['form'] = lt_realty_form
+        return render(request, 'app_ltrent/lt_create_realty.html', context={'lt_realty_form': lt_realty_form})
+
+
 """---КОНЕЦ РАЗДЕЛА ВЬШЕК ПО ОБЪЕКТАМ НЕДВИЖИМОСТИ---"""
 
 
-# class ReservationFormView(View):
-#
-#     def get(self, request, *args, **kwargs):
-#         if 'to-reserve-page' in request.GET:
-#             if request.user.is_authenticated:
-#                 realty = request.GET.get('to-reserve-page').split(', ')[0]
-#                 current_realty_price = request.GET.get('to-reserve-page').split(', ')[1]
-#                 current_user = CustomUser.objects.get(id=request.user.id)
-#                 check_in = datetime.datetime.strptime(request.GET.get('to-reserve-page').split(', ')[2],
-#                                                       "%Y-%m-%d").date()
-#                 check_out = datetime.datetime.strptime(request.GET.get('to-reserve-page').split(', ')[3],
-#                                                        "%Y-%m-%d").date()
-#                 total_sum = (check_out - check_in).days * int(current_realty_price)
-#                 reservation_form = ReservationForm(
-#                     initial={'realty': realty, 'guest': current_user, 'check_in': check_in, 'check_out': check_out,
-#                              'total_sum': total_sum, 'is_booked': False})
-#                 realty_object_to_reserve_page = LongTermRentObject.objects.get(id=realty)
-#                 photos = Photos.objects.filter(realty_obj=realty).first()
-#                 reserve_register_form = RegisterForm()
-#
-#                 return render(request, 'app_premises/reservation.html',
-#                               context={'reservation_form': reservation_form,
-#                                        'realty_object_to_reserve_page': realty_object_to_reserve_page,
-#                                        'current_user': current_user,
-#                                        'check_in': check_in,
-#                                        'check_out': check_out,
-#                                        'total_sum': total_sum,
-#                                        'photos': photos, 'reserve_register_form': reserve_register_form
-#                                        }
-#                               )
-#
-#             else:
-#                 auth_form = AuthForm()
-#                 realty = request.GET.get('to-reserve-page').split(', ')[0]
-#                 current_realty_price = request.GET.get('to-reserve-page').split(', ')[1]
-#                 check_in = datetime.datetime.strptime(request.GET.get('to-reserve-page').split(', ')[2],
-#                                                       "%Y-%m-%d").date()
-#                 check_out = datetime.datetime.strptime(request.GET.get('to-reserve-page').split(', ')[3],
-#                                                        "%Y-%m-%d").date()
-#                 total_sum = (check_out - check_in).days * int(current_realty_price)
-#                 realty_object_to_reserve_page = LongTermRentObject.objects.get(id=realty)
-#                 photos = Photos.objects.filter(realty_obj=realty).first()
-#                 reservation_form = ReservationForm(initial={'realty': realty, 'check_in': check_in,
-#                                                             'check_out': check_out, 'total_sum': total_sum,
-#                                                             'is_booked': False})
-#                 reserve_register_form = RegisterForm()
-#
-#                 return render(request, 'app_premises/reservation.html',
-#                               context={
-#                                   'realty_object_to_reserve_page': realty_object_to_reserve_page,
-#                                   'check_in': check_in,
-#                                   'check_out': check_out,
-#                                   'total_sum': total_sum,
-#                                   'photos': photos,
-#                                   'reservation_form': reservation_form,
-#                                   'reserve_register_form': reserve_register_form,
-#                                   'auth_form': auth_form,
-#                               }
-#                               )
-#
-#     def post(self, request, *args, **kwargs):
-#         if 'reservation-submit' in request.POST:
-#             realty = request.GET.get('to-reserve-page').split(', ')[0]
-#             current_realty_price = request.GET.get('to-reserve-page').split(', ')[1]
-#             current_user = CustomUser.objects.get(id=request.user.id)
-#             check_in = datetime.datetime.strptime(request.GET.get('to-reserve-page').split(', ')[2], "%Y-%m-%d").date()
-#             check_out = datetime.datetime.strptime(request.GET.get('to-reserve-page').split(', ')[3], "%Y-%m-%d").date()
-#             total_sum = (check_out - check_in).days * int(current_realty_price)
-#             reservation_form = ReservationForm(request.POST,
-#                                                initial={'realty': realty, 'guest': current_user, 'check_in': check_in,
-#                                                         'check_out': check_out,
-#                                                         'total_sum': total_sum, 'is_booked': False})
-#
-#             if reservation_form.is_valid():
-#                 reservation = reservation_form.save(commit=False)
-#                 reservation.guest = current_user
-#                 reservation.realty = LongTermRentObject.objects.get(id=realty)
-#                 reservation.is_booked = True
-#                 reservation.save()
-#             else:
-#                 pass
-#
-#             return HttpResponseRedirect('/')
-#
-#         if 'reserve__submit_login_form' in request.POST:
-#             realty = request.GET.get('to-reserve-page').split(', ')[0]
-#             current_realty_price = request.GET.get('to-reserve-page').split(', ')[1]
-#             check_in = datetime.datetime.strptime(request.GET.get('to-reserve-page').split(', ')[2], "%Y-%m-%d").date()
-#             check_out = datetime.datetime.strptime(request.GET.get('to-reserve-page').split(', ')[3], "%Y-%m-%d").date()
-#             total_sum = (check_out - check_in).days * int(current_realty_price)
-#             realty_object_to_reserve_page = LongTermRentObject.objects.get(id=realty)
-#             photos = Photos.objects.filter(realty_obj=realty).first()
-#             auth_form = AuthForm(request.POST)
-#             if auth_form.is_valid():
-#                 email = auth_form.cleaned_data['email']
-#                 password = auth_form.cleaned_data['password']
-#                 user = authenticate(email=email, password=password)
-#                 if user:
-#                     if user.is_active:
-#                         login(request, user)
-#                     else:
-#                         auth_form.add_error('__all__', 'Проверьте правильность введёных данных')
-#
-#                 current_user = CustomUser.objects.get(id=request.user.id)
-#                 reservation_form = ReservationForm(initial={'realty': realty, 'guest': current_user,
-#                                                             'check_in': check_in,
-#                                                             'check_out': check_out,
-#                                                             'total_sum': total_sum, 'is_booked': False})
-#
-#                 return render(request, 'app_premises/reservation.html',
-#                               context={'reservation_form': reservation_form,
-#                                        'realty_object_to_reserve_page': realty_object_to_reserve_page,
-#                                        'check_in': check_in,
-#                                        'check_out': check_out,
-#                                        'total_sum': total_sum,
-#                                        'photos': photos,
-#                                        'current_user': current_user
-#                                        }
-#                               )
-#
-#         if 'reserve__register_form_submit' in request.POST:
-#             reserve_register_form = RegisterForm(request.POST, initial={'phone': '+7'})
-#             realty = request.GET.get('to-reserve-page').split(', ')[0]
-#             current_realty_price = request.GET.get('to-reserve-page').split(', ')[1]
-#             check_in = datetime.datetime.strptime(request.GET.get('to-reserve-page').split(', ')[2],
-#                                                   "%Y-%m-%d").date()
-#             check_out = datetime.datetime.strptime(request.GET.get('to-reserve-page').split(', ')[3],
-#                                                    "%Y-%m-%d").date()
-#             total_sum = (check_out - check_in).days * int(current_realty_price)
-#             realty_object_to_reserve_page = LongTermRentObject.objects.get(id=realty)
-#             photos = Photos.objects.filter(realty_obj=realty).first()
-#             auth_form = AuthForm(request.POST)
-#
-#             if reserve_register_form.is_valid():
-#                 user = reserve_register_form.save()
-#                 last_name = reserve_register_form.cleaned_data.get('last_name')
-#                 first_name = reserve_register_form.cleaned_data.get('first_name')
-#                 phone = reserve_register_form.cleaned_data.get('phone')
-#                 email = reserve_register_form.cleaned_data.get('email')
-#                 raw_password = reserve_register_form.cleaned_data.get('password1')
-#                 is_active = reserve_register_form.cleaned_data.get('is_active')
-#                 is_company = reserve_register_form.cleaned_data.get('is_company')
-#
-#                 user = authenticate(email=email, password=raw_password)
-#                 login(request, user)
-#
-#                 current_user = CustomUser.objects.get(id=request.user.id)
-#                 reservation_form = ReservationForm(initial={'realty': realty, 'guest': current_user,
-#                                                             'check_in': check_in,
-#                                                             'check_out': check_out,
-#                                                             'total_sum': total_sum, 'is_booked': False})
-#
-#                 return render(request, 'app_premises/reservation.html',
-#                               context={'reservation_form': reservation_form,
-#                                        'realty_object_to_reserve_page': realty_object_to_reserve_page,
-#                                        'check_in': check_in,
-#                                        'check_out': check_out,
-#                                        'total_sum': total_sum,
-#                                        'photos': photos,
-#                                        'current_user': current_user
-#                                        }
-#                               )
-#             else:
-#                 return HttpResponseRedirect('/')
-#
-#         else:
-#             return HttpResponseRedirect('/')
-#
-#
-# def permission_denied(request):
-#     return render(request, '403.html')
+def lt_favorite(request):
+    realty_id = request.GET.get('realty_id', None)
+    current_lt = LongTermRentObject.objects.get(id=realty_id)
+    favorite_list = Favorite.objects.filter(user=request.user.id).first()
+    if not current_lt in favorite_list.long_term_objects.all():
+        Favorite.objects.get(user=request.user.id).long_term_objects.add(LongTermRentObject.objects.get(id=realty_id))
+        return HttpResponse('to', content_type='text/html')
+    else:
+        Favorite.objects.get(user=request.user.id).long_term_objects.remove(LongTermRentObject.objects.get(id=realty_id))
+        return HttpResponse('from', content_type='text/html')

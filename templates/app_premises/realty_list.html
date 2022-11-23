@@ -1,20 +1,24 @@
 <!DOCTYPE html>
 {% extends "base.html" %}
 {% load static %}
+{% load humanize %}
 <html lang="ru" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Посуточная аренда{% endblock title %}</title>
+    <title>{% block title %}Biglov.ru | Аренда домиков | Снять отель | Глэмпинг{% endblock title %}</title>
     <link type="text/css" rel="reset" href="../../static/css/reset.css">
+    <script src="http://code.jquery.com/jquery-latest.js" type="text/javascript"></script>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
     <link type="text/css" rel="stylesheet" href="../../static/css/style.css">
     <link type="text/css" rel="stylesheet" href="../../static/css/stylesheet.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
     <!-- Fengyuan Chen's Datepicker -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
@@ -24,7 +28,10 @@
 <body>
 {% block content %}
     <aside class="realty-list-container">
-        <menu class="realty-type-filters">
+        <menu class="realty-type-filters"  id="filters_menu">
+            <div class="lt_realty_list__open_filters">
+                <a data-bs-toggle="realty-type-filters" data-bs-target="#filters_menu"><img class="base__filters_img_close" id="filters_menu_button_close" src="../../static/img/icons/free-icon-options-8111047.png"></a>
+            </div>
 
             <form class="block-type" action="{% url 'app_premises:realty_list' %}" method="post">{% csrf_token %}
                 <menu class="search-realty-list-block-type">
@@ -33,7 +40,7 @@
                             <div class="col-md-8" id="search-form-input">
                                 <div class="search2">
                                     <i class="fa fa-search"></i>
-                                    <input name="q" type="text" class="form-control search-date" id="search-form" placeholder="Введите название города" autocomplete="off">
+                                    <input name="q" type="text" value="{{ searched_city }}" class="form-control search-date" id="search-form" placeholder="Введите название города" autocomplete="off">
 <!--                                    <button name="search" class="btn btn-info" id="realty-search-button"></button>-->
                                 </div>
                             </div>
@@ -107,7 +114,7 @@
                     <p class="realty-menu-text">Тип размещения</p>
                     <div class="form-check form-switch">
                         {{ realty_type_checkbox }}
-                      <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+                      <label class="form-check-label"></label>
                     </div>
                 </menu>
 
@@ -149,11 +156,16 @@
                         {% endfor %}
                     </div>
                 </menu>
-
-                <input class="filter-input" type="submit" name="realty_list__search" value="Найти">
+                <div style="display: flex; flex-direction: row; width: 70%; align-items: center;">
+                    <input class="filter-input" type="submit" name="realty_list__search" value="Найти">
+                </div>
             </form>
-
         </menu>
+
+        <div class="lt_realty_list__open_filters">
+            <a data-bs-toggle="realty-type-filters" data-bs-target="#filters_menu"><img class="base__filters_img" id="filters_menu_button" src="../../static/img/icons/free-icon-options-8111047.png"></a>
+        </div>
+
         <div class="realty_list__realty_container">
             {% if adv_realty_list %}
                 <div class="relaty_list__adv_list">
@@ -166,44 +178,76 @@
                                 </div>
                                 <div class="short-describe-text">
                                     <h4 class="short-description-title"> <a href='{% url "app_premises:realty_detail" adv_realty.slug %}'>{{ adv_realty.realty_name }}</a></h4>
-                                    <p class="short-description-text">{{ adv_realty.realty_country }}, {{ adv_realty.realty_region }}, г. {{ adv_realty.realty_city }}, {{ adv_realty.realty_address }}</p>
-                                    <p class="short-description-text">Количество мест: {{ adv_realty.count_of_persons }}</p>
-                                    <ul class="realty-list-options-list">
-                                        <h6 class="realty_list__h6_comfort">Удобства</h6>
-                                        <div class="realty_list__options_container">
-                                            {% for option in adv_realty.options.all|slice:6 %}
-                                                <li class="options_without_title_li"><img class="options-icon"  src="../../static/img/icons/{{ option.icon_url }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ option.option_name }}"></li>
+                                    <p class="short-description-text">{{ adv_realty.realty_city }}</p>
+                                    <p class="realty-list-price">{{ adv_realty.realty_price|intcomma }} ₽ в сутки</p>
+                                    <p class="short-description-text">Спальных мест: {{ adv_realty.count_of_persons }}</p>
+                                    <div class="realty_list__views_container">
+                                        <form method="get" id="is_favorite_adv{{ adv_realty.id }}" class="realty_list__favorite_container">
+                                            {% for object in favorite_list %}
+                                                {% if adv_realty in object.hotel_objects.all %}
+                                                    <img id="dismissAdvFavorite{{ adv_realty.id }}" style="width: 22%;" onclick="{{ adv_realty.id }}" src="{% static 'img/icons/free-icon-wishlist-3132924-added.png' %}">
+                                                {% else %}
+                                                    <img id="addAdvFavorite{{ adv_realty.id }}" style="width: 22%;" onclick="{{ adv_realty.id }}" src="{% static 'img/icons/free-icon-wishlist-3132924.png' %}">
+                                                {% endif %}
                                             {% endfor %}
+                                        </form>
+                                        <div class="realty_list__total_view_container">
+                                            <img class="realty_list__total_views" src="../../static/img/icons/free-icon-eye-scanner-7790069.png">
+                                            <div>{{ adv_realty.total_views }}</div>
                                         </div>
-                                    </ul>
+                                    </div>
 
-                                    <ul class="main_options_info">
-                                        {% if adv_realty.book_cancel == 'y' %}
-                                            <li style="color:green;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-calendar-5237130.png">{{ adv_realty.get_book_cancel_display }}</li>
-                                        {% elif adv_realty.book_cancel == 'n' %}
-                                            <li style="color:red;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-calendar-5237130.png">{{ adv_realty.get_book_cancel_display }}</li>
-                                        {% endif %}
+                                    <script>
+                                        $(document).ready(
+                                          $('#addAdvFavorite' + {{ adv_realty.id }}).click(function(e){
+                                            e.preventDefault();
+                                            var serializedData = $(this).serialize();
+                                            $.ajax({
+                                              type:"GET",
+                                              url: "../../hotel/favorite",
+                                              data: {"realty_id": {{adv_realty.id}}},
+                                              success: function(data){
+                                                  $("#addFavorite").html(data);
+                                                  if (data == 'to') {
+                                                      $("#addFavorite" + {{ adv_realty.id }}).attr("src", "{% static 'img/icons/free-icon-wishlist-3132924-added.png' %}");
+                                                      $("#addAdvFavorite" + {{ adv_realty.id }}).attr("src", "{% static 'img/icons/free-icon-wishlist-3132924-added.png' %}")
+                                                  }
+                                                  else {
+                                                      $("#addFavorite" + {{ adv_realty.id }}).attr("src", "{% static 'img/icons/free-icon-wishlist-3132924.png' %}");
+                                                      $("#addAdvFavorite" + {{ adv_realty.id }}).attr("src", "{% static 'img/icons/free-icon-wishlist-3132924.png' %}");
+                                                  }
+                                              },
+                                            });
+                                          })
+                                        );
+                                    </script>
 
-                                        {% if adv_realty.food_options == 'a' %}
-                                            <li style="color:green;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ adv_realty.get_food_options_display }}</li>
-                                        {% elif adv_realty.food_options == 'b' %}
-                                            <li style="color:green;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ adv_realty.get_food_options_display }}</li>
-                                        {% elif adv_realty.food_options == 'c' %}
-                                            <li style="color:green;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ adv_realty.get_food_options_display }}</li>
-                                        {% elif adv_realty.food_options == 'd' %}
-                                            <li style="color:green;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ adv_realty.get_food_options_display }}</li>
-                                        {% elif adv_realty.food_options == 'e' %}
-                                            <li style="color:red;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ adv_realty.get_food_options_display }}</li>
-                                        {% endif %}
+                                    <script>
+                                        $(document).ready(
+                                          $('#dismissAdvFavorite' + {{ adv_realty.id }}).click(function(e){
+                                            e.preventDefault();
+                                            var serializedData = $(this).serialize();
+                                            $.ajax({
+                                              type:"GET",
+                                              url: "../../hotel/favorite",
+                                              data: {"realty_id": {{adv_realty.id}}},
+                                              success: function(data){
+                                                  $("#dismissFavorite").html(data);
+                                                  if (data == 'from') {
+                                                      $("#dismissFavorite" + {{ adv_realty.id }}).attr("src", "{% static 'img/icons/free-icon-wishlist-3132924.png' %}");
+                                                      $("#dismissAdvFavorite" + {{ adv_realty.id }}).attr("src", "{% static 'img/icons/free-icon-wishlist-3132924.png' %}");
+                                                  }
+                                                  else {
+                                                      $("#dismissFavorite" + {{ adv_realty.id }}).attr("src", "{% static 'img/icons/free-icon-wishlist-3132924-added.png' %}");
+                                                      $("#dismissAdvFavorite" + {{ adv_realty.id }}).attr("src", "{% static 'img/icons/free-icon-wishlist-3132924-added.png' %}");
+                                                  }
+                                              },
+                                            });
+                                          })
+                                        );
+                                    </script>
 
-                                        {% if adv_realty.pay_type == 'o' %}
-                                            <li class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-credit-card-5950249.png">{{ adv_realty.get_pay_type_display }}</li>
-                                        {% else %}
-                                            <li class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/money.png">{{ adv_realty.get_pay_type_display }}</li>
-                                        {% endif %}
-                                    </ul>
                                     <div class="price_book_status_container">
-                                        <p class="realty-list-price">От: {{ adv_realty.realty_price }} РУБ</p>
                                         {% for reserve in reservation_set %}
                                             {% if obj.id == reserve.obj_id %}
                                                 <div class="realty-booked">
@@ -220,72 +264,134 @@
                 </div>
             {% endif %}
             <ul class="realty-list">
-                {% for obj in realty_list %}
-                    <div class="realty-card">
-                        <div>
-                          <img src="../../media/{{ obj.photos.all.0.photo }}" class="d-block w-100" alt="...">
-                        </div>
-                        <div class="short-describe-text">
-                            <h4 class="short-description-title"> <a href='{% url "app_premises:realty_detail" obj.slug %}'>{{ obj.realty_name }}</a></h4>
-                            <p class="short-description-text">{{ obj.realty_country }}, {{ obj.realty_region }}, г. {{ obj.realty_city }}, {{ obj.realty_address }}</p>
-                            <p class="short-description-text">Количество мест: {{ obj.count_of_persons }}</p>
-                            <ul class="realty-list-options-list">
-                                <h6 class="realty_list__h6_comfort">Удобства</h6>
-                                <div class="realty_list__options_container">
-                                    {% for option in obj.options.all|slice:6 %}
-                                        <li class="options_without_title_li"><img class="options-icon"  src="../../static/img/icons/{{ option.icon_url }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ option.option_name }}"></li>
+                {% if realty_list %}
+                    {% for obj in realty_list %}
+                        <div class="realty-card">
+                            <div>
+                              <img src="../../media/{{ obj.photos.all.0.photo }}" class="d-block w-100" alt="...">
+                            </div>
+                            <div class="short-describe-text">
+                                <h4 class="short-description-title"> <a href='{% url "app_premises:realty_detail" obj.slug %}'>{{ obj.realty_name }}</a></h4>
+                                <p class="short-description-text">{{ obj.realty_city }}</p>
+                                <p class="realty-list-price">{{ obj.realty_price|intcomma }} ₽ в сутки </p>
+                                <p class="short-description-text">Спальных мест: {{ obj.count_of_persons }}</p>
+                                <div class="realty_list__views_container">
+                                    <form method="get" id="addFavoriteForm{{ obj.id }}" data-url_root="{% url 'app_premises:realty_list' %}" class="realty_list__favorite_container">
+                                        {% for object in favorite_list %}
+                                            {% if obj in object.hotel_objects.all %}
+                                                <img id="dismissFavorite{{ obj.id }}" style="width: 22%;" onclick="{{ obj.id }}" src="{% static 'img/icons/free-icon-wishlist-3132924-added.png' %}">
+                                            {% else %}
+                                                <img id="addFavorite{{ obj.id }}" style="width: 22%;" onclick="{{ obj.id }}" src="{% static 'img/icons/free-icon-wishlist-3132924.png' %}">
+                                            {% endif %}
+                                        {% endfor %}
+                                    </form>
+
+                                    <div class="realty_list__total_view_container">
+                                        <img class="realty_list__total_views" src="../../static/img/icons/free-icon-eye-scanner-7790069.png">
+                                        <div>{{ obj.total_views }}</div>
+                                    </div>
+                                </div>
+
+                                <script>
+                                    $(document).ready(
+                                      $('#addFavorite' + {{ obj.id }}).click(function(e){
+                                        e.preventDefault();
+                                        var serializedData = $(this).serialize();
+                                        $.ajax({
+                                          type:"GET",
+                                          url: "../../hotel/favorite",
+                                          data: {"realty_id": {{obj.id}}},
+                                          success: function(data){
+                                              $("#addFavorite").html(data);
+                                              if (data == 'to') {
+                                                  $("#addFavorite" + {{ obj.id }}).attr("src", "{% static 'img/icons/free-icon-wishlist-3132924-added.png' %}");
+                                                  $("#addAdvFavorite" + {{ obj.id }}).attr("src", "{% static 'img/icons/free-icon-wishlist-3132924-added.png' %}")
+                                              }
+                                              else {
+                                                  $("#addFavorite" + {{ obj.id }}).attr("src", "{% static 'img/icons/free-icon-wishlist-3132924.png' %}");
+                                                  $("#addAdvFavorite" + {{ obj.id }}).attr("src", "{% static 'img/icons/free-icon-wishlist-3132924.png' %}");
+                                              }
+                                          },
+                                        });
+                                      })
+                                    );
+                                </script>
+
+                                <script>
+                                    $(document).ready(
+                                      $('#dismissFavorite' + {{ obj.id }}).click(function(e){
+                                        e.preventDefault();
+                                        var serializedData = $(this).serialize();
+                                        $.ajax({
+                                          type:"GET",
+                                          url: "../../hotel/favorite",
+                                          data: {"realty_id": {{obj.id}}},
+                                          success: function(data){
+                                              console.log(data + '2');
+                                              $("#dismissFavorite").html(data);
+                                              if (data == 'from') {
+                                                  $("#dismissFavorite" + {{ obj.id }}).attr("src", "{% static 'img/icons/free-icon-wishlist-3132924.png' %}");
+                                                  $("#dismissAdvFavorite" + {{ obj.id }}).attr("src", "{% static 'img/icons/free-icon-wishlist-3132924.png' %}");
+                                              }
+                                              else {
+                                                  $("#dismissFavorite" + {{ obj.id }}).attr("src", "{% static 'img/icons/free-icon-wishlist-3132924-added.png' %}");
+                                                  $("#dismissAdvFavorite" + {{ obj.id }}).attr("src", "{% static 'img/icons/free-icon-wishlist-3132924-added.png' %}");
+                                              }
+                                          },
+                                        });
+                                      })
+                                    );
+                                </script>
+
+                                <div class="price_book_status_container">
+                                    {% for reserve in reservation_set %}
+                                        {% if obj.id == reserve.obj_id %}
+                                            <div class="realty-booked">
+                                                <p class="realty-booked-text">Забронировано</p>
+                                                <p class="realty-booked-date-range">с {{ reserve.obj_check_in }} по {{ reserve.obj_check_out }}</p>
+                                            </div>
+                                        {% endif %}
                                     {% endfor %}
                                 </div>
-                            </ul>
-
-                            <ul class="main_options_info">
-                                {% if obj.book_cancel == 'y' %}
-                                    <li style="color:green;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-calendar-5237130.png">{{ obj.get_book_cancel_display }}</li>
-                                {% elif obj.book_cancel == 'n' %}
-                                    <li style="color:red;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-calendar-5237130.png">{{ obj.get_book_cancel_display }}</li>
-                                {% endif %}
-
-                                {% if obj.food_options == 'a' %}
-                                    <li style="color:green;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ obj.get_food_options_display }}</li>
-                                {% elif obj.food_options == 'b' %}
-                                    <li style="color:green;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ obj.get_food_options_display }}</li>
-                                {% elif obj.food_options == 'c' %}
-                                    <li style="color:green;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ obj.get_food_options_display }}</li>
-                                {% elif obj.food_options == 'd' %}
-                                    <li style="color:green;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ obj.get_food_options_display }}</li>
-                                {% elif obj.food_options == 'e' %}
-                                    <li style="color:red;" class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ obj.get_food_options_display }}</li>
-                                {% endif %}
-
-                                {% if obj.pay_type == 'o' %}
-                                    <li class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/free-icon-credit-card-5950249.png">{{ obj.get_pay_type_display }}</li>
-                                {% else %}
-                                    <li class="main_option_elem"><img class="main_option_img" src="../../static/img/icons/money.png">{{ obj.get_pay_type_display }}</li>
-                                {% endif %}
-                            </ul>
-                            <div class="price_book_status_container">
-                                <p class="realty-list-price">От: {{ obj.realty_price }} РУБ</p>
-                                {% for reserve in reservation_set %}
-                                    {% if obj.id == reserve.obj_id %}
-                                        <div class="realty-booked">
-                                            <p class="realty-booked-text">Забронировано</p>
-                                            <p class="realty-booked-date-range">с {{ reserve.obj_check_in }} по {{ reserve.obj_check_out }}</p>
-                                        </div>
-                                    {% endif %}
-                                {% endfor %}
                             </div>
                         </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="lt_realty_list__empty_queryset">
+                        <img class="lt_realty_list__empty_queryset_img" src="{% static 'img/icons/free-icon-guy-7836451-blonde.png' %}">
+                        <div class="lt_realty_list__empty_queryset_text">По Вашему запросу ничего не найдено</div>
                     </div>
-                {% endfor %}
+                {% endif %}
             </ul>
         </div>
     </aside>
+
+<!--    <script type="text/javascript" src="{% static 'js/favorite.js' %}"></script>-->
+
+    <script>
+        let show_filter = document.getElementById('filters_menu');
+        let open_btn  = document.getElementById('filters_menu_button');
+        let close_btn = document.getElementById('filters_menu_button_close');
+
+        open_btn.addEventListener('click',()=>{
+            show_filter.style.display = 'inline-block';
+            open_btn.style.display = 'none';
+            close_btn.style.display = 'inline-block';
+        })
+
+        close_btn.addEventListener('click', ()=>{
+            show_filter.style.display = 'none';
+            close_btn.style.display = 'none';
+            open_btn.style.display = 'inline-block';
+        })
+    </script>
 {% endblock content %}
 </body>
+
 {% block footer %}
 <footer class="base__footer_not_fixed">
     <div class="base__footer_container">
-        <a class="base__logo_footer" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
+        <a class="base__logo_footer" href="/"><img class="logo-main_footer" src="../../static/img/logo.png" alt="Логотип"></a>
     </div>
     <div class="base__footer">
         <div class="base__copyright">

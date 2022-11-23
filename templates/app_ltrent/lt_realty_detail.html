@@ -26,8 +26,8 @@
 {% block content %}
     <ul class="realty_list">
         <div class="realty_detail__top_text">
-            <p class="realty_name">{{ lt_realty.get_realty_type_display }} {{ lt_realty.realty_name }}, {{ lt_realty.realty_area }} м², {{ lt_realty.floor }}/{{ lt_realty.floor_count }} эт.</b>{{ lt_realty.region_center }}</p>
-            <p class="realty_address">{{ lt_realty.realty_country }}, {{ lt_realty.realty_region }}, {{ lt_realty.realty_city }}, {{ lt_realty.realty_address }}, {{ lt_realty.house_number }}{% if lt_realty.house_korpus %}, {{ lt_realty.house_korpus }} {% endif %}</p>
+            <p class="realty_name">{{ lt_realty.get_realty_type_display }} {{ lt_realty.realty_name }}, {{ lt_realty.realty_area }} м², {{ lt_realty.floor }}/{{ lt_realty.floor_count }} эт.</p>
+            <p class="realty_address">{{ lt_realty.realty_region }}, {{ lt_realty.realty_city }}, {{ lt_realty.realty_address }}, {{ lt_realty.house_number }}{% if lt_realty.house_korpus %}, {{ lt_realty.house_korpus }} {% endif %}</p>
         </div>
         <aside class="realty-detail-img-container">
             <div class="realty_detail__photo_and_menu_container">
@@ -83,6 +83,8 @@
                 <ul class="realty_detail__list_info">
                     <h5 class="options-list-title" id="staticBackdropLabel3">Основные параметры:</h5>
                     <p class="realty-bed">Количество комнат: <b>{{ lt_realty.rooms_count }}</b></p>
+                    <p class="realty-bed">Площадь помещения: {{ lt_realty.realty_area }} м²</p>
+                    <p class="realty-bed">Этаж: {{ lt_realty.floor }}/{{ lt_realty.floor_count }} эт.</p>
                     <p class="realty-bed">Санузел: <b>{{ lt_realty.get_bathroom_display }}</b></p>
 
                     <ul class="main_options_info">
@@ -164,7 +166,7 @@
                 <ul class="realty-list-info">
                     <p class="realty_price">{{ lt_realty.realty_price|intcomma }} ₽ в месяц</p>
                     {% if lt_realty.deposit %}
-                        <p class="lt_realty_detail__deposit"> Залог {{ deposit_sum }} ₽</p>
+                        <p class="lt_realty_detail__deposit"> Залог {{ lt_realty.deposit }} ₽</p>
                     {% else %}
                         <p class="lt_realty_detail__deposit">Без депозита</p>
                     {% endif %}
@@ -175,22 +177,21 @@
                                     <a id="detail__show_edit_form" href="{% url 'app_ltrent:lt_realty_edit' pk=lt_realty.id %}">
                                         <img class="edit__realty" src="../static/img/icons/free-icon-settings-2735296.png" alt="Редактировать">
                                     </a>
-                                    <label class="detail__menu_icon_label" for="detail__show_edit_form">Редактировать</label>
                                 {% endif %}
                             {% endif %}
                         {% endif %}
                     </div>
                 </ul>
                 <div class="lt_realty_detail__phone_and_email_container">
-                    <h5 style="margin: 0 10px; font-weight: bold;">Контактные данные:</h5>
+                    <h5 class="realty_detail__h5_text">Контактные данные:</h5>
                     <div class="realty_detail__phone_and_email">Телефон: {{ lt_realty.company.company_phone }}</div>
                     <div class="realty_detail__phone_and_email">Эл. почта: {{ lt_realty.company.company_email }}</div>
                 </div>
 
                 <div class="lt_realty_detail__account_data_container">
-                    <h5 style="margin: 0 10px; font-weight: bold;">Информация об арендодателе:</h5>
-                    <div class="realty_detail__name_and_created_at">{{ current_account.first_name }} (Арендодатель)</div>
-                    <div class="realty_detail__name_and_created_at"> На Biglov.ru с {{ current_account.created_at }}</div>
+                    <h5 class="realty_detail__h5_text">Информация об арендодателе:</h5>
+                    <div class="realty_detail__name_and_created_at">{{ lt_realty.company.user.first_name }} (Арендодатель)</div>
+                    <div class="realty_detail__name_and_created_at"> На Biglov.ru с {{ lt_realty.company.created_at }}</div>
                 </div>
 
             </div>
@@ -270,7 +271,7 @@
 {% block footer %}
 <footer class="base__footer_not_fixed">
     <div class="base__footer_container">
-        <a class="base__logo_footer" href="/"><img class="logo-main" src="../../static/img/logo.png" alt="Логотип"></a>
+        <a class="base__logo_footer" href="/"><img class="logo-main_footer" src="../../static/img/logo.png" alt="Логотип"></a>
     </div>
     <div class="base__footer">
         <div class="base__copyright">

@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 """Импорт библиотек для Swagger"""
 from rest_framework import permissions
@@ -30,11 +31,11 @@ urlpatterns = [
     path('rules/', include('app_rules.urls')),
     path('rent/', include('app_ltrent.urls')),
     path('auto/', include('app_auto.urls')),
-    path('', include('app_premises.urls')),
+    path('hotel/', include('app_premises.urls')),
     path('', include('app_index.urls')),
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += staticfiles_urlpatterns()
