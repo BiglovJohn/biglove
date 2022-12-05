@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Biglov.ru | Регистрация объекта{%endblock title %}</title>
+    <link type="text/css" rel="reset" href="../../static/css/reset.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <link type="text/css" rel="stylesheet" href="../../static/css/style.css">
+    <link type="text/css" rel="stylesheet" href="../../static/css/stylesheet.css">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+    <!-- Fengyuan Chen's Datepicker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
+</head>
+<body>
+{% block content %}
+    <div class="register_user__main_container" id="camp_step1_container">
+      <form class="create-realty-form" method="post" enctype="multipart/form-data">{% csrf_token %}
+            <h2 class="register_camp__h2_text">Регистрация пользователя</h2>
+            <div style="width: 100%; margin-bottom: 10px;">
+                <div style="text-align: left; color: black; font-weight: 600;">Логин:</div>
+                {{ register_form.email }}
+            </div>
+            <div style="width: 100%; margin-bottom: 10px;">
+                <div style="text-align: left; color: black; font-weight: 600;">Пароль:</div>
+                {{ register_form.password1 }}
+            </div>
+            <div style="width: 100%; margin-bottom: 10px;">
+                <div style="text-align: left; color: black; font-weight: 600;">Подтвердите пароль:</div>
+                {{ register_form.password2 }}
+            </div>
+          <button type="submit" class="btn btn-success register_camp__next_button" id="camp_step1">Дальше</button>
+      </form>
+      <div class="register_camp__info_block_container">
+          <div class="register_camp__info_block">
+              <h5>Выбор данных для регистрации</h5>
+              <ul>
+                  <li>Используйте только Вашу почту, доступ к которой нет ни у кого кроме Вас.</li>
+                  <li>
+                      Почта должна быть активной, так как именно с её помощью Вы сможете авторизоваться на сайте и вся
+                      информация по взаимодействию с сайтом Biglov.ru направляется только на данную почту.
+                  </li>
+                  <li>
+                      Придумайте надёжный пароль и никому его не сообщайте. Старайтесь не хранить его в смартфоне, в
+                      файле на компьютере или на бумаге.
+                  </li>
+              </ul>
+          </div>
+          <div class="register_camp__info_block">
+              <h5>Зачем нужен аккаунт?</h5>
+              <div>
+                  Для того чтобы просматривать предложения на сайте регистрация не требуется, но если Вы захотите
+                  забронировать объект у наших партнёров, то Вам нужен аккаунт так как данные аккаунта используются для
+                  подтверждения бронирования и связи с Вами в случае необходимости.
+              </div>
+          </div>
+          <div class="register_camp__info_block">
+              <h5>Защищены ли мои персональные данные?</h5>
+              <div>
+                  Защита персональных данных наших пользователей - самая приоритетная наша задача!
+                  <br></br>
+                  На сайте не предусмотрено страниц пользователей для открытого доступа, поэтому никто кроме Вас не
+                  может зайти и посмотреть Ваши данные, если Вы сами не передадите данные для входа на сайт другому
+                  человеку.
+                  <br></br>
+                  Мы передадим Ваши контакты сотрудникам объекта, который Вы забронируете. В контактные данные войдут:
+                  адрес электронной почты, номер телефона и ссылка на телеграм для удобства коммуникации.
+              </div>
+          </div>
+          <div class="register_camp__info_block">
+              <h5 style="color: black; font-weight: 600;">Важная информация!</h5>
+              <div>
+                  Продолжая регистрацию Вы даёте своё согласие на обработку персональных данных, а так же соглашаетесь с
+                  <a href="{% url 'app_rules:rules' %}">Правилами сайта</a> и
+                  <a href="{% url 'app_rules:privacy_policy' %}">Политикой конфиденциальности</a>.
+              </div>
+          </div>
+      </div>
+    </div>
+{% endblock %}
+</body>
+{% block footer %}
+<footer class="base__footer_not_fixed">
+    <div class="base__footer_container">
+        <a class="base__logo_footer" href="/"><img class="logo-main_footer" src="../../static/img/logo.png" alt="Логотип"></a>
+    </div>
+    <div class="base__footer">
+        <div class="base__copyright">
+            <li class="base_menu__li_container"><a href="{% url 'app_rules:our_values' %}">Наши ценности</a></li>
+            <li class="base_menu__li_container"><a href="{% url 'app_rules:rules' %}">Правила сайта</a></li>
+            <li class="base_menu__li_container"><a href="{% url 'app_rules:privacy_policy' %}">Политика конфиденциальности</a></li>
+            <li class="base_menu__li_container"><a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a></li>
+        </div>
+    </div>
+
+    <!-- Модальное окно управления промо-акциями -->
+    <div class="modal fade" id="staticBackdrop5" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel5">Контакты</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+          </div>
+          <div class="modal-body">
+              <div>Телефон для справок: +7 (938) 416-66-72</div>
+              <div>Эл. почта: biglov.info@yandex.ru</div>
+          </div>
+          <div class="modal-footer">
+          </div>
+        </div>
+      </div>
+    </div>
+</footer>
+{% endblock footer %}
+</html>

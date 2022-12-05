@@ -49,7 +49,7 @@
                 </menu>
                 <menu class="date-block-type">
                     <menu class="search-form2-datepicker">
-                        <div class="date-picker-index" id="base-search">
+                        <div class="date-picker__camps_list" id="base-search">
                             {{ list_reserve_form.check_in }} -
                             {{ list_reserve_form.check_out }}
                         </div>
@@ -95,7 +95,6 @@
                     <div class="form-checkbox">
                         {% for cancel_type in book_filter %}
                             {{ cancel_type.0 }}
-                            {{ cancel_type.1 }}
                         {% endfor %}
                     </div>
                 </menu>
@@ -122,11 +121,11 @@
                     <p class="realty-menu-text">В отеле</p>
                     <div class="form-checkbox">
                         {% for in_hotel_option in hotel_filter_checkbox %}
-                            {{ in_hotel_option.0 }}
+                            {{ in_hotel_option.6 }}
                             {{ in_hotel_option.1 }}
                             {{ in_hotel_option.2 }}
                             {{ in_hotel_option.3 }}
-                            {{ in_hotel_option.4 }}
+                            {{ in_hotel_option.5 }}
                         {% endfor %}
                     </div>
                 </menu>
@@ -135,7 +134,7 @@
                     <p class="realty-menu-text">В номере</p>
                     <div class="form-checkbox">
                         {% for in_room_option in room_filter_checkbox %}
-                            {{ in_room_option.0 }}
+                            {{ in_room_option.5 }}
                             {{ in_room_option.1 }}
                             {{ in_room_option.2 }}
                             {{ in_room_option.3 }}
@@ -156,7 +155,7 @@
                         {% endfor %}
                     </div>
                 </menu>
-                <div style="display: flex; flex-direction: row; width: 70%; align-items: center;">
+                <div style="display: flex; flex-direction: row; width: 100%; align-items: center;">
                     <input class="filter-input" type="submit" name="realty_list__search" value="Найти">
                 </div>
             </form>
@@ -174,22 +173,26 @@
                             <div class="realty-card adv">
                                 <img class="realty_list__adv_top_stamp" src="../../static/img/icons/free-icon-top-753359.png">
                                 <div>
-                                  <img src="../../media/{{ adv_realty.photos.all.0.photo }}" class="d-block w-100" alt="...">
+                                  <img src="../../media/{{ adv_realty.camp_photos.all.0.photo }}" class="d-block w-100" alt="...">
                                 </div>
                                 <div class="short-describe-text">
-                                    <h4 class="short-description-title"> <a href='{% url "app_premises:realty_detail" adv_realty.slug %}'>{{ adv_realty.realty_name }}</a></h4>
+                                    <h4 class="short-description-title"><a class="camp_list__link_style" href='{% url "app_premises:realty_detail" adv_realty.slug %}'>{{ adv_realty.realty_name }}</a></h4>
                                     <p class="short-description-text">{{ adv_realty.realty_city }}</p>
                                     <p class="realty-list-price">{{ adv_realty.realty_price|intcomma }} ₽ в сутки</p>
                                     <p class="short-description-text">Спальных мест: {{ adv_realty.count_of_persons }}</p>
                                     <div class="realty_list__views_container">
                                         <form method="get" id="is_favorite_adv{{ adv_realty.id }}" class="realty_list__favorite_container">
-                                            {% for object in favorite_list %}
-                                                {% if adv_realty in object.hotel_objects.all %}
-                                                    <img id="dismissAdvFavorite{{ adv_realty.id }}" style="width: 22%;" onclick="{{ adv_realty.id }}" src="{% static 'img/icons/free-icon-wishlist-3132924-added.png' %}">
-                                                {% else %}
-                                                    <img id="addAdvFavorite{{ adv_realty.id }}" style="width: 22%;" onclick="{{ adv_realty.id }}" src="{% static 'img/icons/free-icon-wishlist-3132924.png' %}">
-                                                {% endif %}
-                                            {% endfor %}
+                                            {% if favorite_list %}
+                                                {% for object in favorite_list %}
+                                                    {% if adv_realty in object.camps.all %}
+                                                        <img id="dismissAdvFavorite{{ adv_realty.id }}" style="width: 22%;" onclick="{{ adv_realty.id }}" src="{% static 'img/icons/free-icon-wishlist-3132924-added.png' %}">
+                                                    {% elif adv_realty not in object.camps.all %}
+                                                        <img id="addAdvFavorite{{ adv_realty.id }}" style="width: 22%;" onclick="{{ adv_realty.id }}" src="{% static 'img/icons/free-icon-wishlist-3132924.png' %}">
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% else %}
+                                                <img style="width: 22%;" onclick="{{ adv_realty.id }}" src="{% static 'img/icons/free-icon-wishlist-3132924.png' %}">
+                                            {% endif %}
                                         </form>
                                         <div class="realty_list__total_view_container">
                                             <img class="realty_list__total_views" src="../../static/img/icons/free-icon-eye-scanner-7790069.png">
@@ -204,7 +207,7 @@
                                             var serializedData = $(this).serialize();
                                             $.ajax({
                                               type:"GET",
-                                              url: "../../hotel/favorite",
+                                              url: "../../rent/favorite",
                                               data: {"realty_id": {{adv_realty.id}}},
                                               success: function(data){
                                                   $("#addFavorite").html(data);
@@ -229,7 +232,7 @@
                                             var serializedData = $(this).serialize();
                                             $.ajax({
                                               type:"GET",
-                                              url: "../../hotel/favorite",
+                                              url: "../../rent/favorite",
                                               data: {"realty_id": {{adv_realty.id}}},
                                               success: function(data){
                                                   $("#dismissFavorite").html(data);
@@ -268,22 +271,36 @@
                     {% for obj in realty_list %}
                         <div class="realty-card">
                             <div>
-                              <img src="../../media/{{ obj.photos.all.0.photo }}" class="d-block w-100" alt="...">
+                              <img src="../../media/{{ obj.camp_photos.all.0.photo }}" class="d-block w-100" alt="...">
+                            </div>
+                            <div class="price_book_status_container">
+                                {% for reserve in reservation_set %}
+                                    {% if obj.id == reserve.obj_id %}
+                                        <div class="realty-booked">
+                                            <p class="realty-booked-text">Забронировано</p>
+                                            <p class="realty-booked-date-range">с {{ reserve.obj_check_in }} по {{ reserve.obj_check_out }}</p>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
                             </div>
                             <div class="short-describe-text">
-                                <h4 class="short-description-title"> <a href='{% url "app_premises:realty_detail" obj.slug %}'>{{ obj.realty_name }}</a></h4>
+                                <h4 class="short-description-title"> <a class="camp_list__link_style" href='{% url "app_premises:realty_detail" obj.slug %}'>{{ obj.realty_name }}</a></h4>
                                 <p class="short-description-text">{{ obj.realty_city }}</p>
                                 <p class="realty-list-price">{{ obj.realty_price|intcomma }} ₽ в сутки </p>
                                 <p class="short-description-text">Спальных мест: {{ obj.count_of_persons }}</p>
                                 <div class="realty_list__views_container">
                                     <form method="get" id="addFavoriteForm{{ obj.id }}" data-url_root="{% url 'app_premises:realty_list' %}" class="realty_list__favorite_container">
-                                        {% for object in favorite_list %}
-                                            {% if obj in object.hotel_objects.all %}
-                                                <img id="dismissFavorite{{ obj.id }}" style="width: 22%;" onclick="{{ obj.id }}" src="{% static 'img/icons/free-icon-wishlist-3132924-added.png' %}">
-                                            {% else %}
-                                                <img id="addFavorite{{ obj.id }}" style="width: 22%;" onclick="{{ obj.id }}" src="{% static 'img/icons/free-icon-wishlist-3132924.png' %}">
-                                            {% endif %}
-                                        {% endfor %}
+                                        {% if favorite_list %}
+                                            {% for object in favorite_list %}
+                                                {% if obj in object.camps.all %}
+                                                    <img id="dismissFavorite{{ obj.id }}" style="width: 22%;" onclick="{{ obj.id }}" src="{% static 'img/icons/free-icon-wishlist-3132924-added.png' %}">
+                                                {% else %}
+                                                    <img id="addFavorite{{ obj.id }}" style="width: 22%;" onclick="{{ obj.id }}" src="{% static 'img/icons/free-icon-wishlist-3132924.png' %}">
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% else %}
+                                            <img style="width: 22%;" onclick="{{ adv_realty.id }}" src="{% static 'img/icons/free-icon-wishlist-3132924.png' %}">
+                                        {% endif %}
                                     </form>
 
                                     <div class="realty_list__total_view_container">
@@ -299,7 +316,7 @@
                                         var serializedData = $(this).serialize();
                                         $.ajax({
                                           type:"GET",
-                                          url: "../../hotel/favorite",
+                                          url: "../../rent/favorite",
                                           data: {"realty_id": {{obj.id}}},
                                           success: function(data){
                                               $("#addFavorite").html(data);
@@ -324,7 +341,7 @@
                                         var serializedData = $(this).serialize();
                                         $.ajax({
                                           type:"GET",
-                                          url: "../../hotel/favorite",
+                                          url: "../../rent/favorite",
                                           data: {"realty_id": {{obj.id}}},
                                           success: function(data){
                                               console.log(data + '2');
@@ -342,17 +359,6 @@
                                       })
                                     );
                                 </script>
-
-                                <div class="price_book_status_container">
-                                    {% for reserve in reservation_set %}
-                                        {% if obj.id == reserve.obj_id %}
-                                            <div class="realty-booked">
-                                                <p class="realty-booked-text">Забронировано</p>
-                                                <p class="realty-booked-date-range">с {{ reserve.obj_check_in }} по {{ reserve.obj_check_out }}</p>
-                                            </div>
-                                        {% endif %}
-                                    {% endfor %}
-                                </div>
                             </div>
                         </div>
                     {% endfor %}
@@ -388,37 +394,4 @@
 {% endblock content %}
 </body>
 
-{% block footer %}
-<footer class="base__footer_not_fixed">
-    <div class="base__footer_container">
-        <a class="base__logo_footer" href="/"><img class="logo-main_footer" src="../../static/img/logo.png" alt="Логотип"></a>
-    </div>
-    <div class="base__footer">
-        <div class="base__copyright">
-            <a href="{% url 'app_rules:our_values' %}">Наши ценности</a>
-        </div>
-        <div class="base__footer_info">
-            <a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a>
-        </div>
-    </div>
-
-    <!-- Модальное окно управления промо-акциями -->
-    <div class="modal fade" id="staticBackdrop5" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel5">Контакты</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-          </div>
-          <div class="modal-body">
-              <div>Телефон для справок: +7 (938) 416-66-72</div>
-              <div>Эл. почта: biglov.info@yandex.ru</div>
-          </div>
-          <div class="modal-footer">
-          </div>
-        </div>
-      </div>
-    </div>
-</footer>
-{% endblock footer %}
 </html>

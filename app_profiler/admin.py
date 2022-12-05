@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CustomUser, Favorite
+from .models import CustomUser
 
 
 @admin.register(CustomUser)
@@ -11,10 +11,17 @@ class CustomUserAdmin(admin.ModelAdmin):
     fieldsets = (
         ('Учетные данные пользователя', {'fields': ('email', 'password', 'created_at')}),
         ('Статусы', {'fields': ('is_superuser', 'is_staff', 'is_company', 'is_active')}),
-        ('Общая информация', {'fields': ('first_name', 'last_name', 'slug', 'phone', 'gender', 'birthday',
+        ('Общая информация', {'fields': ('first_name', 'last_name', 'middle_name', 'slug', 'phone', 'gender', 'birthday',
                                          'is_favorite')}),
+        ('Паспортные данные', {'fields': ('passport_series', 'passport_number', 'passport_who', 'passport_code',
+                                          'passport_date')}),
         ('Статистическая информация', {'fields': ('status', 'book_count')}),
-        ('Доступы и группы', {'fields': ('groups', 'user_permissions')})
+        ('Доступы и группы', {'fields': ('groups', 'user_permissions')}),
+        ('Реквизиты компании', {'fields': ('full_company_name', 'short_company_name', 'nds', 'legal_address',
+                                           'actual_address', 'inn', 'kpp', 'ogrn', 'bank_account', 'bank_name',
+                                           'kor_account', 'bic')
+                                }
+         ),
     )
 
     def mark_as_junior_plus(self, request, queryset):
@@ -33,12 +40,6 @@ class CustomUserAdmin(admin.ModelAdmin):
     mark_as_middle.short_description = 'Поревести всех в статус Мид'
     mark_as_middle_plus.short_description = 'Поревести всех в статус Мид+'
     mark_as_senior.short_description = 'Поревести всех в статус Синьор'
-
-
-@admin.register(Favorite)
-class FavoriteAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user']
-    fields = ('user', 'hotel_objects', 'long_term_objects')
 
 
 # @admin.register(Guest)

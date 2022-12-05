@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Biglov.ru | Регистрация объекта{%endblock title %}</title>
+    <link type="text/css" rel="reset" href="../../static/css/reset.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <link type="text/css" rel="stylesheet" href="../../static/css/style.css">
+    <link type="text/css" rel="stylesheet" href="../../static/css/stylesheet.css">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+    <!-- Fengyuan Chen's Datepicker -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
+</head>
+<body>
+{% block content %}
+    <div class="register_user__main_container" id="camp_step1_container">
+      <form class="create-realty-form" method="post" enctype="multipart/form-data">{% csrf_token %}
+            <h2 class="register_camp__h2_text">Статус и согласие</h2>
+            <div class="form-check form-switch">
+                <p>{{ register_form.is_company }}</p>
+                <label class="form-check-label" for="flexSwitchCheckDefault">Являюсь арендодателем</label>
+            </div>
+            <div class="form-check form-switch">
+                {{ register_form.is_active }}
+                <label class="form-check-label" for="flexSwitchCheckDefault">
+                    Нажимая "Зарегистрироваться" Вы даёте согласие на обработку персональных данных и соглашаетесь с
+                    <a style="color: blue;" href="{% url 'app_rules:rules' %}" target="_ blank">правилами сайта</a> и
+                    <a style="color: blue;" href="{% url 'app_rules:privacy_policy' %}" target="_ blank">Политикой конфиденциальности</a>
+                </label>
+            </div>
+
+          <button type="submit" name="register_camp__next1" value="{{ current_object }}" class="btn btn-success register_camp__next_button" id="camp_step1">Зарегистрироваться</button>
+
+          <script>
+              $(function () {
+                $("#register_form_id").datepicker({
+                  format:'dd.mm.yyyy',
+                  startDate:'today',
+                  autoHide:'True',
+                  autoPick:'True',
+                  language:'ru-RU',
+                });
+              });
+          </script>
+
+      </form>
+      <div class="register_camp__info_block_container">
+          <div class="register_camp__info_block">
+              <h5>Зачем нужен статус арендодателя?</h5>
+              <div>
+                  Это не обязательно, но если Вы планируете размещать на сайте Biglov.ru объект недвижимости с целью
+                  сдачи его в аренду на долгий срок или посуточно, то Вам понадобится статус "Арендодатель". При
+                  регистрации в качестве партнёра необходимо будет заполнить информацию, относящуюся к форме
+                  предпринимательста и соответствующие каждой форме поля.
+              </div>
+          </div>
+          <div class="register_camp__info_block">
+              <h5>Согласие</h5>
+              <div>
+                  Для завершения регистрации обязательно нужно ознакомиться с
+                  <b style="color: black;">Правилами сайта</b> и
+                  <b style="color: black;">Политикой конфиденциальности</b>.
+              </div>
+          </div>
+      </div>
+    </div>
+{% endblock %}
+</body>
+{% block footer %}
+<footer class="base__footer_not_fixed">
+    <div class="base__footer_container">
+        <a class="base__logo_footer" href="/"><img class="logo-main_footer" src="../../static/img/logo.png" alt="Логотип"></a>
+    </div>
+    <div class="base__footer">
+        <div class="base__copyright">
+            <li class="base_menu__li_container"><a href="{% url 'app_rules:our_values' %}">Наши ценности</a></li>
+            <li class="base_menu__li_container"><a href="{% url 'app_rules:rules' %}">Правила сайта</a></li>
+            <li class="base_menu__li_container"><a href="{% url 'app_rules:privacy_policy' %}">Политика конфиденциальности</a></li>
+            <li class="base_menu__li_container"><a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a></li>
+        </div>
+    </div>
+
+    <!-- Модальное окно управления промо-акциями -->
+    <div class="modal fade" id="staticBackdrop5" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel5">Контакты</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+          </div>
+          <div class="modal-body">
+              <div>Телефон для справок: +7 (938) 416-66-72</div>
+              <div>Эл. почта: biglov.info@yandex.ru</div>
+          </div>
+          <div class="modal-footer">
+          </div>
+        </div>
+      </div>
+    </div>
+</footer>
+{% endblock footer %}
+</html>

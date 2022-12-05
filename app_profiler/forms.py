@@ -10,11 +10,11 @@ today = datetime.date.today()
 tomorrow = today + datetime.timedelta(days=1)
 
 
-class DatePickerForm(forms.Form):
-    check_in = forms.DateField(widget=forms.DateInput(attrs={'placeholder': f'{today.strftime("%d.%m.%Y")}'}),
-                               input_formats=['%d.%m.%Y'], required=False)
-    check_out = forms.DateField(widget=forms.DateInput(attrs={'placeholder': f'{tomorrow.strftime("%d.%m.%Y")}'}),
-                                input_formats=['%d.%m.%Y'], required=False)
+# class DatePickerForm(forms.Form):
+#     check_in = forms.DateField(widget=forms.DateInput(attrs={'placeholder': f'{today.strftime("%d.%m.%Y")}'}),
+#                                input_formats=['%d.%m.%Y'], required=False)
+#     check_out = forms.DateField(widget=forms.DateInput(attrs={'placeholder': f'{tomorrow.strftime("%d.%m.%Y")}'}),
+#                                 input_formats=['%d.%m.%Y'], required=False)
 
 
 class AuthForm(forms.Form):
@@ -24,6 +24,8 @@ class AuthForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(AuthForm, self).__init__(*args, **kwargs)
         self.fields['email'].widget.attrs['placeholder'] = 'Введите логин'
+        self.fields['email'].widget.attrs['class'] = 'form-control'
+        self.fields['password'].widget.attrs['class'] = 'form-control'
 
 
 class RegisterForm(UserCreationForm):
@@ -77,6 +79,83 @@ class RegisterForm(UserCreationForm):
                   'is_active', 'is_company']
 
 
+class RegisterForm1(UserCreationForm):
+    user = CustomUser.objects.last()
+    user_id = user.id
+
+    class Meta:
+        model = CustomUser
+        fields = ['email', 'password1', 'password2']
+
+    def __init__(self, *args, **kwargs):
+        super(RegisterForm1, self).__init__(*args, **kwargs)
+        """Задаём css class и help_text"""
+        self.fields['password1'].widget.attrs['class'] = 'form-control'
+        self.fields['password1'].widget.attrs['required'] = True
+        self.fields['password1'].widget.attrs['help_text'] = ''
+
+        self.fields['password2'].widget.attrs['class'] = 'form-control'
+        self.fields['password2'].widget.attrs['required'] = True
+        self.fields['password2'].widget.attrs['help_text'] = ''
+
+        self.fields['email'].widget.attrs['class'] = 'form-control'
+        self.fields['email'].widget.attrs['required'] = True
+
+        """Задаём placeholder для полей регистрации"""
+        self.fields['password1'].widget.attrs['placeholder'] = 'Введите пароль'
+        self.fields['password2'].widget.attrs['placeholder'] = 'Подтвердите пароль'
+        self.fields['email'].widget.attrs['placeholder'] = 'example@example.ru'
+
+
+class RegisterForm2(forms.Form):
+
+    last_name = forms.CharField(max_length=25, label='Фамилия')
+    first_name = forms.CharField(max_length=25, label='Имя')
+    phone = forms.CharField(max_length=12, required=True, label='Номер телефона')
+    slug = forms.CharField(max_length=30, label='Ник', required=True)
+    birthday = forms.DateField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(RegisterForm2, self).__init__(*args, **kwargs)
+        """Задаём css class и help_text"""
+
+        self.fields['first_name'].widget.attrs['class'] = 'form-control'
+        self.fields['first_name'].widget.attrs['required'] = True
+        self.fields['phone'].widget.attrs['class'] = 'form-control'
+        self.fields['phone'].widget.attrs['required'] = True
+        self.fields['last_name'].widget.attrs['class'] = 'form-control'
+        self.fields['last_name'].widget.attrs['required'] = True
+        self.fields['slug'].widget.attrs['class'] = 'form-control'
+        self.fields['slug'].widget.attrs['required'] = True
+        self.fields['birthday'].widget.attrs['class'] = 'form-control'
+        self.fields['birthday'].widget.attrs['required'] = False
+        self.fields['birthday'].widget.attrs['id'] = 'register_form_id'
+
+        """Задаём placeholder для полей регистрации"""
+        self.fields['first_name'].widget.attrs['placeholder'] = 'Введите имя'
+        self.fields['last_name'].widget.attrs['placeholder'] = 'Введите фамилию'
+        self.fields['slug'].widget.attrs['placeholder'] = 'biglove'
+        self.fields['birthday'].widget.attrs['placeholder'] = '24.11.1990'
+        self.fields['phone'].widget.attrs['placeholder'] = '+79999999999'
+
+
+class RegisterForm3(forms.Form):
+
+    is_active = forms.BooleanField(required=True)
+    is_company = forms.BooleanField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        super(RegisterForm3, self).__init__(*args, **kwargs)
+        """Задаём css class и help_text"""
+
+        self.fields['is_active'].widget.attrs['class'] = 'form-check-input'
+        self.fields['is_active'].widget.attrs['id'] = 'flexSwitchCheckDefault'
+        self.fields['is_active'].widget.attrs['required'] = True
+        self.fields['is_company'].widget.attrs['class'] = 'form-check-input'
+        self.fields['is_company'].widget.attrs['id'] = 'flexSwitchCheckDefault'
+        self.fields['is_company'].widget.attrs['required'] = False
+
+
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
@@ -104,3 +183,36 @@ class GuestForm(forms.ModelForm):
 
 class PasswordChangeCustomForm(PasswordChangeForm):
     pass
+
+
+class CompanyProfileForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(CompanyProfileForm, self).__init__(*args, **kwargs)
+        """Задаём css class"""
+        self.fields['type'].widget.attrs['class'] = 'form-control'
+        self.fields['full_company_name'].widget.attrs['class'] = 'form-control'
+        self.fields['short_company_name'].widget.attrs['class'] = 'form-control'
+        self.fields['legal_address'].widget.attrs['class'] = 'form-control'
+        self.fields['actual_address'].widget.attrs['class'] = 'form-control'
+        self.fields['inn'].widget.attrs['class'] = 'form-control'
+        self.fields['kpp'].widget.attrs['class'] = 'form-control'
+        self.fields['ogrn'].widget.attrs['class'] = 'form-control'
+        self.fields['bank_account'].widget.attrs['class'] = 'form-control'
+        self.fields['bank_name'].widget.attrs['class'] = 'form-control'
+        self.fields['kor_account'].widget.attrs['class'] = 'form-control'
+        self.fields['bic'].widget.attrs['class'] = 'form-control'
+        self.fields['first_name'].widget.attrs['class'] = 'form-control'
+        self.fields['last_name'].widget.attrs['class'] = 'form-control'
+        self.fields['middle_name'].widget.attrs['class'] = 'form-control'
+        self.fields['phone'].widget.attrs['class'] = 'form-control'
+        self.fields['email'].widget.attrs['class'] = 'form-control'
+        self.fields['nds'].widget.attrs['class'] = 'form-control'
+        self.fields['passport_series'].widget.attrs['class'] = 'form-control'
+        self.fields['passport_number'].widget.attrs['class'] = 'form-control'
+        self.fields['passport_who'].widget.attrs['class'] = 'form-control'
+        self.fields['passport_code'].widget.attrs['class'] = 'form-control'
+        self.fields['passport_date'].widget.attrs['class'] = 'form-control'

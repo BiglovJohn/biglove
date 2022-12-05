@@ -23,72 +23,106 @@
 {% block content %}
     {% if request.user.is_authenticated %}
         {% if request.user.is_company %}
+            <div class="register_camp__main_container" id="camp_step1_container" style="display: flex; flex-direction: row; justify-content: center;">
               <form class="create-realty-form" method="post" enctype="multipart/form-data">{% csrf_token %}
-                  <div class="input__wrapper">
-                      <div class="create-realty-container">
-                          <div class="create-realty-menu1">
-
-                              <div class="create-realty-form-container">
-                                  <h5 class="realty_create_h5_text">Фотографии</h5>
-                                  {{ upload_photos_form.photo }}
-                              </div>
-
-                              <div class="create-realty-form-container">
-                                  <h5 class="realty_create_h5_text">Основные параметры</h5>
-                                  <div class="col-md-3" id="realty_create__type">
-                                      <label for="validationDefault04" class="form-label">Тип объекта</label>
-                                      <select class="form-select" name="realty_type" id="validationDefault04" required>
-                                          <option selected disabled value="">Выберите...</option>
-                                              {% for type in hh_realty_form.realty_type %}
-                                                  {{ type }}
-                                              {% endfor %}
-                                      </select>
-                                  </div>
-
-                                  <div>Название объекта:</div>
-                                  <div class="realty_create__form_element_container">{{ hh_realty_form.realty_name }}</div>
-                                  <div class="realty_create__form_element_container">Количество мест: {{ hh_realty_form.count_of_persons }}</div>
-                                  <div class="realty_create__form_element_container">Цена за сутки: {{ hh_realty_form.realty_price }}</div>
-                                  <div class="realty_create__form_element_container">Площадь помещения: {{ hh_realty_form.realty_area }}</div>
-                                  <div class="realty_create__form_element_container">Время заселения: {{ hh_realty_form.arriving_time }}</div>
-                                  <div class="realty_create__form_element_container">Время выезда: {{ hh_realty_form.departure_time }}</div>
-                              </div>
-                              <div class="create-realty-form-container">
-                                  <h5 class="realty_create_h5_text">Адрес</h5>
-                                  <div class="realty_create__form_element_container">Страна: {{ hh_realty_form.realty_country }}</div>
-                                  <div class="realty_create__form_element_container">Регион: {{ hh_realty_form.realty_region }}</div>
-                                  <div class="realty_create__form_element_container">Населенный пункт: {{ hh_realty_form.realty_city }}</div>
-                                  <div>Адрес:</div>
-                                  <div class="realty_create__form_element_container">{{ hh_realty_form.realty_address }}</div>
-                                  <div class="realty_create__form_element_container">Региональный центр (РЦ): {{ hh_realty_form.region_center }}</div>
-                                  <div class="realty_create__form_element_container">Расстояние до РЦ: {{ hh_realty_form.realty_to_city }}</div>
-                              </div>
-                          </div>
-                          <div class="create-realty-menu2">
-                              <h5 class="realty_create_h5_text">Услуги</h5>
-                                <div>Способ оплыты: {{ hh_realty_form.pay_type }}</div>
-                                <div>Питание: {{ hh_realty_form.food_options }}</div>
-                                <div>Отмена бронирования: {{ hh_realty_form.book_cancel }}</div>
-                              <h5 class="realty_create_h5_text">Опции</h5>
-                                <div class="create-realty-form-container">
-                                    <select class="form-select form-select-sm" aria-label=".form-select-sm" multiple>
-                                        {% for option in hh_realty_form.options %}
-                                            <option value="{{ option }}"></option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            {{ hh_realty_form.company.as_hidden }}
-                          </div>
-                      </div>
-                      <div class="hh_realty_create__textarea">
-                          <h5 class="realty_create_h5_text">Описание:</h5>
-                          {{ hh_realty_form.full_description }}
-                      </div>
+                    <h2 class="register_camp__h2_text">Как называется Ваш объект?</h2>
+                    {{ hh_realty_form1.company.as_hidden }}
+                    {{ hh_realty_form1.realty_name }}
+                    <div class="valid-feedback">
+                      Все хорошо!
+                    </div>
+                  <button type="submit" name="register_camp__next1" value="{{ current_object }}" class="btn btn-success register_camp__next_button" id="camp_step1">Дальше</button>
+              </form>
+              <div class="register_camp__info_block_container">
+                  <div class="register_camp__info_block">
+                      <h5>Что стоит учитывать при выборе названия?</h5>
+                      <ul>
+                          <li>Придумайте короткое название, которое легко запомнить</li>
+                          <li>Не используйте аббревиатуры</li>
+                          <li>Не используйте названия именитых объектов</li>
+                          <li>
+                              Не стоит указывать тип Вашего объекта, если он не является частью фирменного наименования, так как этот параметр
+                              будет задан в специальном поле и выведен на страницу Вашего объекта.
+                          </li>
+                      </ul>
+                  </div>
+                  <div class="register_camp__info_block">
+                      <h5>Зачем нужно называть объект?</h5>
                       <div>
-                          <button type="submit" name="lt_realty_create__save_realty_object" class="btn btn-success" id="create-realty-button">Зарегистрировать объект</button>
-                          <div class="lt_realty_create__bottom_text_confirmation">Нажимая «Зарегистрировать объект» я подтверждаю корректность введенных данных.</div>
+                          Это название будет заголовком вашей страницы на нашем сайте. Оно должно локанично описывать Ваш объет.
+                          Название будет видно всем посетителям нашего сайта, поэтому не включайте в него ничего, что может оскорбить
+                          других посетителей или не рекомендовано к прочтению детьми.
                       </div>
                   </div>
+              </div>
+            </div>
+
+
+<!--                  <div class="input__wrapper">-->
+<!--                      <div class="create-realty-container">-->
+<!--                          <div class="create-realty-menu1">-->
+
+<!--                              <div class="create-realty-form-container">-->
+<!--                                  <h5 class="realty_create_h5_text">Фотографии</h5>-->
+<!--                                  {{ upload_photos_form.photo }}-->
+<!--                              </div>-->
+
+<!--                              <div class="create-realty-form-container">-->
+<!--                                  <h5 class="realty_create_h5_text">Основные параметры</h5>-->
+<!--                                  <div class="col-md-3" id="realty_create__type">-->
+<!--                                      <label for="validationDefault04" class="form-label">Тип объекта</label>-->
+<!--                                      <select class="form-select" name="realty_type" id="validationDefault04" required>-->
+<!--                                          <option selected disabled value="">Выберите...</option>-->
+<!--                                              {% for type in hh_realty_form.realty_type %}-->
+<!--                                                  {{ type }}-->
+<!--                                              {% endfor %}-->
+<!--                                      </select>-->
+<!--                                  </div>-->
+
+<!--                                  <div>Название объекта:</div>-->
+<!--                                  <div class="realty_create__form_element_container">{{ hh_realty_form.realty_name }}</div>-->
+<!--                                  <div class="realty_create__form_element_container">Количество мест: {{ hh_realty_form.count_of_persons }}</div>-->
+<!--                                  <div class="realty_create__form_element_container">Цена за сутки: {{ hh_realty_form.realty_price }}</div>-->
+<!--                                  <div class="realty_create__form_element_container">Площадь помещения: {{ hh_realty_form.realty_area }}</div>-->
+<!--                                  <div class="realty_create__form_element_container">Время заселения: {{ hh_realty_form.arriving_time }}</div>-->
+<!--                                  <div class="realty_create__form_element_container">Время выезда: {{ hh_realty_form.departure_time }}</div>-->
+<!--                              </div>-->
+<!--                              <div class="create-realty-form-container">-->
+<!--                                  <h5 class="realty_create_h5_text">Адрес</h5>-->
+<!--                                  <div class="realty_create__form_element_container">Страна: {{ hh_realty_form.realty_country }}</div>-->
+<!--                                  <div class="realty_create__form_element_container">Регион: {{ hh_realty_form.realty_region }}</div>-->
+<!--                                  <div class="realty_create__form_element_container">Населенный пункт: {{ hh_realty_form.realty_city }}</div>-->
+<!--                                  <div>Адрес:</div>-->
+<!--                                  <div class="realty_create__form_element_container">{{ hh_realty_form.realty_address }}</div>-->
+<!--                                  <div class="realty_create__form_element_container">Региональный центр (РЦ): {{ hh_realty_form.region_center }}</div>-->
+<!--                                  <div class="realty_create__form_element_container">Расстояние до РЦ: {{ hh_realty_form.realty_to_city }}</div>-->
+<!--                              </div>-->
+<!--                          </div>-->
+<!--                          <div class="create-realty-menu2">-->
+<!--                              <h5 class="realty_create_h5_text">Услуги</h5>-->
+<!--                                <div>Способ оплыты: {{ hh_realty_form.pay_type }}</div>-->
+<!--                                <div>Питание: {{ hh_realty_form.food_options }}</div>-->
+<!--                                <div>Отмена бронирования: {{ hh_realty_form.book_cancel }}</div>-->
+<!--                              <h5 class="realty_create_h5_text">Опции</h5>-->
+<!--                                <div class="create-realty-form-container">-->
+<!--                                    <select class="form-select form-select-sm" aria-label=".form-select-sm" multiple>-->
+<!--                                        {% for option in hh_realty_form.options %}-->
+<!--                                            <option value="{{ option }}"></option>-->
+<!--                                        {% endfor %}-->
+<!--                                    </select>-->
+<!--                                </div>-->
+<!--                            {{ hh_realty_form.company.as_hidden }}-->
+<!--                          </div>-->
+<!--                      </div>-->
+<!--                      <div class="hh_realty_create__textarea">-->
+<!--                          <h5 class="realty_create_h5_text">Описание:</h5>-->
+<!--                          {{ hh_realty_form.full_description }}-->
+<!--                      </div>-->
+<!--                      <div>-->
+<!--                          <button type="submit" name="lt_realty_create__save_realty_object" class="btn btn-success" id="create-realty-button">Зарегистрировать объект</button>-->
+<!--                          <div class="lt_realty_create__bottom_text_confirmation">Нажимая «Зарегистрировать объект» я подтверждаю корректность введенных данных.</div>-->
+<!--                      </div>-->
+<!--                  </div>-->
               </form>
         {% endif %}
     {% endif %}
@@ -101,10 +135,10 @@
     </div>
     <div class="base__footer">
         <div class="base__copyright">
-            <a href="{% url 'app_rules:our_values' %}">Наши ценности</a>
-        </div>
-        <div class="base__footer_info">
-            <a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a>
+            <li class="base_menu__li_container"><a href="{% url 'app_rules:our_values' %}">Наши ценности</a></li>
+            <li class="base_menu__li_container"><a href="{% url 'app_rules:rules' %}">Правила сайта</a></li>
+            <li class="base_menu__li_container"><a href="{% url 'app_rules:privacy_policy' %}">Политика конфиденциальности</a></li>
+            <li class="base_menu__li_container"><a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a></li>
         </div>
     </div>
 

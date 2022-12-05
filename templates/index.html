@@ -5,9 +5,9 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
     <title>{% block title %}Biglov | Официальный сайт | Снять квартиру, забронировать отель, авто{% endblock title %}</title>
     <link href="{% static 'css/reset.css' %}" type="text/css" rel="reset">
-    <link href="{% static 'favicon.ico' %}" rel="shortcut icon" type="image/png">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
@@ -37,50 +37,35 @@
     </div>
 
     <form class="search-form2" action="{% url 'app_premises:realty_list' %}" method="get">
-        <menu class="search-form-input">
-            <div class="container2">
-                <div class="row height d-flex justify-content-center align-items-center">
-                    <div class="col-md-8" id="search-form-input">
-                        <div class="search2">
-                            <i class="fa fa-search"></i>
-                            <input name="q" type="text" class="form-control" id="search-form" placeholder="Куда отправимся?" autocomplete="off">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="index-search-button-container2">
-                <button name="search" class="btn btn-info" id="base-search-button">Проверить цены</button>
-            </div>
-        </menu>
-        <menu class="search-form2-datepicker">
-            <div class="date-picker-index" id="base-search">
-                {{ reserve_form.check_in }} -
-                {{ reserve_form.check_out }}
-            </div>
+        <input name="q" type="text" class="form-control" id="search-form" placeholder="Куда отправимся?" autocomplete="off">
+        <div class="date-picker-index" id="base-search">
+            {{ reserve_form.check_in }}
+            {{ reserve_form.check_out }}
+        </div>
 
-            <script>
-              $(function () {
-                $("#main_search_in").datepicker({
-                  format:'dd.mm.yyyy',
-                  startDate:'today',
-                  autoHide:'True',
-                  autoPick:'True',
-                  language:'ru-RU',
-                });
-              });
-            </script>
+        <script>
+          $(function () {
+            $("#main_search_in").datepicker({
+              format:'dd.mm.yyyy',
+              startDate:'today',
+              autoHide:'True',
+              autoPick:'True',
+              language:'ru-RU',
+            });
+          });
+        </script>
 
-            <script>
-              $(function () {
-                $("#main_search_out").datepicker({
-                  format:'dd.mm.yyyy',
-                  startDate: 'today',
-                  autoHide:'True',
-                  language:'ru-RU',
-                });
-              });
-            </script>
-        </menu>
+        <script>
+          $(function () {
+            $("#main_search_out").datepicker({
+              format:'dd.mm.yyyy',
+              startDate: 'today',
+              autoHide:'True',
+              language:'ru-RU',
+            });
+          });
+        </script>
+        <button name="search" class="btn btn-info" id="base-search-button">Проверить цены</button>
     </form>
 
     <div class="index__adv_long_term">
@@ -90,7 +75,7 @@
                     Планируете переезд?
                     <div class="index__adv_text_sub">Найдите жилье своей мечты на <b style="color: #0f90e4">Biglov.ru</b></div>
                 </div>
-                <a id="base__menu_buttons1" type="" href="{% url 'app_ltrent:lt_realty_list' %}" class="btn btn-success">Найти жилье на длительный срок</a>
+                <a id="base__menu_buttons1" type="" href="{% url 'app_premises:lt_realty_list' %}" class="btn btn-success">Найти жилье на длительный срок</a>
             </div>
         </div>
         <div class="index__adv_main_container2">
@@ -101,83 +86,38 @@
             </div>
         </div>
     </div>
-
-    <div class="index__realty_adv_container">
-        <h3 class="auto__adv_place_h3_text">Популярные направления</h3>
-        <div class="index__top_realty">
-            <div class="index-top-container">
-                <a class="index__realty_top_status" href="{% url 'app_premises:realty_detail' realty_first.slug %}">
-                    <div class="popular_place"><img class="index__popular_img" src="../../static/img/icons/free-icon-gold-cup-2502694.png"></div>
-                    <img class="index-top-picture" src="../../media/{{ photos_first.0.photo }}" alt="Фото объекта">
-                </a>
-                <div class="index-top-describe">
-                    <a href="{% url 'app_premises:realty_detail' realty_first.slug %}">
-                        <p style="font-size: 1.2em; font-weight: bold; color: black;">{{ realty_first.realty_name }}</p>
-                    </a>
-                    <p>{{ realty_first.realty_region }}, {{ realty_third.realty_city }}</p>
-                </div>
-            </div>
-
-            <div class="index-top-container">
-                <a class="index__realty_top_status" href="{% url 'app_premises:realty_detail' realty_second.slug %}">
-                    <div class="popular_place2"><img class="index__popular_img" src="../../static/img/icons/free-icon-silver-cup-2502698.png"></div>
-                    <img class="index-top-picture" src="../../media/{{ photos_second.0.photo }}" alt="Фото объекта">
-                </a>
-                <div class="index-top-describe">
-                    <a href="{% url 'app_premises:realty_detail' realty_second.slug %}">
-                        <p style="font-size: 1.2em; font-weight: bold; color: black;">{{ realty_second.realty_name }}</p>
-                    </a>
-                    <p>{{ realty_second.realty_region }}, {{ realty_third.realty_city }}</p>
-                </div>
-            </div>
-
-            <div class="index-top-container">
-                <a class="index__realty_top_status" href="{% url 'app_premises:realty_detail' realty_third.slug %}">
-                    <div class="popular_place3"><img class="index__popular_img" src="../../static/img/icons/free-icon-bronze-medal-179250.png"></div>
-                    <img class="index-top-picture" src="../../media/{{ photos_third.0.photo }}" alt="Фото объекта">
-                </a>
-                <div class="index-top-describe">
-                    <a href="{% url 'app_premises:realty_detail' realty_third.slug %}">
-                        <p style="font-size: 1.2em; font-weight: bold; color: black;">{{ realty_third.realty_name }}</p>
-                    </a>
-                    <p>{{ realty_third.realty_region }}, {{ realty_third.realty_city }}</p>
-                </div>
+    <div class="index__top_directions">
+        <div class="index__top_title_container">
+            <h4 class="index__top_h4_text">Выбор посетителей</h4>
+            <img class="index__top_help_img" id="index__top_help" src="{% static 'img/icons/free-icon-information-906794.png' %}">
+            <div class="index__top_help_show" style="display: none;">
+                <div>Топ просматриваемых вариантов размещения</div>
             </div>
         </div>
+        <div class="index__top_content_container">
+            {% for object in index_realty_list %}
+                <div class="index__top_content">
+                    <a class="index__top_link_style" href="{% url 'app_premises:realty_detail' slug=object.slug %}">
+                        <img class="index__top_img" src="../../media/{{ object.camp_photos.all.0.photo }}">
+                        <div class="index__top_camp_title">{{ object }}</div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
     </div>
+
+    <script>
+        var x = document.querySelector('.index__top_help_img');
+        var y =  document.querySelector('.index__top_help_show');
+        x.onmouseover = function () {
+            y.style.display = 'block';
+        };
+        x.onmouseout = function () {
+            y.style.display = 'none';
+        };
+    </script>
+
 </body>
 {% endblock %}
-{% block footer %}
-<footer class="base__footer_not_fixed">
-    <div class="base__footer_container">
-        <a class="base__logo_footer" href="/"><img class="logo-main_footer" src="../../static/img/logo.png" alt="Логотип"></a>
-    </div>
-    <div class="base__footer">
-        <div class="base__copyright">
-            <a href="{% url 'app_rules:our_values' %}">Наши ценности</a>
-        </div>
-        <div class="base__footer_info">
-            <a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a>
-        </div>
-    </div>
 
-    <!-- Модальное окно управления промо-акциями -->
-    <div class="modal fade" id="staticBackdrop5" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel5">Контакты</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-          </div>
-          <div class="modal-body">
-              <div>Телефон для справок: +7 (938) 416-66-72</div>
-              <div>Эл. почта: biglov.info@yandex.ru</div>
-          </div>
-          <div class="modal-footer">
-          </div>
-        </div>
-      </div>
-    </div>
-</footer>
-{% endblock footer %}
 </html>

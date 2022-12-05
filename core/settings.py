@@ -27,8 +27,8 @@ SECRET_KEY = ENV.SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = ENV.DEBUG
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'dcb6-213-171-0-50.eu.ngrok.io']
-CSRF_TRUSTED_ORIGINS = ['https://*.dcb6-213-171-0-50.eu.ngrok.io', 'https://*.127.0.0.1']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'db1d-78-106-80-141.eu.ngrok.io']
+CSRF_TRUSTED_ORIGINS = ['https://*.db1d-78-106-80-141.eu.ngrok.io', 'https://*.127.0.0.1']
 
 # Application definition
 
@@ -54,9 +54,7 @@ INSTALLED_APPS = [
     'app_index',
     'app_data',
     'app_premises',
-    'app_ltrent',
     'app_profiler',
-    'app_companies',
     'app_comments',
     'app_rules',
     'app_auto',
@@ -88,19 +86,10 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'app_profiler.context_processors.render_login_form',
-                'app_profiler.context_processors.render_register_form',
-                # 'app_premises.context_processors.render_create_realty_form',
                 'app_premises.context_processors.render_reservation_form',
-                'app_premises.context_processors.render_realty_objects',
-                # 'app_profiler.context_processors.render_profile_detail_view',
-                'app_premises.context_processors.render_options_list',
                 'app_profiler.context_processors.render_guest_detail_view',
                 'app_premises.context_processors.render_realty_object_to_profile',
                 'app_premises.context_processors.render_today_and_tomorrow',
-                'app_premises.context_processors.render_food_options_list',
-                # 'app_profiler.context_processors.render_change_password',
-                'app_companies.context_processors.render_current_company_slug',
-                'app_rules.context_processors.render_rules_list',
                 'app_data.context_processors.render_location_info',
             ],
         },

@@ -125,6 +125,7 @@
                 <div class="edit_realty__form_container">
                     <h4 class="edit_realty__h4_text">Управляющая компания:</h4>
                     <div class="edit_realty__parameter_container">{{ realty_edit_form.company }}</div>
+                    {{ realty_edit_form.stars }}
                 </div>
                 <div class="edit_realty__form_container">
                     <h4 class="edit_realty__h4_text">Расположение:</h4>
@@ -166,7 +167,7 @@
             <div class="edit__realty_photos_container">
                 <p>Ваши фотографии</p>
                 <div class="realty_edit__img_plate">
-                    {% for photo in realty_edit.photos.all %}
+                    {% for photo in realty_edit.camp_photos.all %}
                         <form style="position: relative;" method="get" enctype="multipart/form-data">
                             <button style="position: absolute; width: 30px" type="submit" class="btn-close btn-close-white" aria-label="Закрыть" value="{{ photo.photo}}, {{ photo.pk }}" name="delete_photo_button"></button>
                             <img class="edit__realty_photo_delete" src="../../media/{{ photo.photo }}">
@@ -345,10 +346,10 @@
     </div>
     <div class="base__footer">
         <div class="base__copyright">
-            <a href="{% url 'app_rules:our_values' %}">Наши ценности</a>
-        </div>
-        <div class="base__footer_info">
-            <a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a>
+            <li class="base_menu__li_container"><a href="{% url 'app_rules:our_values' %}">Наши ценности</a></li>
+            <li class="base_menu__li_container"><a href="{% url 'app_rules:rules' %}">Правила сайта</a></li>
+            <li class="base_menu__li_container"><a href="{% url 'app_rules:privacy_policy' %}">Политика конфиденциальности</a></li>
+            <li class="base_menu__li_container"><a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a></li>
         </div>
     </div>
 

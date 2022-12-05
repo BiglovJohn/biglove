@@ -117,16 +117,16 @@
             <div class="user_detail__favorite_list_container">
                 {% if favorite_list %}
                     {% for object in favorite_list %}
-                        {% for element in object.hotel_objects.all %}
+                        {% for element in object.camps.all %}
                             <div>
-                                <img class="user_detail__favorite_list_img" src="../../media/{{ element.photos.all.0.photo }}">
-                                <a href="{% url 'app_premises:realty_detail' slug=element.slug %}">{{ element }}</a>
+
+                                <a href="{% url 'app_premises:realty_detail' slug=element.slug %}"><img class="user_detail__favorite_list_img" src="../../media/{{ element.camp_photos.all.0.photo }}">{{ element }}</a>
                             </div>
                         {% endfor %}
-                        {% for element in object.long_term_objects.all %}
+                        {% for element in object.flats.all %}
                             <div>
-                                <img class="user_detail__favorite_list_img" src="../../media/{{ element.photos.all.0.photo }}">
-                                <a href="{% url 'app_ltrent:lt_realty_detail' pk=element.id %}">{{ element }}</a>
+                                <img class="user_detail__favorite_list_img" src="../../media/{{ element.flat_photos.all.0.photo }}">
+                                <a href="{% url 'app_premises:lt_realty_detail' pk=element.id %}">{{ element }}</a>
                             </div>
                         {% endfor %}
                     {% endfor %}
@@ -143,10 +143,10 @@
     </div>
     <div class="base__footer">
         <div class="base__copyright">
-            <a href="{% url 'app_rules:our_values' %}">Наши ценности</a>
-        </div>
-        <div class="base__footer_info">
-            <a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a>
+            <li class="base_menu__li_container"><a href="{% url 'app_rules:our_values' %}">Наши ценности</a></li>
+            <li class="base_menu__li_container"><a href="{% url 'app_rules:rules' %}">Правила сайта</a></li>
+            <li class="base_menu__li_container"><a href="{% url 'app_rules:privacy_policy' %}">Политика конфиденциальности</a></li>
+            <li class="base_menu__li_container"><a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a></li>
         </div>
     </div>
 

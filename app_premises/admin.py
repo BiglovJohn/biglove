@@ -1,19 +1,20 @@
 from django.contrib import admin
 from rangefilter.filters import DateRangeFilter, NumericRangeFilter
-from .models import HolidayHouseObject, RealtyOptions, Reservation, Photos
+from .models import Camp, RealtyOptions, Reservation, Photos, Favorite, Flat, \
+    FurnitureModel, TechniqueModel, Advertising
 
 
-@admin.register(HolidayHouseObject)
+@admin.register(Camp)
 class HolidayHouseObjectAdmin(admin.ModelAdmin):
-    list_display = ['id', 'short_company_name', 'realty_name', 'realty_type', 'realty_book_count', 'total_views']
-    list_display_links = ['id', 'short_company_name']
+    list_display = ['id', 'realty_name', 'realty_type', 'realty_book_count', 'total_views']
+    list_display_links = ['id']
     list_select_related = ['company']
     list_filter = (('created_at', DateRangeFilter), ('realty_price', NumericRangeFilter),
                    ('realty_area', NumericRangeFilter), 'realty_type')
     readonly_fields = ['created_at', 'realty_book_count']
     fieldsets = (
         ('Административная информация', {'fields': ('company', 'created_at', 'slug')}),
-        ('Общая информация', {'fields': ('realty_name', 'realty_to_city', 'realty_type',
+        ('Общая информация', {'fields': ('realty_name', 'stars', 'realty_to_city', 'realty_type',
                                          'count_of_persons', 'realty_area', 'full_description')}),
         ('Адрес', {'fields': ('realty_country', 'realty_region', 'realty_city', 'realty_address', 'region_center')}),
         ('Финансовая информация', {'fields': ('realty_price',)}),
@@ -51,7 +52,46 @@ class ReservationAdmin(admin.ModelAdmin):
 
 @admin.register(Photos)
 class PhotosAdmin(admin.ModelAdmin):
-    list_display = ['id', 'realty_obj', 'created_at']
+    list_display = ['id', 'created_at']
+
+
+@admin.register(Favorite)
+class FavoriteAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user']
+    fields = ('user', 'camps', 'flats')
+
+
+@admin.register(Flat)
+class LongTermRentObjectAdmin(admin.ModelAdmin):
+    list_display = ['id', 'realty_type', 'total_views']
+    list_display_links = ['id',]
+    list_select_related = ['company']
+    list_filter = (('created_at', DateRangeFilter), ('realty_price', NumericRangeFilter), 'realty_type')
+    readonly_fields = ['created_at']
+    fieldsets = (
+        ('Административная информация', {'fields': ('company', 'created_at', 'is_advertised', 'is_active')}),
+        ('Параметры жилья', {'fields': ('realty_type', 'rooms_count', 'floor_count', 'realty_area', 'full_description',
+                                        'bathroom', 'children', 'animals', 'smoke', 'furniture', 'technique')}),
+        ('Адрес', {'fields': ('realty_country', 'realty_region', 'realty_city', 'city_area', 'micro_city_area',
+                              'realty_address', 'house_number', 'house_korpus', 'floor')}),
+        ('Финансовая информация', {'fields': ('realty_price', 'deposit')}),
+    )
+
+
+@admin.register(FurnitureModel)
+class FurnitureModelAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'category']
+
+
+@admin.register(TechniqueModel)
+class TechniqueModelAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'category']
+
+
+@admin.register(Advertising)
+class AdvertisingModelAdmin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'created_at']
+    fields = ('user', 'image', 'text')
 
 
 admin.site.site_header = 'BIGLOV'

@@ -92,7 +92,7 @@
                     Планируете переезд?
                     <div class="index__adv_text_sub">С нами это сделать гораздо проще! Выбери интересующий вариант и забронируй его на <b style="color: #0f90e4">Biglov.ru</b></div>
                 </div>
-                <a id="base__menu_buttons1" type="" href="{% url 'app_ltrent:lt_realty_list' %}" class="btn btn-success">Найти жилье на длительный срок</a>
+                <a id="base__menu_buttons1" type="" href="{% url 'app_premises:lt_realty_list' %}" class="btn btn-success">Найти жилье на длительный срок</a>
             </div>
         </div>
         <div class="index__adv_container_for_background">
@@ -108,10 +108,10 @@
     </div>
     <div class="base__footer">
         <div class="base__copyright">
-            <a href="{% url 'app_rules:our_values' %}">Наши ценности</a>
-        </div>
-        <div class="base__footer_info">
-            <a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a>
+            <li class="base_menu__li_container"><a href="{% url 'app_rules:our_values' %}">Наши ценности</a></li>
+            <li class="base_menu__li_container"><a href="{% url 'app_rules:rules' %}">Правила сайта</a></li>
+            <li class="base_menu__li_container"><a href="{% url 'app_rules:privacy_policy' %}">Политика конфиденциальности</a></li>
+            <li class="base_menu__li_container"><a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a></li>
         </div>
     </div>
 

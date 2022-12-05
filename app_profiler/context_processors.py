@@ -1,5 +1,7 @@
 from app_profiler.forms import AuthForm, RegisterForm
 from django.contrib.auth import authenticate, login
+from django.shortcuts import redirect
+
 from .forms import GuestForm
 from .models import CustomUser
 
@@ -20,50 +22,6 @@ def render_login_form(request):
         auth_form = AuthForm()
 
     return {'auth_form': auth_form}
-
-
-def render_register_form(request):
-    """Регистрация и авторизация"""
-    if 'save-register-form' in request.POST:
-        register_form = RegisterForm(request.POST, initial={'phone': '+7'})
-        user_obj = CustomUser()
-        if register_form.is_valid():
-            user = register_form.save()
-            last_name = register_form.cleaned_data.get('last_name')
-            first_name = register_form.cleaned_data.get('first_name')
-            phone = register_form.cleaned_data.get('phone')
-            email = register_form.cleaned_data.get('email')
-            raw_password = register_form.cleaned_data.get('password1')
-            is_active = register_form.cleaned_data.get('is_active')
-            is_company = register_form.cleaned_data.get('is_company')
-
-            user = authenticate(email=email, password=raw_password)
-            login(request, user)
-    else:
-        register_form = RegisterForm(initial={'phone': '+7'})
-    return {'register_form': register_form}
-
-
-# def render_profile_detail_view(request):
-#     if request.user.is_authenticated:  # and request.META['PATH_INFO'] == '/'
-#         if request.user.is_company:
-#             if request.method == 'GET':
-#                 profile = ManagerProfile.objects.get(referring_user=request.user.id)
-#                 # manager = ManagerProfile.objects.get(referring_user=profile[0].id)
-#                 manager_form = ManagerProfileForm(instance=profile)
-#                 return {'profile': profile, 'manager_form': manager_form}
-#
-#             if 'save-manager-form' in request.POST:
-#                 profile = ManagerProfile.objects.get(referring_user=request.user.id)
-#                 # manager = ManagerProfile.objects.get(referring_user=profile[0].id)
-#                 manager_form = ManagerProfileForm(request.POST, instance=profile)
-#                 if manager_form.is_valid():
-#                     profile = manager_form.save(commit=False)
-#                     profile.save()
-#
-#                 return {'profile': profile, 'manager_form': manager_form}
-#     profile = ManagerProfile.objects.none()
-#     return {'profile': profile}
 
 
 def render_guest_detail_view(request):
@@ -89,6 +47,20 @@ def render_guest_detail_view(request):
 
     guest = CustomUser.objects.none()
     return {'guest': guest}
+
+
+def render_current_company_slug(request):
+    if request.user.is_authenticated:
+        if request.user.is_company:
+            current_company = CustomUser.objects.get(id=request.user.id)
+            company_slug = current_company.slug
+            return {'company_slug': company_slug}
+        else:
+            company_slug = None
+            return {'company_slug': company_slug}
+    else:
+        company_slug = None
+        return {'company_slug': company_slug}
 
 
 # def render_change_password(request):

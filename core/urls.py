@@ -26,12 +26,10 @@ api_version = 'api/v1/'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('account/', include('app_profiler.urls')),
-    path('company/', include('app_companies.urls')),
+    path('', include('app_profiler.urls')),
     path('rules/', include('app_rules.urls')),
-    path('rent/', include('app_ltrent.urls')),
     path('auto/', include('app_auto.urls')),
-    path('hotel/', include('app_premises.urls')),
+    path('rent/', include('app_premises.urls')),
     path('', include('app_index.urls')),
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),

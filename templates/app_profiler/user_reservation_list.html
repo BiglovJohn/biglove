@@ -22,7 +22,7 @@
                 {% if reserve.is_booked %}
                     <div class="user_detail__reservations_list_container">
                         <div class="user_detail__reserve-img-container">
-                            <img class="user_detail__reserve-img" src="../../media/{{ reserve.realty.photos.all.0.photo }}">
+                            <img class="user_detail__reserve-img" src="../../media/{{ reserve.realty.camp_photos.all.0.photo }}">
                             <div class="reserve__hotel_info">
                                 <h5 class="user_detail__list_of_reservations_form_text">{{ reserve }}</h5>
                                 <div class="user_detail__list_of_reservations_text_form">Идентификатор: {{ reserve.book_identifier }}</div>
@@ -47,7 +47,7 @@
         {% else %}
             <div class="user_detail__no_reservations_container">
                 <img class="user_detail__no_reservations_img" src="../../static/img/no_reservations.png">
-                <div>А кто это у нас тут ещё ничего не забронировал?</div>
+                <div style="text-align: center;">А кто это у нас тут ещё ничего не забронировал?</div>
             </div>
         {% endif %}
     </div>
@@ -60,10 +60,10 @@
     </div>
     <div class="base__footer">
         <div class="base__copyright">
-            <a href="{% url 'app_rules:our_values' %}">Наши ценности</a>
-        </div>
-        <div class="base__footer_info">
-            <a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a>
+            <li class="base_menu__li_container"><a href="{% url 'app_rules:our_values' %}">Наши ценности</a></li>
+            <li class="base_menu__li_container"><a href="{% url 'app_rules:rules' %}">Правила сайта</a></li>
+            <li class="base_menu__li_container"><a href="{% url 'app_rules:privacy_policy' %}">Политика конфиденциальности</a></li>
+            <li class="base_menu__li_container"><a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a></li>
         </div>
     </div>
 

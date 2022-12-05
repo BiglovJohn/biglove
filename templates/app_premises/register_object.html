@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Biglov.ru | Регистрация объекта размещения{% endblock %}</title>
+</head>
+{% block content %}
+<body>
+    <div class="register_object__main_container">
+        <h2>Добавьте свой объект на Biglov.ru и готовьтесь к наплыву гостей!</h2>
+        <h3>Чтобы начать выберите тип объекта, который хотите зарегистрировать на нашем сайте.</h3>
+        <div class="register_object__content_container">
+            <div class="register_object__menu_container">
+                <img class="register_object__main_menu_img" src="{% static 'img/icons/free-icon-hotel-594106.png' %}">
+                <div class="register_object__text">
+                    Отели, апарт-отели, гостевые дома, хостелы и прочее
+                </div>
+                <div class="register_object__button_container">
+                    <button class="btn btn-success register_object__register_button">Зарегистрировать объект</button>
+                </div>
+            </div>
+            <div class="register_object__menu_container">
+                <img class="register_object__main_menu_img" src="{% static 'img/icons/free-icon-apartment-1259768.png' %}">
+                <div class="register_object__text">
+                    Квартиры, дома и прочее на длительный срок
+                </div>
+                <div class="register_object__button_container">
+                    <a type="button" class="btn btn-success register_object__register_button" href="{% url 'app_premises:lt_realty_create' %}">Зарегистрировать объект</a>
+                </div>
+            </div>
+            <div class="register_object__menu_container">
+                <img class="register_object__main_menu_img" src="{% static 'img/icons/free-icon-apartments-382336.png' %}">
+                <div class="register_object__text">
+                    Варианты размещения с мебелью, кухней и отдельным санузлом, которые сдаются целиком
+                </div>
+                <div class="register_object__button_container">
+                    <button class="btn btn-success register_object__register_button">Зарегистрировать объект</button>
+                </div>
+            </div>
+            <div class="register_object__menu_container">
+                <img class="register_object__main_menu_img" src="{% static 'img/icons/free-icon-camping-zone-2387489.png' %}">
+                <div class="register_object__text">
+                    Глэмпинги, кемпинги, шатры и прочее
+                </div>
+                <div class="register_object__button_container">
+                    <a type="button" class="btn btn-success register_object__register_button" href="{% url 'app_premises:create_camp1' %}">Зарегистрировать объект</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+{% endblock %}
+</html>

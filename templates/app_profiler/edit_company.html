@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Biglov.ru | Кабинет партнёра | Сдать квартиру | Разместить отель{% endblock title %}</title>
+    <link type="text/css" rel="reset" href="../../static/css/reset.css">
+    <link href="{% static 'favicon.ico' %}" rel="shortcut icon" type="image/png">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="../../static/css/style.css">
+    <link type="text/css" rel="stylesheet" href="../../static/css/stylesheet.css">
+
+</head>
+<body>
+    {% block content %}
+    <div class="company__edit_form_container">
+        <form class="company__edit_profile" method="post">{% csrf_token %}
+            {{ company_form.status.as_hidden }}
+            {{ company_form.created_at.as_hidden }}
+            {{ company_form.is_active.as_hidden }}
+            {{ company_form.is_company.as_hidden }}
+            {{ company_form.as_staff.as_hidden }}
+            {{ company_form.is_superuser.as_hidden }}
+            {{ company_form.book_count.as_hidden }}
+            {{ company_form.password.as_hidden }}
+            {{ company_form.first_name.as_hidden }}
+            {{ company_form.last_name.as_hidden }}
+            {{ company_form.phone.as_hidden }}
+            {{ company_form.email.as_hidden }}
+            {{ company_form.birthday.as_hidden }}
+            {{ company_form.slug.as_hidden }}
+            <div class="company__main_param_block">
+                <div class="edit-element-container">
+                    <p class="profile-categories">Форма предпринимательства: </p>
+                    <p class="profile-edit-data">{{ company_form.type }}</p>
+                </div>
+                {% if current_company.type == 'c' %}
+                    <div class="manager-form-container">
+                        <p class="profile-categories">Полное наименование: </p>
+                        <p class="profile-edit-data">{{ company_form.full_company_name }}</p>
+                    </div>
+                    <div class="manager-form-container">
+                        <p class="profile-categories">НДС: </p>
+                        <p class="profile-edit-data">{{ company_form.nds }}</p>
+                    </div>
+                    <div class="manager-form-container">
+                        <p class="profile-categories">Сокращенное наименование: </p>
+                        <p class="profile-edit-data">{{ company_form.short_company_name }}</p>
+                    </div>
+                    <div class="manager-form-container">
+                        <p class="profile-categories">Юр. адрес: </p>
+                        <p class="profile-edit-data">{{ company_form.legal_address }}</p>
+                    </div>
+                    <div class="manager-form-container">
+                        <p class="profile-categories">Факт. адрес: </p>
+                        <p class="profile-edit-data"> {{ company_form.actual_address }}</p>
+                    </div>
+                    <div class="company__inn_kpp_ogrn">
+                        <div class="company__inn">
+                            <p class="profile-categories">ИНН: </p>
+                            <p class="profile-edit-data"> {{ company_form.inn }}</p>
+                        </div>
+                        <div class="company__kpp">
+                            <p class="profile-categories">КПП: </p>
+                            <p class="profile-edit-data"> {{ company_form.kpp }}</p>
+                        </div>
+                        <div class="company__ogrn">
+                            <p class="profile-categories">ОГРН: </p>
+                            <p class="profile-edit-data"> {{ company_form.ogrn }}</p>
+                        </div>
+                    </div>
+
+                    <div class="company__bank_param">
+                        <div class="company__bank_accounts">
+                            <div class="company__rs">
+                                <p class="profile-categories">Р/с: </p>
+                                <p class="profile-edit-data"> {{ company_form.bank_account }}</p>
+                            </div>
+                            <div class="company__ks">
+                                <p class="profile-categories">К/с: </p>
+                                <p class="profile-edit-data"> {{ company_form.kor_account }}</p>
+                            </div>
+                        </div>
+                        <div class="manager-form-container">
+                            <p class="profile-categories">Банк: </p>
+                            <p class="profile-edit-data"> {{ company_form.bank_name }}</p>
+                        </div>
+
+                        <div class="company__bic">
+                            <p class="profile-categories">БИК: </p>
+                            <p class="profile-edit-data"> {{ company_form.bic }}</p>
+                        </div>
+                    </div>
+                    <div class="company__contacts_param">
+                        <div class="company__ceo">
+                            <p class="profile-categories">Руководитель: </p>
+                            <div class="account__ceo_data">
+                                {{ company_form.last_name }} {{ company_form.first_name }} {{ company_form.middle_name }}
+                            </div>
+                        </div>
+                        <div class="company__ceo">
+                            <p class="profile-categories">Телефон: </p>
+                            <p class="profile-edit-data"> {{ company_form.phone }}</p>
+                        </div>
+                        <div class="company__ceo">
+                            <p class="profile-categories">Эл. почта: </p>
+                            <p class="profile-edit-data"> {{ company_form.email }}</p>
+                        </div>
+                    </div>
+                {% elif current_company.type == 'p' %}
+                    <div class="company__contacts_param">
+                        <div>
+                            <div class="company__ceo">
+                                <p class="profile-categories">Фамилия: </p>
+                                <p class="profile-edit-data"> {{ company_form.last_name }}</p>
+                            </div>
+                            <div class="company__ceo">
+                                <p class="profile-categories">Имя: </p>
+                                <p class="profile-edit-data"> {{ company_form.first_name }}</p>
+                            </div>
+                            <div class="company__ceo">
+                                <p class="profile-categories">Отчество: </p>
+                                <p class="profile-edit-data"> {{ company_form.middle_name }}</p>
+                            </div>
+                        </div>
+                        <div class="company__ceo">
+                            <p class="profile-categories">Телефон: </p>
+                            <p class="profile-edit-data"> {{ company_form.phone }}</p>
+                        </div>
+                        <div class="company__ceo">
+                            <p class="profile-categories">Эл. почта: </p>
+                            <p class="profile-edit-data"> {{ company_form.email }}</p>
+                        </div>
+                    </div>
+                    <div class="company__bank_param">
+                        <h5>Паспортные данные</h5>
+                        <div class="company__bank_accounts">
+                            <div class="company__rs">
+                                <p class="profile-categories">Серия: </p>
+                                <p class="profile-edit-data"> {{ company_form.passport_series }}</p>
+                            </div>
+                            <div class="company__ks">
+                                <p class="profile-categories">Номер: </p>
+                                <p class="profile-edit-data"> {{ company_form.passport_number }}</p>
+                            </div>
+                        </div>
+                        <div class="manager-form-container">
+                            <p class="profile-categories">Выдан: </p>
+                            <p class="profile-edit-data"> {{ company_form.passport_who }}</p>
+                        </div>
+                        <div class="company__bank_accounts">
+                            <div class="company__rs">
+                                <p class="profile-categories">Дата выдачи: </p>
+                                <p class="profile-edit-data"> {{ company_form.passport_date }}</p>
+                            </div>
+                            <div class="company__rs">
+                                <p class="profile-categories">Код подразделения: </p>
+                                <p class="profile-edit-data"> {{ company_form.passport_code }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                      $(function () {
+                        $("#id_passport_date").datepicker({
+                          format:'dd.mm.yyyy',
+                          autoHide:'True',
+                          autoPick:'True',
+                          language:'ru-RU',
+                        });
+                      });
+                    </script>
+
+                {% else %}
+                    <div class="company_detail__info_before_register_container">
+                        <img class="company_detail__img_before_register" src="{% static 'img/icons/free-icon-guy-7836474.png' %}">
+                        <h5 class="company_detail__info_before_register">Выберите форму предпринимательства и заполните соответствующие поля.</h5>
+                        <div class="company_detail__info_before_register">Это очень важно так как без регистрации мы не сможем предоставить Вам наши услуги в полном объеме и сделать их максимально качественными и удобными для Вас.</div>
+                    </div>
+                {% endif %}
+                <div style="text-align: center;">
+                    <button class="btn btn-success" name="account__save_form" id="edit-manager-save" type="submit">Сохранить изменения</button>
+                </div>
+            </div>
+        </form>
+        <div class="company__show_objects_list">
+            <h5 class="company__h5_realty_objects">Объекты в управлении</h5>
+
+            <div class="company__realty_list_menu">
+                    <!-- Кнопка-триггер модального окна регистрации объекта недвижимости -->
+                    <div class="btn-group">
+                        <a class="company__realty_list_menu_link" href="{% url 'app_premises:register_object' %}" title="Зарегистрировать объект"><img class="company__realty_list_menu_img" src="../../static/img/icons/free-icon-add-house-15735.png"></a>
+                    </div>
+                    <!-- Кнопка-триггер модального окна статистических данных -->
+                <a class="company__realty_list_menu_link" title="Статистические данные" data-bs-toggle="modal" data-bs-target="#staticBackdrop2"><img class="company__realty_list_menu_img" src="../../static/img/icons/free-icon-financial-report-3344965.png"></a>
+                    <!-- Кнопка-триггер модального окна статистических данных -->
+                <a class="company__realty_list_menu_link" title="Список бронирований" data-bs-toggle="modal" data-bs-target="#staticBackdrop4"><img class="company__realty_list_menu_img" src="../../static/img/icons/free-icon-booking-5110947.png"></a>
+                    <!-- Кнопка-триггер модального окна промо акций -->
+                <a class="company__realty_list_menu_link" title="Промо акции" data-bs-toggle="modal" data-bs-target="#staticBackdrop3"><img class="company__realty_list_menu_img" src="../../static/img/icons/free-icon-promotions-372754.png"></a>
+            </div>
+            <ul class="company__list_of_realty">
+                {% if realty_objects_to_profile %}
+                    {% for company in realty_objects_to_profile %}
+                        <div>
+                            <img class="company__list_of_control_realty" src="../../media/{{ company.camp_photos.all.0.photo }}">
+                            <a class="link-to-realty-from-profile" href="{% url 'app_premises:realty_detail' slug=company.slug %}"><li class="company__realty_object">{{ company }}</li></a>
+                        </div>
+                    {% endfor %}
+
+                    {% for lt_realty in lt_realty_objects_to_profile %}
+                        <div>
+                            <img class="company__list_of_control_realty" src="../../media/{{ lt_realty.flat_photos.all.0.photo }}">
+                            <a class="link-to-realty-from-profile" href="{% url 'app_premises:lt_realty_detail' pk=lt_realty.id %}"><li class="company__realty_object">{{ lt_realty.get_realty_type_display }}</li></a>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </ul>
+            <ul class="company__list_of_realty2">
+                {% if not realty_objects_to_profile %}
+                    <img class="company__you_have_no_objects" src="../../static/img/icons/free-icon-guy-7836458.png">
+                    <p>У вас еще нет объектов в управлении</p>
+                    <a href="{% url 'app_premises:register_object' %}">Зарегистрировать объект</a>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Модальное окно списка бронирований -->
+    <div class="modal fade" id="staticBackdrop4" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel4" aria-hidden="true">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel4">Статистические данные</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+          </div>
+              <div class="modal-body">
+                <h5 class="company__h5_realty_objects">Список бронирований</h5>
+                <div class="company__show_reservation_list">
+                {% if reservations_list %}
+                    {% for reserve in reservations_list %}
+                        {% if reserve.is_booked %}
+                            <div class="company__reserve_container">
+                                <div class="company__reserve_realty">
+                                    {{ reserve }}
+                                </div>
+                                <div class="company__reserve_date">
+                                    <div>С {{ reserve.check_in }} по {{ reserve.check_out }}</div>
+                                </div>
+                                <div>
+                                    <div>Арендатор: {{ reserve.guest.first_name }} {{ reserve.guest.last_name }}</div>
+                                    <div>Контактный телефон: {{ reserve.guest.phone }}</div>
+                                    <div>Электронная почта: {{ reserve.guest.email }}</div>
+                                    <div>Телеграм: {{ reserve.guest.telegram }}</div>
+                                    <div class="user_detail__list_of_reservations_text_form">Идентификатор: {{ reserve.book_identifier }}</div>
+                                    <div class="reserve__sum_of_reservation">Сумма: {{ reserve.total_sum }} ₽</div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <div>У вас нет активных бронирований</div>
+                {% endif %}
+              </div>
+              <div class="company__total_sum_of_active_reserves">
+                {% if total_company_sum %}
+                    <p>Общая сумма: {{ total_company_sum }}₽</p>
+                {% endif %}
+              </div>
+          </div>
+          <div class="modal-footer">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Модальное окно статистических данных -->
+    <div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel2">Статистические данные</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+          </div>
+              <div class="modal-body">
+                Каминсун
+              </div>
+          </div>
+          <div class="modal-footer">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Модальное окно управления промо-акциями -->
+    <div class="modal fade" id="staticBackdrop3" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
+      <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel3">Управление акциями</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+          </div>
+          <div class="modal-body">
+            Каминсун
+          </div>
+          <div class="modal-footer">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+        const myModal = document.getElementById('myModal')
+        const myInput = document.getElementById('myInput')
+
+        myModal.addEventListener('shown.bs.modal', () => {
+          myInput.focus()
+        })
+    </script>
+    {% endblock %}
+
+</body>
+{% block footer %}
+<footer class="base__footer_not_fixed">
+    <div class="base__footer_container">
+        <a class="base__logo_footer" href="/"><img class="logo-main_footer" src="../../static/img/logo.png" alt="Логотип"></a>
+    </div>
+    <div class="base__footer">
+        <div class="base__copyright">
+            <li class="base_menu__li_container"><a href="{% url 'app_rules:our_values' %}">Наши ценности</a></li>
+            <li class="base_menu__li_container"><a href="{% url 'app_rules:rules' %}">Правила сайта</a></li>
+            <li class="base_menu__li_container"><a href="{% url 'app_rules:privacy_policy' %}">Политика конфиденциальности</a></li>
+            <li class="base_menu__li_container"><a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a></li>
+        </div>
+    </div>
+
+    <!-- Модальное окно управления промо-акциями -->
+    <div class="modal fade" id="staticBackdrop5" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="staticBackdropLabel5">Контакты</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+          </div>
+          <div class="modal-body">
+              <div>Телефон для справок: +7 (938) 416-66-72</div>
+              <div>Эл. почта: biglov.info@yandex.ru</div>
+          </div>
+          <div class="modal-footer">
+          </div>
+        </div>
+      </div>
+    </div>
+</footer>
+{% endblock footer %}
+</html>

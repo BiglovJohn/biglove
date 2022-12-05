@@ -1,10 +1,8 @@
 import datetime
 
 from django.db.models import Count, Sum
-from pytils.translit import slugify
 from .forms import ReservationIndexSearchForm
-from .models import HolidayHouseObject, RealtyOptions, Reservation, Photos
-from app_ltrent.models import LongTermRentObject
+from .models import Camp, RealtyOptions, Reservation, Photos, Flat
 
 
 def render_reservation_form(request):
@@ -62,24 +60,10 @@ def render_reservation_form(request):
         return {'reserve_form': reserve_form}
 
 
-def render_realty_objects(request):
-    """Вывод объектов на главную страницу по популярности"""
-    realty_first = HolidayHouseObject.objects.order_by('-realty_book_count')[0]
-    realty_second = HolidayHouseObject.objects.order_by('-realty_book_count')[1]
-    realty_third = HolidayHouseObject.objects.order_by('-realty_book_count')[2]
-    photos_first = Photos.objects.filter(realty_obj_id=realty_first.id)
-    photos_second = Photos.objects.filter(realty_obj_id=realty_second.id)
-    photos_third = Photos.objects.filter(realty_obj_id=realty_third.id)
-
-    return {'realty_first': realty_first, 'realty_second': realty_second, 'realty_third': realty_third,
-            'photos_first': photos_first, 'photos_second': photos_second, 'photos_third': photos_third
-            }
-
-
 def render_realty_object_to_profile(request):
     """Вывод объектов УК в профиль"""
-    realty_objects_to_profile = HolidayHouseObject.objects.filter(company=request.user.id)
-    lt_realty_objects_to_profile = LongTermRentObject.objects.filter(company=request.user.id)
+    realty_objects_to_profile = Camp.objects.filter(company=request.user.id)
+    lt_realty_objects_to_profile = Flat.objects.filter(company=request.user.id)
     reservations_list = Reservation.objects.filter(
         realty__in=realty_objects_to_profile).select_related('realty').select_related('guest')
     total_company_sum = Reservation.objects.filter(realty__in=realty_objects_to_profile).aggregate(Sum('total_sum'))[
@@ -89,16 +73,6 @@ def render_realty_object_to_profile(request):
             'lt_realty_objects_to_profile': lt_realty_objects_to_profile,
             'reservations_list': reservations_list,
             'total_company_sum': total_company_sum}
-
-
-def render_options_list(request):
-    options_list = RealtyOptions.objects.all()
-    return {'options_list': options_list}
-
-
-def render_food_options_list(request):
-    food_options_list = RealtyOptions.objects.filter(category='Питание')
-    return {'food_options_list': food_options_list}
 
 
 def render_today_and_tomorrow(request):

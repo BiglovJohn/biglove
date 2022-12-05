@@ -1,22 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from app_profiler.models import CustomUser
 
-from app_companies.models import CompanyProfile
+from app_premises.models import Photos, Camp
 
 """Главная страница"""
 
 
 def index_page(request):
-    if request.user.is_authenticated:
-        if request.user.is_company:
-            user_slug = request.user.slug
-            current_company = CompanyProfile.objects.get(user=request.user.id)
-            company_slug = current_company.slug
-            return render(request, 'index.html', {'user_slug': user_slug, 'company_slug': company_slug})
-        else:
-            user_slug = request.user.slug
-            company_slug = None
-            return render(request, 'index.html', {'user_slug': user_slug, 'company_slug': company_slug})
-    else:
-        user_slug = None
-        company_slug = None
-        return render(request, 'index.html', {'user_slug': user_slug, 'company_slug': company_slug})
+    index_realty_list = Camp.objects.order_by('-realty_book_count')[:7]
+    return render(request, 'index.html', {'index_realty_list': index_realty_list})

@@ -5,7 +5,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title%}Biglov{% endblock title%}</title>
-    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
     <link type="text/css" rel="reset" href="{% static 'css/reset.css' %}">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -19,6 +18,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
     <script src="../../static/js/datepicker.ru-RU.js"></script>
+
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.png' %}"/>
 
 </head>
 <header class="basemenu" id="header">
@@ -44,14 +45,12 @@
                           <ul class="base_menu__links_container">
                               {% if request.user.is_company %}
                                   <li class="base_menu__li_container">
-                                      <a href="{% url 'app_companies:company_detail' company_slug=company_slug %}">
+                                      <a href="{% url 'app_profiler:company_detail' company_id=request.user.id %}">
                                           Кабинет арендодателя
                                       </a>
                                   </li>
                               {% endif %}
                                   <li class="base_menu__li_container"><a href="{% url 'app_profiler:account_reserves' slug=request.user.slug %}">Мои бронирования</a></li>
-                                  <li class="base_menu__li_container"><a href="{% url 'app_rules:rules' %}">Правила сайта</a></li>
-                                  <li class="base_menu__li_container"><a href="{% url 'app_rules:privacy_policy' %}">Политика конфиденциальности</a></li>
                           </ul>
                       </form>
                     </div>
@@ -79,7 +78,9 @@
                                     <button type="submit" id="base__login_form" name="submit-login-form" class="btn btn-success">Войти</button>
                                 </form>
                                 <div class="dropdown-divider"></div>
-                                <button class="dropdown-item" id="open_pop_up">Впервые у нас? <b>Зарегистрироваться</b></button>
+                                <form method="get" action="{% url 'app_profiler:register1' %}">
+                                    <button class="dropdown-item" name="basic__register_button">Впервые у нас? <b>Зарегистрироваться</b></button>
+                                </form>
                                 <a class="dropdown-item" href="#">Забыли пароль?</a>
                             </div>
                     </div>
@@ -116,7 +117,7 @@
                     <p class="register-form-container">
                         <p>{{ register_form.birthday }}</p>
                     <div class="form-check form-switch">
-                    <p class="register-form-container">
+                        <p class="register-form-container">
                         <p>{{ register_form.is_company }}</p>
                         <label class="form-check-label" for="flexSwitchCheckDefault">Являюсь арендодателем</label>
                     </div>
@@ -130,6 +131,18 @@
                 <button type="submit" name="save-register-form" class="btn btn-light" id="register-button">Зарегистрироваться</button>
             </form>
         </div>
+
+    <script>
+      $(function () {
+        $("#id_birthday").datepicker({
+          format:'dd.mm.yyyy',
+          startDate:'today',
+          autoHide:'True',
+          autoPick:'True',
+          language:'ru-RU',
+        });
+      });
+    </script>
 
     <script>
         let pop_up   = document.getElementById('pop_up');
@@ -155,7 +168,21 @@
         })
     </script>
 
-    <!-- Модальное окно контакты -->
+    <a href="#header"><img class="base__arrow_top" src="../../static/img/icons/free-icon-arrowhead-up-3838683.png"></a>
+</body>
+{% block footer %}
+<footer class="base__footer_not_fixed">
+    <div class="base__footer_container">
+        <a class="base__logo_footer" href="/"><img class="logo-main_footer" src="../../static/img/logo.png" alt="Логотип"></a>
+        <div class="base__copyright">
+            <li class="base_menu__li_container"><a class="footer__links" href="{% url 'app_rules:our_values' %}">Наши ценности</a></li>
+            <li class="base_menu__li_container"><a class="footer__links" href="{% url 'app_rules:rules' %}">Правила сайта</a></li>
+            <li class="base_menu__li_container"><a class="footer__links" href="{% url 'app_rules:privacy_policy' %}">Политика конфиденциальности</a></li>
+            <li class="base_menu__li_container"><a class="footer__links" href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a></li>
+        </div>
+    </div>
+
+    <!-- Модальное окно управления промо-акциями -->
     <div class="modal fade" id="staticBackdrop5" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -171,21 +198,6 @@
           </div>
         </div>
       </div>
-    </div>
-    <a href="#header"><img class="base__arrow_top" src="../../static/img/icons/free-icon-arrowhead-up-3838683.png"></a>
-</body>
-{% block footer %}
-<footer class="base__footer_all">
-    <div class="base__footer_container">
-        <a class="base__logo_footer" href="/"><img class="logo-main_footer" src="../../static/img/logo.png" alt="Логотип"></a>
-    </div>
-    <div class="base__footer">
-        <div class="base__copyright">
-            <a href="{% url 'app_rules:our_values' %}">Наши ценности</a>
-        </div>
-        <div class="base__footer_info">
-            <a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a>
-        </div>
     </div>
 </footer>
 {% endblock footer %}

@@ -1,0 +1,272 @@
+[
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 1,
+    "fields": {
+      "option_name": "Бассейн",
+      "category": "В отеле",
+      "icon_url": "fi-rs-swimmer.svg"
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 2,
+    "fields": {
+      "option_name": "Вид на лес",
+      "category": "В номере",
+      "icon_url": "free-icon-view-4608856.png"
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 3,
+    "fields": {
+      "option_name": "Кондиционер",
+      "category": "В номере",
+      "icon_url": "free-icon-air-conditioning-3653384.png"
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 4,
+    "fields": {
+      "option_name": "Ванная комната в номере",
+      "category": "В номере",
+      "icon_url": "free-icon-bathroom-3139975.png"
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 5,
+    "fields": {
+      "option_name": "Окно в номере",
+      "category": "В номере",
+      "icon_url": "free-icon-view-4608856.png"
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 6,
+    "fields": {
+      "option_name": "Кухня",
+      "category": "В номере",
+      "icon_url": "free-icon-kitchen-2851945.png"
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 7,
+    "fields": {
+      "option_name": "Балкон",
+      "category": "В номере",
+      "icon_url": "free-icon-balcony-4439895.png"
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 8,
+    "fields": {
+      "option_name": "VIP-удобства в номере",
+      "category": "В номере",
+      "icon_url": "free-icon-vip-card-2521013.png"
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 9,
+    "fields": {
+      "option_name": "Люкс для новобрачных",
+      "category": "В номере",
+      "icon_url": ""
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 10,
+    "fields": {
+      "option_name": "Мини-бар",
+      "category": "В номере",
+      "icon_url": ""
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 11,
+    "fields": {
+      "option_name": "Номера для аллергиков",
+      "category": "В номере",
+      "icon_url": ""
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 12,
+    "fields": {
+      "option_name": "Номера для некурящих",
+      "category": "В номере",
+      "icon_url": ""
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 13,
+    "fields": {
+      "option_name": "Обслуживание номеров",
+      "category": "В номере",
+      "icon_url": ""
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 14,
+    "fields": {
+      "option_name": "Сейф (в номере)",
+      "category": "В номере",
+      "icon_url": ""
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 15,
+    "fields": {
+      "option_name": "Телевизор",
+      "category": "В номере",
+      "icon_url": ""
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 16,
+    "fields": {
+      "option_name": "Туалетные принадлежности",
+      "category": "В номере",
+      "icon_url": ""
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 17,
+    "fields": {
+      "option_name": "Бесплатный интернет",
+      "category": "В отеле",
+      "icon_url": "netwark.svg"
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 18,
+    "fields": {
+      "option_name": "Трансфер",
+      "category": "В отеле",
+      "icon_url": "fi-rs-car.svg"
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 19,
+    "fields": {
+      "option_name": "Парковка",
+      "category": "В отеле",
+      "icon_url": "fi-rs-garage-car.svg"
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 21,
+    "fields": {
+      "option_name": "Фитнес",
+      "category": "В отеле",
+      "icon_url": "fi-rs-gym.svg"
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 22,
+    "fields": {
+      "option_name": "Бар или ресторан",
+      "category": "В отеле",
+      "icon_url": "free-icon-restaurant-3437521.png"
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 23,
+    "fields": {
+      "option_name": "Конференц-зал",
+      "category": "В отеле",
+      "icon_url": "free-icon-conference-1376508.png"
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 24,
+    "fields": {
+      "option_name": "Спа-услуги",
+      "category": "В отеле",
+      "icon_url": "sauna.png"
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 25,
+    "fields": {
+      "option_name": "Горнолыжный склон рядом",
+      "category": "В отеле",
+      "icon_url": "fi-rs-skiing.svg"
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 26,
+    "fields": {
+      "option_name": "Пляж рядом",
+      "category": "В отеле",
+      "icon_url": "fi-rs-water.svg"
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 27,
+    "fields": {
+      "option_name": "Джакузи",
+      "category": "В отеле",
+      "icon_url": "free-icon-jacuzzi-531237.png"
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 28,
+    "fields": {
+      "option_name": "Подходит для детей",
+      "category": "Особенности размещения",
+      "icon_url": "free-icon-feeding-bottle-2339947.png"
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 29,
+    "fields": {
+      "option_name": "Для гостей с ограниченными возможностями",
+      "category": "Особенности размещения",
+      "icon_url": ""
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 30,
+    "fields": {
+      "option_name": "Разрешено с домашними животными",
+      "category": "Особенности размещения",
+      "icon_url": ""
+    }
+  },
+  {
+    "model": "app_premises.realtyoptions",
+    "pk": 31,
+    "fields": {
+      "option_name": "Можно курить",
+      "category": "Особенности размещения",
+      "icon_url": ""
+    }
+  }
+]

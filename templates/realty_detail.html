@@ -26,17 +26,43 @@
 {% block content %}
     <ul class="realty_list">
         <aside class="realty_detail__top_text">
-            <div>
+            <div class="hotels_detail__main_container">
                 <div class="detail_hotels__realty_type">{{ realty.get_realty_type_display }}</div>
-                <img class="hotels_detail__rating_stars" src="{% static 'img/icons/5 stars.png' %}">
+                {% if not realty.stars %}
+                    <img class="hotels_detail__rating_stars" id="detail__stars_info" src="{% static 'img/icons/0 stars.png' %}">
+                {% elif realty.stars == '1' %}
+                    <img class="hotels_detail__rating_stars" id="detail__stars_info1" src="{% static 'img/icons/1 star.png' %}">
+                {% elif realty.stars == '2' %}
+                    <img class="hotels_detail__rating_stars" id="detail__stars_info2" src="{% static 'img/icons/2 stars.png' %}">
+                {% elif realty.stars == '3' %}
+                    <img class="hotels_detail__rating_stars" id="detail__stars_info3" src="{% static 'img/icons/3 stars.png' %}">
+                {% elif realty.stars == '4' %}
+                    <img class="hotels_detail__rating_stars" id="detail__stars_info4" src="{% static 'img/icons/4 stars.png' %}">
+                {% elif realty.stars == '5' %}
+                    <img class="hotels_detail__rating_stars" id="detail__stars_info5" src="{% static 'img/icons/5 stars.png' %}">
+                {% endif %}
                 <div class="detail_hotels__realty_name">{{ realty.realty_name }}</div>
-                <div class="realty_address">{{ realty.realty_region }}, {{ realty.realty_address }} - {{ realty.realty_city }} </div>
+                <div class="realty_address">{{ realty.realty_country }}, {{ realty.realty_address }} - {{ realty.realty_city }} </div>
                 <div class="detail_hotels__header_comments_count">
                     <div class="hotels_detail__avg_guest_mark">9</div>
                     <div style="color: black;">Отлично</div>
                     <li style="margin-left: 30px;">Отзывов - {{ comments_count.count }}</li>
                 </div>
+                <div class="hotels_detail__stars_info_show" id="info1" style="display: none;">
+                    <div>Звездный рейтинг предоставляется Biglov.ru объектом размещения. Обычно он присваивается официальной организацией или какой-либо еще третьей стороной.
+                        Подробную информацию можно найти в <a href="#">правилах и условиях</a>.</div>
+                </div>
             </div>
+            <script>
+                var x = document.querySelector('.hotels_detail__rating_stars');
+                var y =  document.querySelector('.hotels_detail__stars_info_show');
+                x.onmouseover = function () {
+                    y.style.display = 'block';
+                };
+                x.onmouseout = function () {
+                    y.style.display = 'none';
+                };
+            </script>
             <div class="realty_detail__edit_link">
                 {% if request.user.is_authenticated %}
                     {% if request.user.is_company %}
@@ -140,6 +166,35 @@
                     <span class="visually-hidden">Следующий</span>
                   </button>
                 </div>
+                <div class="realty_detail__options_list_img">
+                    <div class="realty_detail__options_img_container">
+                        <img class="realty_detail__options_img" src="{% static 'img/icons/free-icon-home-3894032.png' %}">
+                        <div class="realty_detail__option_info">{{ realty.get_realty_type_display }}</div>
+                    </div>
+                    <div class="realty_detail__options_img_container">
+                        <img class="realty_detail__options_img" src="{% static 'img/icons/free-icon-area-8442305.png' %}">
+                        <div class="realty_detail__option_info">Площадь {{ realty.realty_area }} м²</div>
+                    </div>
+                    <div class="realty_detail__options_img_container">
+                        {% if realty.book_cancel == 'y' %}
+                            <li style="color:green;" class="main_option_elem"><img class="realty_detail__main_option_img" src="../../static/img/icons/free-icon-calendar-5237130.png">{{ realty.get_book_cancel_display }}</li>
+                        {% elif realty.book_cancel == 'n' %}
+                            <li style="color:red;" class="main_option_elem"><img class="realty_detail__main_option_img" src="../../static/img/icons/free-icon-calendar-5237130.png">{{ realty.get_book_cancel_display }}</li>
+                        {% endif %}
+                    </div>
+                    <div class="realty_detail__options_img_container">
+                        <img class="realty_detail__options_img" src="{% static 'img/icons/free-icon-area-8442305.png' %}">
+                        Площадь {{ realty.realty_area }} м²
+                    </div>
+                    <div class="realty_detail__options_img_container">
+                        <img class="realty_detail__options_img" src="{% static 'img/icons/free-icon-area-8442305.png' %}">
+                        Площадь {{ realty.realty_area }} м²
+                    </div>
+                    <div class="realty_detail__options_img_container">
+                        <img class="realty_detail__options_img" src="{% static 'img/icons/free-icon-area-8442305.png' %}">
+                        Площадь {{ realty.realty_area }} м²
+                    </div>
+                </div>
                 <div class="hotels_detail__buttons_container">
                     <a class="btn btn-light detail__btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling"><h5 class="hotels_detail__button_names">Отзывы ({{ comments_count.count }})</h5></a>
                     <a class="btn btn-light detail__btn" type="button" href="#hotels_detail__options"><h5 class="hotels_detail__button_names">Описание</h5></a>
@@ -159,7 +214,7 @@
                                 </div>
                             {% endfor %}
                         {% else %}
-                            <div class="hotels_detail__no_comments">
+                            <div class="hotels_detail__no_comments" style="opacity: 0.3;">
                                 <img style="width: 70%;" src="{% static 'img/icons/free-icon-guy-7836457.png' %}">
                                 <div style="font-size: 1.3em; font-weight: bold; color: black;">Тут еще нет отзывов!</div>
                             </div>
@@ -237,8 +292,9 @@
                             {% else %}
                                 <li class="main_option_elem"><img class="realty_detail__main_option_img" src="../../static/img/icons/money.png">{{ realty.get_pay_type_display }}</li>
                             {% endif %}
-                        </div>
-                    </ul>
+
+                        </ul>
+                    </div>
 
                     <div class="realty-options-list-container" id="hotels_detail__options">
                         <h5 class="options-list-title">Основные удобства:</h5>
@@ -252,7 +308,7 @@
 
                     <div>
                         <h5 class="options-list-title">Описание:</h5>
-                        <p style="font-size: 0.9em; text-align: justify;">{{ realty.full_description | safe | linebreaks | slice:400 }}...</p>
+                        <div style="font-size: 0.9em; text-align: justify; display: inline;">{{ realty.full_description | safe | linebreaks | slice:400 }}</div>
                         <a id="detail__show_description" href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Читать полностью</a>
                     </div>
                     {% if adv_realty_list_curr_company %}
@@ -261,7 +317,7 @@
                             <ul class="realty_detail__list_of_realty">
                                 {% for another_realty in adv_realty_list_curr_company %}
                                     <div>
-                                        <img class="company__list_of_control_realty" src="../../media/{{ another_realty.photos.all.0.photo }}">
+                                        <img class="company__list_of_control_realty" src="../../media/{{ another_realty.camp_photos.all.0.photo }}">
                                         <a class="link-to-realty-from-profile" href="{% url 'app_premises:realty_detail' slug=another_realty.slug %}"><li class="company__realty_object">{{ another_realty }}</li></a>
                                     </div>
                                 {% endfor %}
@@ -275,8 +331,8 @@
                             <ul class="realty_detail__list_of_realty">
                                 {% for another_lt_realty in adv_lt_realty %}
                                     <div>
-                                        <img class="company__list_of_control_realty" src="../../media/{{ another_lt_realty.photos.all.0.photo }}">
-                                        <a class="link-to-realty-from-profile" href="{% url 'app_ltrent:lt_realty_detail' pk=another_lt_realty.id %}"><li class="company__realty_object">{{ another_lt_realty }}</li></a>
+                                        <img class="company__list_of_control_realty" src="../../media/{{ another_lt_realty.flat_photos.all.0.photo }}">
+                                        <a class="link-to-realty-from-profile" href="{% url 'app_premises:lt_realty_detail' pk=another_lt_realty.id %}"><li class="company__realty_object">{{ another_lt_realty }}</li></a>
                                     </div>
                                 {% endfor %}
                             </ul>
@@ -375,10 +431,10 @@
     </div>
     <div class="base__footer">
         <div class="base__copyright">
-            <a href="{% url 'app_rules:our_values' %}">Наши ценности</a>
-        </div>
-        <div class="base__footer_info">
-            <a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a>
+            <li class="base_menu__li_container"><a href="{% url 'app_rules:our_values' %}">Наши ценности</a></li>
+            <li class="base_menu__li_container"><a href="{% url 'app_rules:rules' %}">Правила сайта</a></li>
+            <li class="base_menu__li_container"><a href="{% url 'app_rules:privacy_policy' %}">Политика конфиденциальности</a></li>
+            <li class="base_menu__li_container"><a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a></li>
         </div>
     </div>
 
