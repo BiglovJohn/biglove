@@ -1,13 +1,8 @@
 import datetime
 from django import forms
-from django.core.exceptions import ValidationError
 from .models import FurnitureModel, TechniqueModel, Flat
-from .models import Camp, Reservation, RealtyOptions, Photos
-
-
-list_of_id_in_hotel = [option.id for option in RealtyOptions.objects.filter(category='В отеле')]
-list_of_names_in_hotel = [option.option_name for option in RealtyOptions.objects.filter(category='В отеле')]
-_IN_HOTEL_OPTIONS = list(zip(list_of_id_in_hotel, list_of_names_in_hotel))
+from .models import Camp, Reservation, Photos
+from .services.base_services import IN_HOTEL_OPTIONS, IN_ROOM_OPTIONS
 
 
 _FILTER_TYPE = [
@@ -28,11 +23,6 @@ _REALTY_TYPE = [
     ('gp', 'Глэмпинг'),
 ]
 
-list_of_id_in_room = [option.id for option in RealtyOptions.objects.filter(category='В номере')]
-list_of_names_in_room = [option.option_name for option in RealtyOptions.objects.filter(category='В номере')]
-
-_IN_ROOM_OPTIONS = list(zip(list_of_id_in_room, list_of_names_in_room))
-
 _FOOD_OPTIONS = [
     ('a', 'Завтрак включён'),
     ('b', 'Завтрак + обед или ужин включены'),
@@ -41,18 +31,6 @@ _FOOD_OPTIONS = [
     ('e', 'Питание не включено'),
 ]
 
-# """Формируем список кортежей для поля CHOICES"""
-#
-# list_of_latters = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18',
-#                    '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30']
-#
-# option_name_list = []
-# option_name = RealtyOptions.objects.all()
-# for option in option_name:
-#     option_name_list.append(option.option_name)
-#
-# list_of_tuple_options_name = list(zip(list_of_latters, option_name_list))
-# print(list_of_tuple_options_name)
 
 today = datetime.date.today()
 tomorrow = today + datetime.timedelta(days=1)
@@ -200,7 +178,7 @@ class CreateHolidayHouseForm4(forms.ModelForm):
 class CreateHolidayHouseForm5(forms.ModelForm):
     class Meta:
         model = Camp
-        fields = ('arriving_time', 'departure_time')
+        fields = ('arriving_time', 'departure_time', 'arriving_time_to', 'departure_time_to')
 
     def __init__(self, *args, **kwargs):
         super(CreateHolidayHouseForm5, self).__init__(*args, **kwargs)
@@ -208,6 +186,8 @@ class CreateHolidayHouseForm5(forms.ModelForm):
 
         self.fields['arriving_time'].widget.attrs['class'] = 'form-control'
         self.fields['departure_time'].widget.attrs['class'] = 'form-control'
+        self.fields['arriving_time_to'].widget.attrs['class'] = 'form-control'
+        self.fields['departure_time_to'].widget.attrs['class'] = 'form-control'
 
 
 class CreateHolidayHouseForm6(forms.ModelForm):
@@ -331,13 +311,13 @@ class OptionFilterForm(forms.Form):
         label='',
         required=False,
         widget=forms.CheckboxSelectMultiple,
-        choices=_IN_HOTEL_OPTIONS,
+        choices=IN_HOTEL_OPTIONS,
     )
 
     def __init__(self, *args, **kwargs):
         super(OptionFilterForm, self).__init__(*args, **kwargs)
         self.fields['hotel_option'].widget.attrs['class'] = 'form-check-input'
-        self.fields['hotel_option'].widget.attrs['id'] = 'flexCheckDefault'
+        self.fields['hotel_option'].widget.attrs['id'] = 'flexSwitchCheckDefault'
 
 
 class InRoomOptionFilterForm(forms.Form):
@@ -345,13 +325,13 @@ class InRoomOptionFilterForm(forms.Form):
         label='',
         required=False,
         widget=forms.CheckboxSelectMultiple,
-        choices=_IN_ROOM_OPTIONS,
+        choices=IN_ROOM_OPTIONS,
     )
 
     def __init__(self, *args, **kwargs):
         super(InRoomOptionFilterForm, self).__init__(*args, **kwargs)
         self.fields['room_option'].widget.attrs['class'] = 'form-check-input'
-        self.fields['room_option'].widget.attrs['id'] = 'in-room-options'
+        self.fields['room_option'].widget.attrs['id'] = 'flexSwitchCheckDefault'
 
 
 class FoodOptionFilterForm(forms.Form):

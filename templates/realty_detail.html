@@ -1,26 +1,11 @@
-<!DOCTYPE html>
 {% extends "base.html" %}
+
 {% load static %}
+
 {% load humanize %}
-<html lang="ru" xmlns="http://www.w3.org/1999/html">
+
 <head>
-    <meta charset="UTF-8">
     <title>{% block title %}Biglov.ru | {{ realty.get_realty_type_display }} {{ realty.realty_name }} | Аренда в г. {{ realty.realty_city }} | Загородная недвижимость{%endblock title %}</title>
-    <link href="{% static 'css/reset.css' %}" type="text/css" rel="reset">
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
-    <link href="{% static 'css/style.css' %}" type="text/css" rel="stylesheet">
-    <link href="{% static 'css/stylesheet.css' %}" type="text/css" rel="stylesheet">
-
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-
-    <!-- Fengyuan Chen's Datepicker -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
-
 </head>
 <body>
 {% block content %}
@@ -77,75 +62,75 @@
         </aside>
 
         <div class="realty-detail-img-container">
-            <div class="hotels_detail__check_reservation">
-                <div class="check-the-reservation">
-                    <form class="realty-detail-check-reserve-container" method="get" action="?">
-                        <div class="realty_detail__check_container">
-                            {% if not 'check-is-reserve-available' in request.GET %}
-                                <div class="hotels_detail__datepicker_container">
-                                    <div>Дата заселения:</div>
-                                    <div class="hotels_detail__datepicker">{{ detail_reserve_form.check_in }}</div>
-                                </div>
-                                <div class="hotels_detail__datepicker_container">
-                                    <div>Дата отъезда:</div>
-                                    <div class="hotels_detail__datepicker">{{ detail_reserve_form.check_out }}</div>
-                                </div>
-                                <button class="btn btn-light" type="submit" value="{{ realty.id }}, {{ realty.realty_price }}" id="check-detail-button" name="check-is-reserve-available">Проверить</button>
-                            {% elif 'check-is-reserve-available' in request.GET %}
-                                <div class="hotels_detail__datepicker_container">
-                                    <div>Дата заселения:</div>
-                                    <div class="hotels_detail__datepicker">{{ detail_reserve_form.check_in }}</div>
-                                </div>
-                                <div class="hotels_detail__datepicker_container">
-                                    <div>Дата отъезда:</div>
-                                    <div class="hotels_detail__datepicker">{{ detail_reserve_form.check_out }}</div>
-                                </div>
-                                <button class="btn btn-light" type="submit" value="{{ realty.id }}, {{ realty.realty_price }}" id="check-detail-button2" name="check-is-reserve-available">Проверить</button>
+            <div class="camp_detail__one_more_container">
+                <div class="hotels_detail__check_reservation">
+                    <div class="check-the-reservation">
+                        <form class="realty-detail-check-reserve-container" method="get" action="?">
+                            <div class="realty_detail__check_container">
+                                {% if not 'check-is-reserve-available' in request.GET %}
+                                    <div class="hotels_detail__datepicker_container">
+                                        <div>Дата заселения:</div>
+                                        <div class="hotels_detail__datepicker">{{ detail_reserve_form.check_in }}</div>
+                                    </div>
+                                    <div class="hotels_detail__datepicker_container">
+                                        <div>Дата отъезда:</div>
+                                        <div class="hotels_detail__datepicker">{{ detail_reserve_form.check_out }}</div>
+                                    </div>
+                                    <button class="btn btn-light" type="submit" value="{{ realty.id }}, {{ realty.realty_price }}" id="check-detail-button" name="check-is-reserve-available">Проверить</button>
+                                {% elif 'check-is-reserve-available' in request.GET %}
+                                    <div class="hotels_detail__datepicker_container">
+                                        <div>Дата заселения:</div>
+                                        <div class="hotels_detail__datepicker">{{ detail_reserve_form.check_in }}</div>
+                                    </div>
+                                    <div class="hotels_detail__datepicker_container">
+                                        <div>Дата отъезда:</div>
+                                        <div class="hotels_detail__datepicker">{{ detail_reserve_form.check_out }}</div>
+                                    </div>
+                                    <button class="btn btn-light" type="submit" value="{{ realty.id }}, {{ realty.realty_price }}" id="check-detail-button2" name="check-is-reserve-available">Проверить</button>
 
-                                <div class="realty_detail__check_container">
-                                    {% if pk == reservation_set_detail.0.obj_id %}
-                                        <div class="realty-detail-booked">
-                                            <p class="realty-booked-text">Забронировано</p>
-                                            <p class="realty-booked-date-range">с {{ reservation_set_detail.0.obj_check_in }} по {{ reservation_set_detail.0.obj_check_out }}</p>
-                                        </div>
-                                    {% endif %}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </form>
-
-                    {% if pk != reservation_set_detail.0.obj_id %}
-                        <form class="realty_detail__reserve_button" method="get" action="{% url 'app_premises:reservation' %}">
-                            <button class="btn btn-light" type="submit" value="{{ realty.id }}, {{ realty.realty_price }}, {{ check_in }}, {{ check_out }}" id="to-reserve-page-id" name="to-reserve-page">Забронировать</button>
+                                    <div class="realty_detail__check_container">
+                                        {% if pk == reservation_set_detail.0.obj_id %}
+                                            <div class="realty-detail-booked">
+                                                <p class="realty-booked-text">Забронировано</p>
+                                                <p class="realty-booked-date-range">с {{ reservation_set_detail.0.obj_check_in }} по {{ reservation_set_detail.0.obj_check_out }}</p>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            </div>
                         </form>
-                    {% endif %}
 
-                    <script>
-                      $(function () {
-                        $("#id_check_in").datepicker({
-                          format:'dd.mm.yyyy',
-                          startDate:'today',
-                          autoHide:'True',
-                          autoPick:'True',
-                          language:'ru-RU',
-                        });
-                      });
-                    </script>
+                        {% if pk != reservation_set_detail.0.obj_id %}
+                            <form class="realty_detail__reserve_button" method="get" action="{% url 'app_premises:reservation' %}">
+                                <button class="btn btn-light" type="submit" value="{{ realty.id }}, {{ realty.realty_price }}, {{ check_in }}, {{ check_out }}" id="to-reserve-page-id" name="to-reserve-page">Забронировать</button>
+                            </form>
+                        {% endif %}
 
-                    <script>
-                      $(function () {
-                        $("#id_check_out").datepicker({
-                          format:'dd.mm.yyyy',
-                          startDate:'today',
-                          autoHide:'True',
-                          language:'ru-RU',
-                        });
-                      });
-                    </script>
+                        <script>
+                          $(function () {
+                            $("#id_check_in").datepicker({
+                              format:'dd.mm.yyyy',
+                              startDate:'today',
+                              autoHide:'True',
+                              autoPick:'True',
+                              language:'ru-RU',
+                            });
+                          });
+                        </script>
+
+                        <script>
+                          $(function () {
+                            $("#id_check_out").datepicker({
+                              format:'dd.mm.yyyy',
+                              startDate:'today',
+                              autoHide:'True',
+                              language:'ru-RU',
+                            });
+                          });
+                        </script>
+                    </div>
                 </div>
-            </div>
 
-            <div class="realty_detail__photo_and_menu_container">
                 <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
                   <div class="carousel-inner">
                     <div class="carousel-item active">
@@ -166,6 +151,10 @@
                     <span class="visually-hidden">Следующий</span>
                   </button>
                 </div>
+            </div>
+
+            <div class="realty_detail__photo_and_menu_container">
+
                 <div class="realty_detail__options_list_img">
                     <div class="realty_detail__options_img_container">
                         <img class="realty_detail__options_img" src="{% static 'img/icons/free-icon-home-3894032.png' %}">
@@ -175,29 +164,16 @@
                         <img class="realty_detail__options_img" src="{% static 'img/icons/free-icon-area-8442305.png' %}">
                         <div class="realty_detail__option_info">Площадь {{ realty.realty_area }} м²</div>
                     </div>
-                    <div class="realty_detail__options_img_container">
-                        {% if realty.book_cancel == 'y' %}
-                            <li style="color:green;" class="main_option_elem"><img class="realty_detail__main_option_img" src="../../static/img/icons/free-icon-calendar-5237130.png">{{ realty.get_book_cancel_display }}</li>
-                        {% elif realty.book_cancel == 'n' %}
-                            <li style="color:red;" class="main_option_elem"><img class="realty_detail__main_option_img" src="../../static/img/icons/free-icon-calendar-5237130.png">{{ realty.get_book_cancel_display }}</li>
-                        {% endif %}
-                    </div>
-                    <div class="realty_detail__options_img_container">
-                        <img class="realty_detail__options_img" src="{% static 'img/icons/free-icon-area-8442305.png' %}">
-                        Площадь {{ realty.realty_area }} м²
-                    </div>
-                    <div class="realty_detail__options_img_container">
-                        <img class="realty_detail__options_img" src="{% static 'img/icons/free-icon-area-8442305.png' %}">
-                        Площадь {{ realty.realty_area }} м²
-                    </div>
-                    <div class="realty_detail__options_img_container">
-                        <img class="realty_detail__options_img" src="{% static 'img/icons/free-icon-area-8442305.png' %}">
-                        Площадь {{ realty.realty_area }} м²
-                    </div>
+                    {% for option in realty.options.all|slice:6 %}
+                        <div class="realty_detail__options_img_container">
+                            <img class="realty_detail__options_img" src="../../static/img/icons/{{ option.icon_url }}">
+                            <div class="realty_detail__option_info">{{ option }}</div>
+                        </div>
+                    {% endfor %}
                 </div>
                 <div class="hotels_detail__buttons_container">
                     <a class="btn btn-light detail__btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling"><h5 class="hotels_detail__button_names">Отзывы ({{ comments_count.count }})</h5></a>
-                    <a class="btn btn-light detail__btn" type="button" href="#hotels_detail__options"><h5 class="hotels_detail__button_names">Описание</h5></a>
+                    <a class="btn btn-light detail__btn" type="button" href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop2"><h5 class="hotels_detail__button_names">Все удобства</h5></a>
                 </div>
                 <div class="offcanvas offcanvas-start detail__show_comments" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
                     <div class="offcanvas-header" id="detail__offcanvas_comments_header">
@@ -259,58 +235,69 @@
                 </div>
 
                 <ul class="realty_detail__list_info">
-                    <div class="hotels_detail__param_container">
-                        <div class="hotels_detail__params_container">
-                            <h5 class="options-list-title" id="staticBackdropLabel3">Основные параметры:</h5>
-                            <p class="realty-bed">Количество спальных мест: <b>{{ realty.count_of_persons }}</b></p>
-                            <p class="realty-bed">Площадь помещения: {{ realty.realty_area }} м²</p>
-                            <p class="realty-bed">Региональный центр (РЦ): г. {{ realty.region_center }}</p>
-                            <p class="realty-bed">Расстояние до РЦ: {{ realty.realty_to_city }}</b> км. от </p>
-                        </div>
-
-                        <ul class="main_options_info">
-                            {% if realty.book_cancel == 'y' %}
-                                <li style="color:green;" class="main_option_elem"><img class="realty_detail__main_option_img" src="../../static/img/icons/free-icon-calendar-5237130.png">{{ realty.get_book_cancel_display }}</li>
-                            {% elif realty.book_cancel == 'n' %}
-                                <li style="color:red;" class="main_option_elem"><img class="realty_detail__main_option_img" src="../../static/img/icons/free-icon-calendar-5237130.png">{{ realty.get_book_cancel_display }}</li>
-                            {% endif %}
-
-                            {% if realty.food_options == 'a' %}
-                                <li style="color:green;" class="main_option_elem"><img class="realty_detail__main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ realty.get_food_options_display }}</li>
-                            {% elif realty.food_options == 'b' %}
-                                <li style="color:green;" class="main_option_elem"><img class="realty_detail__main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ realty.get_food_options_display }}</li>
-                            {% elif realty.food_options == 'c' %}
-                                <li style="color:green;" class="main_option_elem"><img class="realty_detail__main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ realty.get_food_options_display }}</li>
-                            {% elif realty.food_options == 'd' %}
-                                <li style="color:green;" class="main_option_elem"><img class="realty_detail__main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ realty.get_food_options_display }}</li>
-                            {% elif realty.food_options == 'e' %}
-                                <li style="color:red;" class="main_option_elem"><img class="realty_detail__main_option_img" src="../../static/img/icons/free-icon-food-service-4483612.png">{{ realty.get_food_options_display }}</li>
-                            {% endif %}
-
-                            {% if realty.pay_type == 'o' %}
-                                <li class="main_option_elem"><img class="realty_detail__main_option_img" src="../../static/img/icons/free-icon-credit-card-5950249.png">{{ realty.get_pay_type_display }}</li>
-                            {% else %}
-                                <li class="main_option_elem"><img class="realty_detail__main_option_img" src="../../static/img/icons/money.png">{{ realty.get_pay_type_display }}</li>
-                            {% endif %}
-
-                        </ul>
-                    </div>
-
-                    <div class="realty-options-list-container" id="hotels_detail__options">
-                        <h5 class="options-list-title">Основные удобства:</h5>
-                        <ul class="realty-options-list">
-                            {% for option in realty.options.all|slice:6 %}
-                                <li class="option-list"><img class="detail__options_icon" src="../../static/img/icons/{{ option.icon_url }}">{{ option }}</li>
-                            {% endfor %}
-                        </ul>
-                        <a id="detail__show_description2" href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop2">Посмотреть все</a>
-                    </div>
-
                     <div>
-                        <h5 class="options-list-title">Описание:</h5>
-                        <div style="font-size: 0.9em; text-align: justify; display: inline;">{{ realty.full_description | safe | linebreaks | slice:400 }}</div>
-                        <a id="detail__show_description" href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Читать полностью</a>
+                        <div class="camp_detail__descriptions_container">{{ realty.full_description | safe | linebreaks }}</div>
                     </div>
+                    <div class="hotels_detail__param_container">
+                        <div class="camp_detail__arriving_departure">
+                            <img class="camp_detail__living_rules_img" src="{% static 'img/icons/free-icon-girl-7836504.png' %}">
+                            <div class="camp_detail__arriving_departure_parameter">Заезд</div>
+                            <div>С {{ realty.arriving_time }} до {{ realty.arriving_time_to }}</div>
+                        </div>
+                        <div class="camp_detail__arriving_departure">
+                            <div style="width: 31%;"></div>
+                            <div class="camp_detail__info_block">Пожалуйста, сообщите администрации заранее, о планируемом времени прибытия.</div>
+                        </div>
+                        <div class="camp_detail__arriving_departure">
+                            <img class="camp_detail__living_rules_img" src="{% static 'img/icons/free-icon-girl-7836473.png' %}">
+                            <div class="camp_detail__arriving_departure_parameter">Отъезд</div>
+                            <div>С {{ realty.departure_time }} до {{ realty.departure_time_to }}</div>
+                        </div>
+                        <div class="camp_detail__arriving_departure">
+                            <img class="camp_detail__living_rules_img" src="{% static 'img/icons/free-icon-calendar-5237130.png' %}">
+                            <div class="camp_detail__arriving_departure_parameter">Отмена/предоплата</div>
+                            <div class="camp_detail__options_container">
+                                {% if realty.book_cancel == 'y' %}
+                                    <li style="color:green;" class="main_option_elem">{{ realty.get_book_cancel_display }}</li>
+                                {% elif realty.book_cancel == 'n' %}
+                                    <li style="color:red;" class="main_option_elem">{{ realty.get_book_cancel_display }}</li>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="camp_detail__arriving_departure">
+                            <img class="camp_detail__living_rules_img" src="{% static 'img/icons/free-icon-food-service-4483612.png' %}">
+                            <div class="camp_detail__arriving_departure_parameter">Питание</div>
+                            <div class="camp_detail__options_container">
+                                {% if realty.food_options == 'a' %}
+                                    <li style="color:green;" class="main_option_elem">{{ realty.get_food_options_display }}</li>
+                                {% elif realty.food_options == 'b' %}
+                                    <li style="color:green;" class="main_option_elem">{{ realty.get_food_options_display }}</li>
+                                {% elif realty.food_options == 'c' %}
+                                    <li style="color:green;" class="main_option_elem">{{ realty.get_food_options_display }}</li>
+                                {% elif realty.food_options == 'd' %}
+                                    <li style="color:green;" class="main_option_elem">{{ realty.get_food_options_display }}</li>
+                                {% elif realty.food_options == 'e' %}
+                                    <li style="color:red;" class="main_option_elem">{{ realty.get_food_options_display }}</li>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="camp_detail__arriving_departure">
+                            {% if realty.pay_type == 'o' %}
+                                <img class="camp_detail__living_rules_img" src="{% static 'img/icons/free-icon-credit-card-5950249.png' %}">
+                            {% else %}
+                                <img class="camp_detail__living_rules_img" src="{% static 'img/icons/money.png' %}">
+                            {% endif %}
+                            <div class="camp_detail__arriving_departure_parameter">Способ оплаты</div>
+                            <div class="camp_detail__options_container">
+                                {% if realty.pay_type == 'o' %}
+                                    <li class="main_option_elem">Доступна {{ realty.get_pay_type_display }}</li>
+                                {% else %}
+                                    <li class="main_option_elem">{{ realty.get_pay_type_display }}</li>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
                     {% if adv_realty_list_curr_company %}
                         <div class="realty_detail__adv_another_realty_of-company" style="margin-top: 10px; width: 100%;">
                             <h5 class="options-list-title">Другие предложения компании</h5>
@@ -354,33 +341,9 @@
         </div>
     </div>
 
-    <!-- Модальное окно подробного описания -->
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel">Описание отеля и местности</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="detail__bottom_container_comment_and_info">
-                <div class="detail__description_container">
-                    <p>
-                        <p style="font-size: 0.9em; text-align: justify;">{{ realty.full_description | safe | linebreaks }}</p>
-                    </p>
-                </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закрыть</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- Модальное окно всех опций -->
     <div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
+      <div class="modal-dialog modal-xl">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="staticBackdropLabel2">Все доступные опции</h5>
@@ -393,7 +356,7 @@
                         <h6 style="color: black; text-align: left;">{{ hotel_options.0.0 }}:</h6>
                         <ul>
                             {% for option in hotel_options %}
-                                <li>{{ option.1 }}</li>
+                                <li><img src="../../static/img/icons/{{ option.1.icon_url }}">{{ option.1 }}</li>
                             {% endfor %}
                         </ul>
                         <h6 style="color: black; text-align: left;">{{ room_options.0.0 }}:</h6>
@@ -424,37 +387,4 @@
 
 {% endblock content %}
 </body>
-{% block footer %}
-<footer class="base__footer_not_fixed">
-    <div class="base__footer_container">
-        <a class="base__logo_footer" href="/"><img class="logo-main_footer" src="../../static/img/logo.png" alt="Логотип"></a>
-    </div>
-    <div class="base__footer">
-        <div class="base__copyright">
-            <li class="base_menu__li_container"><a href="{% url 'app_rules:our_values' %}">Наши ценности</a></li>
-            <li class="base_menu__li_container"><a href="{% url 'app_rules:rules' %}">Правила сайта</a></li>
-            <li class="base_menu__li_container"><a href="{% url 'app_rules:privacy_policy' %}">Политика конфиденциальности</a></li>
-            <li class="base_menu__li_container"><a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a></li>
-        </div>
-    </div>
-
-    <!-- Модальное окно управления промо-акциями -->
-    <div class="modal fade" id="staticBackdrop5" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel5">Контакты</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-          </div>
-          <div class="modal-body">
-              <div>Телефон для справок: +7 (938) 416-66-72</div>
-              <div>Эл. почта: biglov.info@yandex.ru</div>
-          </div>
-          <div class="modal-footer">
-          </div>
-        </div>
-      </div>
-    </div>
-</footer>
-{% endblock footer %}
 </html>

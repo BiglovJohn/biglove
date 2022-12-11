@@ -144,15 +144,7 @@
                     <div class="edit_realty__parameter_container">Площадь помещения: {{ realty_edit_form.realty_area }} м²</div>
                     <div class="edit_realty__parameter_container">Цена за сутки: {{ realty_edit_form.realty_price }} ₽</div>
                 </div>
-<!--                <p style="margin: 1% 0;">Тип объекта: {{ realty_edit_form.realty_type }}</p>-->
-<!--                <p style="margin: 1% 0;">Название: {{ realty_edit_form.realty_name }}</p>-->
-<!--                <p style="margin: 1% 0;">Страна: {{ realty_edit_form.realty_country }} Регион: {{ realty_edit_form.realty_region }} Город (поселок): {{ realty_edit_form.realty_city }}</p>-->
-<!--                <p style="margin: 1% 0;">Региональный центр (РЦ): {{ realty_edit_form.region_center }} До РЦ: {{ realty_edit_form.realty_to_city }} км.</p>-->
-<!--                <p style="margin: 1% 0;">Адрес: {{ realty_edit_form.realty_address }}</p>-->
-<!--                <p style="margin: 1% 0;">Количество мест: {{ realty_edit_form.count_of_persons }}</p>-->
-<!--                <p style="margin: 1% 0;">Время заселения: {{ realty_edit_form.arriving_time }} Время выезда: {{ realty_edit_form.departure_time }}</p>-->
-<!--                <p style="margin: 1% 0;">Площадь помещения: {{ realty_edit_form.realty_area }} м²</p>-->
-<!--                <p style="margin: 1% 0;">Цена за сутки: {{ realty_edit_form.realty_price }} ₽</p>-->
+
                 <button type="submit" name="realty_edit_submitting" class="btn btn-success" id="detail__save_realty_form">Сохранить</button>
             </div>
         </form>
@@ -177,41 +169,6 @@
             </div>
         </div>
     </div>
-
-<!--    &lt;!&ndash; Модальное окно &ndash;&gt;-->
-<!--    <div class="modal fade" id="staticBackdrop4" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">-->
-<!--      <div class="modal-dialog modal-xl">-->
-<!--        <div class="modal-content">-->
-<!--          <div class="modal-header">-->
-<!--            <h5 class="modal-title" id="staticBackdropLabel4">Фотографии</h5>-->
-<!--            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>-->
-<!--          </div>-->
-<!--          <div class="modal-body">-->
-<!--            <div class="detail__image_upload">-->
-<!--                <form method="post" enctype="multipart/form-data">{% csrf_token %}-->
-<!--                    {{ upload_photos_form.realty_obj.as_hidden }}-->
-<!--                    {{ upload_photos_form.photo }}-->
-<!--                  <button type="submit" name="realty_edit_submitting_photo" class="btn btn-success" id="detail__save_realty_form_photo">Сохранить</button>-->
-<!--              </form>-->
-<!--            </div>-->
-<!--            <div class="edit__realty_photos_container">-->
-<!--                <p>Ваши фотографии</p>-->
-<!--                <div class="realty_edit__img_plate">-->
-<!--                    {% for photo in realty_edit.photos.all %}-->
-<!--                        <form method="get" enctype="multipart/form-data">-->
-<!--                            <button style="position: absolute; width: 30px" type="submit" class="btn-close btn-close-white" aria-label="Закрыть" value="{{ photo.photo}}, {{ photo.pk }}" name="delete_photo_button"></button>-->
-<!--                            <img class="edit__realty_photo_delete" src="../../media/{{ photo.photo }}">-->
-<!--                        </form>-->
-<!--                    {% endfor %}-->
-<!--                </div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <div class="modal-footer">-->
-<!--              <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Закрыть</button>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
 
     <div id="pop_up4" style="position: fixed; left: 50%; top: 50%;transform: translate(-50%, -50%); display: none; z-index: 100; padding: 5px;">
         <button id="close_pop_up_btn4" class="btn-close" aria-label="Close"></button>
@@ -339,37 +296,4 @@
 
 {% endblock %}
 </body>
-{% block footer %}
-<footer class="base__footer_not_fixed">
-    <div class="base__footer_container">
-        <a class="base__logo_footer" href="/"><img class="logo-main_footer" src="../../static/img/logo.png" alt="Логотип"></a>
-    </div>
-    <div class="base__footer">
-        <div class="base__copyright">
-            <li class="base_menu__li_container"><a href="{% url 'app_rules:our_values' %}">Наши ценности</a></li>
-            <li class="base_menu__li_container"><a href="{% url 'app_rules:rules' %}">Правила сайта</a></li>
-            <li class="base_menu__li_container"><a href="{% url 'app_rules:privacy_policy' %}">Политика конфиденциальности</a></li>
-            <li class="base_menu__li_container"><a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a></li>
-        </div>
-    </div>
-
-    <!-- Модальное окно управления промо-акциями -->
-    <div class="modal fade" id="staticBackdrop5" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel5">Контакты</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-          </div>
-          <div class="modal-body">
-              <div>Телефон для справок: +7 (938) 416-66-72</div>
-              <div>Эл. почта: biglov.info@yandex.ru</div>
-          </div>
-          <div class="modal-footer">
-          </div>
-        </div>
-      </div>
-    </div>
-</footer>
-{% endblock footer %}
 </html>

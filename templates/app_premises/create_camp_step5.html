@@ -26,13 +26,13 @@
             <div class="register_camp__main_container" id="camp_step1_container" style="display: flex; flex-direction: row; justify-content: center;">
               <form class="create-realty-form" method="post" enctype="multipart/form-data">{% csrf_token %}
                   <h2 class="register_camp__h2_text">Правила проживания</h2>
-                  <div style="width: 30%;">
+                  <div class="create_camp__time_containers">
                     <div style="text-align: left; color: black; font-weight: 600;">Заезд:</div>
-                    {{ camp_object_form5.arriving_time }}
+                    С {{ camp_object_form5.arriving_time }} до {{ camp_object_form5.arriving_time_to }}
                   </div>
-                  <div style="width: 30%;">
+                  <div class="create_camp__time_containers">
                     <div style="text-align: left; color: black; font-weight: 600;">Отъезд:</div>
-                    {{ camp_object_form5.departure_time }}
+                    С {{ camp_object_form5.departure_time }} до {{ camp_object_form5.departure_time_to }}
                   </div>
                   <button type="submit" name="register_camp__next3" class="btn btn-success register_camp__next_button" id="camp_step1">Дальше</button>
               </form>
@@ -48,43 +48,5 @@
         {% endif %}
     {% endif %}
 {% endblock %}
-</body>
-{% block footer %}
-<footer class="base__footer_not_fixed">
-    <div class="base__footer_container">
-        <a class="base__logo_footer" href="/"><img class="logo-main_footer" src="../../static/img/logo.png" alt="Логотип"></a>
-    </div>
-    <div class="base__footer">
-        <div class="base__copyright">
-            <li class="base_menu__li_container"><a href="{% url 'app_rules:our_values' %}">Наши ценности</a></li>
-            <li class="base_menu__li_container"><a href="{% url 'app_rules:rules' %}">Правила сайта</a></li>
-            <li class="base_menu__li_container"><a href="{% url 'app_rules:privacy_policy' %}">Политика конфиденциальности</a></li>
-            <li class="base_menu__li_container"><a href="" data-bs-toggle="modal" data-bs-target="#staticBackdrop5">Контакты</a></li>
-        </div>
-    </div>
-
-    <!-- Модальное окно управления промо-акциями -->
-    <div class="modal fade" id="staticBackdrop5" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel5">Контакты</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-          </div>
-          <div class="modal-body">
-              <div>Телефон для справок: +7 (938) 416-66-72</div>
-              <div>Эл. почта: biglov.info@yandex.ru</div>
-          </div>
-          <div class="modal-footer">
-          </div>
-        </div>
-      </div>
-    </div>
-</footer>
-{% endblock footer %}
-</html></title>
-</head>
-<body>
-
 </body>
 </html>

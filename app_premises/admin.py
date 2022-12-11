@@ -31,6 +31,7 @@ class RealtyOptionsAdmin(admin.ModelAdmin):
     list_display = ['id', 'option_name', 'category']
     search_fields = ('option_name__startswith', 'category__startswith')
     list_filter = ['category']
+    readonly_fields = ['views_count']
 
 
 @admin.register(Reservation)

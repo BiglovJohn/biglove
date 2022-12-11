@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpRespons
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import generic, View
-from .models import Camp, Reservation, Photos, Advertising
+from .models import Camp, Reservation, Photos, Advertising, RealtyOptions
 from .forms import ReservationForm, PriseFilterForm, DropdownFilterForm, RealtyTypeCheckBoxForm, \
     OptionFilterForm, InRoomOptionFilterForm, FoodOptionFilterForm, HolidayHouseForm, PhotosForm, BookCancelForm, \
     PayTypeForm, CreateHolidayHouseForm, FlatForm, DropdownFilterLongTermForm, \
@@ -32,7 +32,6 @@ def main_realty_list(request):
     """
 
     if 'search' in request.GET or 'realty_list__search' in request.POST:
-
         reservation_set = []
         list_reserve_form = ReservationListSearchForm()
 
@@ -163,6 +162,11 @@ def main_realty_list(request):
         in_hotel__result_list = []
         if hotel_filter_checkbox.is_valid():
             check_box_clean_data_list = list(map(int, hotel_filter_checkbox.cleaned_data['hotel_option']))
+            for elem in hotel_filter_checkbox.cleaned_data['hotel_option']:
+                current_option = RealtyOptions.objects.get(id=elem)
+                current_option.views_count += 1
+                current_option.save()
+
             for in_hotel_realty_filter in realty_list:
                 realty_option_list = [option.id for option in in_hotel_realty_filter.options.all()]
                 if set(check_box_clean_data_list).issubset(realty_option_list):
@@ -177,6 +181,11 @@ def main_realty_list(request):
         in_room__result_list = []
         if room_filter_checkbox.is_valid():
             check_box_clean_data_list = list(map(int, room_filter_checkbox.cleaned_data['room_option']))
+            for elem in room_filter_checkbox.cleaned_data['room_option']:
+                current_option = RealtyOptions.objects.get(id=elem)
+                current_option.views_count += 1
+                current_option.save()
+
             for in_room_realty_filter in realty_list:
                 realty_option_list = [option.id for option in in_room_realty_filter.options.all()]
                 if set(check_box_clean_data_list).issubset(realty_option_list):

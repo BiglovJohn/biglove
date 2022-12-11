@@ -12,19 +12,19 @@ from django.urls import reverse
 from app_data.models import Ip
 from app_profiler.models import CustomUser
 
-_REALTY_TYPE = [
-    ('h', 'Отель'),
-    ('c', 'Хостел'),
-    ('a', 'Апартаменты'),
-    ('ah', 'Апарт-отель'),
-    ('gh', 'Гостевой дом'),
-    ('k', 'Коттедж'),
-    ('v', 'Вилла'),
-    ('kp', 'Кемпинг'),
-    ('gp', 'Глэмпинг'),
-    ('kv', 'Квартира'),
-    ('dm', 'Дом'),
-]
+# _REALTY_TYPE = [
+#     ('h', 'Отель'),
+#     ('c', 'Хостел'),
+#     ('a', 'Апартаменты'),
+#     ('ah', 'Апарт-отель'),
+#     ('gh', 'Гостевой дом'),
+#     ('k', 'Коттедж'),
+#     ('v', 'Вилла'),
+#     ('kp', 'Кемпинг'),
+#     ('gp', 'Глэмпинг'),
+#     ('kv', 'Квартира'),
+#     ('dm', 'Дом'),
+# ]
 
 _PAY_TYPE = [
     ('o', 'Оплата онлайн'),
@@ -42,23 +42,6 @@ _FOOD_OPTIONS = [
 _BOOK_CANCEL = [
     ('y', 'Беспл. отмена брони'),
     ('n', 'Нет беспл. отмены брони'),
-]
-
-_LT_REALTY_TYPE = [
-    ('kv', '1-к комнатная квартира'),
-    ('2k', '2-х комнатная квартира'),
-    ('3k', '3-х комнатная квартира'),
-    ('4k', '4-х комнатная квартира'),
-    ('ks', 'Квартира-студия'),
-    ('a', 'Апартаменты'),
-    ('k', 'Коттедж'),
-    ('v', 'Вилла'),
-    ('dm', 'Дом'),
-]
-
-_BATHROOM = [
-    ('a', 'Совмещенный'),
-    ('b', 'Раздельный'),
 ]
 
 
@@ -82,13 +65,14 @@ class RealtyOptions(models.Model):
     option_name = models.CharField(max_length=100, verbose_name='Название опции')
     category = models.CharField(max_length=50, blank=True, verbose_name='Категория')
     icon_url = models.CharField(max_length=100, blank=True, verbose_name='Иконка')
+    views_count = models.PositiveIntegerField(default=0, verbose_name='Искали раз')
 
     def __str__(self):
         return self.option_name
 
     class Meta:
         db_table = 'options_db'
-        ordering = ['id']
+        ordering = ['-views_count']
         verbose_name = 'Опция'
         verbose_name_plural = 'Опции'
 
@@ -131,7 +115,6 @@ class RealtyObjectBaseClass(models.Model):
     realty_region = models.CharField(max_length=250, blank=True, verbose_name='Регион')
     realty_city = models.CharField(max_length=250, blank=True, verbose_name='Населенный пункт')
     realty_address = models.CharField(max_length=250, blank=True, verbose_name='Адрес')
-    realty_type = models.CharField(max_length=2, blank=True, choices=_REALTY_TYPE, verbose_name='Тип объекта')
     full_description = models.TextField(max_length=2000, blank=True, verbose_name='Описание')
     realty_price = models.PositiveIntegerField(blank=True, default=0, verbose_name='Цена')
     is_advertised = models.BooleanField(default=False, verbose_name='Статус продвижения')
@@ -166,7 +149,15 @@ class Camp(RealtyObjectBaseClass):
         ('5', '5 звезд'),
     ]
 
+    _REALTY_TYPE = [
+        ('k', 'Коттедж'),
+        ('kp', 'Кемпинг'),
+        ('gp', 'Глэмпинг'),
+        ('dm', 'Дом'),
+    ]
+
     realty_name = models.CharField(max_length=100, verbose_name='Название объекта')
+    realty_type = models.CharField(max_length=2, blank=True, choices=_REALTY_TYPE, verbose_name='Тип объекта')
     slug = models.SlugField(unique=True, default=None, verbose_name="URL")
     count_of_persons = models.PositiveIntegerField(default=1, verbose_name='Количество спальных мест')
     realty_area = models.PositiveIntegerField(blank=True, default=0, verbose_name='Площадь')
@@ -176,8 +167,10 @@ class Camp(RealtyObjectBaseClass):
     pay_type = models.CharField(max_length=1, choices=_PAY_TYPE, default='o', verbose_name='Способ оплаты')
     food_options = models.CharField(max_length=1, choices=_FOOD_OPTIONS, default='e', verbose_name='Опции питания')
     options = models.ManyToManyField(to=RealtyOptions, blank=True, verbose_name='Опции', related_name='option_list')
-    arriving_time = models.TimeField(default='14:00', verbose_name='Время заселения')
-    departure_time = models.TimeField(default='12:00', verbose_name='Время выезда')
+    arriving_time = models.TimeField(default='14:00', verbose_name='Время заселения с')
+    departure_time = models.TimeField(default='09:00', verbose_name='Время выезда с')
+    arriving_time_to = models.TimeField(default='23:00', verbose_name='Время заселения до')
+    departure_time_to = models.TimeField(default='12:00', verbose_name='Время выезда до')
     realty_book_count = models.PositiveIntegerField(default=0, verbose_name='Бронирований')
     stars = models.CharField(max_length=1, default='0', choices=_STARS, verbose_name='Звёздность') #TODO Добавить в админку
 
@@ -201,6 +194,24 @@ class Camp(RealtyObjectBaseClass):
 
 
 class Flat(RealtyObjectBaseClass):
+
+    _LT_REALTY_TYPE = [
+        ('kv', '1-к комнатная квартира'),
+        ('2k', '2-х комнатная квартира'),
+        ('3k', '3-х комнатная квартира'),
+        ('4k', '4-х комнатная квартира'),
+        ('ks', 'Квартира-студия'),
+        ('a', 'Апартаменты'),
+        ('k', 'Коттедж'),
+        ('v', 'Вилла'),
+        ('dm', 'Дом'),
+    ]
+
+    _BATHROOM = [
+        ('a', 'Совмещенный'),
+        ('b', 'Раздельный'),
+    ]
+
     rooms_count = models.PositiveIntegerField(default=1, blank=True, verbose_name='Количество комнат')
     house_number = models.CharField(max_length=10, blank=True, default='', verbose_name='Номер дома')
     house_korpus = models.CharField(max_length=10, blank=True, default='', verbose_name='Корпус, литер, блок')
