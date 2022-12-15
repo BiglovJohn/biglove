@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 {% extends "base.html" %}
+
 {% load static %}
+
+{% load humanize %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -74,7 +77,7 @@
             </div>
         </div>
     </div>
-    <div class="reserve-end-container">
+    <div class="reserve-end-container2">
         {% if request.user.is_authenticated %}
             <form class="reservation__form_end" method="post">{% csrf_token %}
                 <div class="end_reserve_form_text_container">
@@ -94,8 +97,27 @@
                 <div class="total_sum_and_button_reserve_end">
                     {{ reservation_form.total_sum }}<div style="font-size: 1.5em; color: black; font-weight: bold;">₽</div>
                 </div>
-                <button class="btn btn-light" type="submit" id="end_reserve" name="reservation-submit">Подтвердить</button>
+                <button class="btn btn-light" type="submit" id="end_reserve" name="reservation-submit">Отправить запрос</button>
             </form>
+            <div class="reservation_end__info_container">
+                <div class="reservation_end__info_block">
+                    <h5 style="font-weight: bold;">Как происходит процедура бронирования?</h5>
+                    При отправке запроса мы направляем администратору, выбранного Вами объекта, Ваши контактные данные и
+                    информацию о бронировании. После получения данных, администратор свяжется с Вами для подтверждения
+                    бронирования.
+                </div>
+                <div class="reservation_end__info_block">
+                    <h5 style="font-weight: bold;">Какие данные передаются администратору?</h5>
+                    Мы передадим идентификатор объекта, который Вы бронируете, дату заселения, дату отъезда и сумму
+                    бронирования.
+                    <br>
+                    <br>
+                    Так же мы передадим Ваш номер телефона и почту, которые Вы использовали при регистрации. Эти данные
+                    передаются для того чтобы администратор мог с Вами связаться и подтвердить бронирование. Убедитесь,
+                    что Вы имеете доступ к данному номеру и электронной почте, иначе администратор не сможет с Вами
+                    связаться и бронирование будет аннулировано.
+                </div>
+            </div>
         {% elif not request.user.is_authenticated %}
             <!--Форма регистрации для неавторизованного пользователя при попытке бронирования-->
             <form class="reservation__form_end" method="post">{% csrf_token %}

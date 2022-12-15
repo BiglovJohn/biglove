@@ -31,7 +31,7 @@
                 <div class="detail_hotels__header_comments_count">
                     <div class="hotels_detail__avg_guest_mark">9</div>
                     <div style="color: black;">Отлично</div>
-                    <li style="margin-left: 30px;">Отзывов - {{ comments_count.count }}</li>
+                    <li style="margin-left: 30px;"><a data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">Отзывов</a> - {{ comments_count.count }}</li>
                 </div>
                 <div class="hotels_detail__stars_info_show" id="info1" style="display: none;">
                     <div>Звездный рейтинг предоставляется Biglov.ru объектом размещения. Обычно он присваивается официальной организацией или какой-либо еще третьей стороной.
@@ -349,23 +349,41 @@
             <h5 class="modal-title" id="staticBackdropLabel2">Все доступные опции</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body" id="camp_detail__modal_body">
             <div class="detail__bottom_container_comment_and_info">
                 <div class="detail__description_container">
-                    <p>
-                        <h6 style="color: black; text-align: left;">{{ hotel_options.0.0 }}:</h6>
+                    <div>
+                        <h6 style="color: black; text-align: left;">В отеле:</h6>
                         <ul>
-                            {% for option in hotel_options %}
-                                <li><img src="../../static/img/icons/{{ option.1.icon_url }}">{{ option.1 }}</li>
-                            {% endfor %}
+                            {% if in_hotel_options %}
+                                {% for in_hotel_option in in_hotel_options %}
+                                    <li class="camp_detail__full_options_list">
+                                        <img class="camp_detail__full_options_list_img" src="../../static/img/icons/{{ in_hotel_option.icon_url }}">{{ in_hotel_option }}
+                                    </li>
+                                {% endfor %}
+                            {% endif %}
                         </ul>
-                        <h6 style="color: black; text-align: left;">{{ room_options.0.0 }}:</h6>
+                        <h6 style="color: black; text-align: left;">В номере:</h6>
                         <ul>
-                            {% for option in room_options %}
-                                <li>{{ option.1 }}</li>
-                            {% endfor %}
+                            {% if in_room_options %}
+                                {% for in_room_option in in_room_options %}
+                                    <li class="camp_detail__full_options_list">
+                                        <img class="camp_detail__full_options_list_img" src="../../static/img/icons/{{ in_room_option.icon_url }}">{{ in_room_option }}
+                                    </li>
+                                {% endfor %}
+                            {% endif %}
                         </ul>
-                    </p>
+                        <h6 style="color: black; text-align: left;">Условия проживания:</h6>
+                        <ul>
+                            {% if other_options %}
+                                {% for other_option in other_options %}
+                                    <li class="camp_detail__full_options_list">
+                                        <img class="camp_detail__full_options_list_img" src="../../static/img/icons/{{ other_option.icon_url }}">{{ other_option }}
+                                    </li>
+                                {% endfor %}
+                            {% endif %}
+                        </ul>
+                    </div>
                 </div>
             </div>
           </div>

@@ -242,8 +242,8 @@ class Flat(RealtyObjectBaseClass):
         """ Определение параметров в мета классе альбом """
         db_table = 'flats_db'
         ordering = ['created_at']
-        verbose_name = 'Длительный срок'
-        verbose_name_plural = 'Длительный срок'
+        verbose_name = 'Объект на длительный срок'
+        verbose_name_plural = 'Объекты на длительный срок'
 
 
 class Reservation(models.Model):

@@ -27,24 +27,69 @@
             <div style="width: 100%; margin-bottom: 10px;">
                 <div style="text-align: left; color: black; font-weight: 600;">Имя:</div>
                 {{ register_form.first_name }}
+                {% if register_form.errors %}
+                    {% for error in register_form.first_name.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endif %}
             </div>
             <div style="width: 100%; margin-bottom: 10px;">
                 <div style="text-align: left; color: black; font-weight: 600;">Фамилия:</div>
                 {{ register_form.last_name }}
+                {% if register_form.errors %}
+                    {% for error in register_form.last_name.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endif %}
             </div>
             <div style="width: 100%; margin-bottom: 10px;">
                 <div style="text-align: left; color: black; font-weight: 600;">Номер телефона:</div>
                 {{ register_form.phone }}
+                {% if register_form.errors %}
+                    {% for error in register_form.phone.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endif %}
             </div>
             <div style="width: 100%; margin-bottom: 10px;">
                 <div style="text-align: left; color: black; font-weight: 600;">Ник:</div>
                 {{ register_form.slug }}
+                {% if register_form.errors %}
+                    {% for error in register_form.slug.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endif %}
             </div>
             <div style="width: 100%; margin-bottom: 10px;">
                 <div style="text-align: left; color: black; font-weight: 600;">Дата рождения:</div>
                 {{ register_form.birthday }}
+                {% if register_form.errors %}
+                    {% for error in register_form.birthday.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endif %}
             </div>
           <button type="submit" name="register_camp__next1" value="{{ current_object }}" class="btn btn-success register_camp__next_button" id="camp_step1">Дальше</button>
+
+          <script>
+              document.getElementById("id_first_name").addEventListener("input", function() {
+                  this.style.borderColor = /^[a-zа-яё ]+$/i.test( this.value.trim() ) ? "" : "red";
+              });
+
+              document.getElementById("id_last_name").addEventListener("input", function() {
+                  this.style.borderColor = /^[a-zа-яё ]+$/i.test( this.value.trim() ) ? "" : "red";
+              });
+          </script>
 
           <script>
               $(function () {

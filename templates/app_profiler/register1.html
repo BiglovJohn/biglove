@@ -24,20 +24,42 @@
     <div class="register_user__main_container" id="camp_step1_container">
       <form class="create-realty-form" method="post" enctype="multipart/form-data">{% csrf_token %}
             <h2 class="register_camp__h2_text">Регистрация пользователя</h2>
-            <div style="width: 100%; margin-bottom: 10px;">
-                <div style="text-align: left; color: black; font-weight: 600;">Логин:</div>
-                {{ register_form.email }}
-            </div>
-            <div style="width: 100%; margin-bottom: 10px;">
-                <div style="text-align: left; color: black; font-weight: 600;">Пароль:</div>
-                {{ register_form.password1 }}
-            </div>
-            <div style="width: 100%; margin-bottom: 10px;">
-                <div style="text-align: left; color: black; font-weight: 600;">Подтвердите пароль:</div>
-                {{ register_form.password2 }}
-            </div>
+                    <div style="width: 100%; margin-bottom: 10px;">
+                        <div style="text-align: left; color: black; font-weight: 600;">Логин:</div>
+                        {{ register_form.email }}
+                        {% if register_form.errors %}
+                            {% for error in register_form.email.errors %}
+                                <div class="alert alert-danger">
+                                    <strong>{{ error|escape }}</strong>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    <div style="width: 100%; margin-bottom: 10px;">
+                        <div style="text-align: left; color: black; font-weight: 600;">Пароль:</div>
+                        {{ register_form.password1 }}
+                        {% if register_form.errors %}
+                            {% for error in register_form.password1.errors %}
+                                <div class="alert alert-danger">
+                                    <strong>{{ error|escape }}</strong>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    <div style="width: 100%; margin-bottom: 10px;">
+                        <div style="text-align: left; color: black; font-weight: 600;">Подтвердите пароль:</div>
+                        {{ register_form.password2 }}
+                        {% if register_form.errors %}
+                            {% for error in register_form.password2.errors %}
+                                <div class="alert alert-danger">
+                                    <strong>{{ error|escape }}</strong>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
           <button type="submit" class="btn btn-success register_camp__next_button" id="camp_step1">Дальше</button>
       </form>
+
       <div class="register_camp__info_block_container">
           <div class="register_camp__info_block">
               <h5>Выбор данных для регистрации</h5>

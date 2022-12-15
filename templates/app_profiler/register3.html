@@ -25,7 +25,7 @@
       <form class="create-realty-form" method="post" enctype="multipart/form-data">{% csrf_token %}
             <h2 class="register_camp__h2_text">Статус и согласие</h2>
             <div class="form-check form-switch">
-                <p>{{ register_form.is_company }}</p>
+                {{ register_form.is_company }}
                 <label class="form-check-label" for="flexSwitchCheckDefault">Являюсь арендодателем</label>
             </div>
             <div class="form-check form-switch">

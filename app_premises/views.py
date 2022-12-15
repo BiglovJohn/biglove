@@ -3,6 +3,7 @@ import os
 
 from django.contrib.auth import authenticate, login
 from django.db.models import Q, Count
+from django.forms import forms
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -355,29 +356,13 @@ class RealtyDetailView(generic.DetailView):
         else:
             context['detail_reserve_form'] = ReservationForm()
 
-        """ Получаем список опций конкретного отеля с категорией "В отеле" """
-        realty_in_hotel_options_name = [option.option_name for option in
-                                        current_realty.options.filter(category='В отеле')]
-        realty_in_hotel_options_category = [option.category for option in
-                                            current_realty.options.filter(category='В отеле')]
-        realty_options_list_in_hotel = list(zip(realty_in_hotel_options_category, realty_in_hotel_options_name))
-        context['hotel_options'] = realty_options_list_in_hotel
+        """ Списки опций по категориям для конкретного отеля """
 
-        context['realty_slug'] = realty_slug
-        context['current_realty'] = current_realty
-        context['current_company'] = current_company
-        context['advertised_realty'] = advertised_realty
-        context['current_account'] = current_account
+        current_realty_options = current_realty.options
+        context['in_hotel_options'] = current_realty_options.filter(category='В отеле')
+        context['in_room_options'] = current_realty_options.filter(category='В номере')
+        context['other_options'] = current_realty_options.filter(category='Особенности размещения')
 
-        """ Получаем список опций конкретного отеля с категорией "В номере" """
-        realty_in_room_options_name = [option.option_name for option in
-                                       current_realty.options.filter(category='В номере')]
-        realty_in_room_options_category = [option.category for option in
-                                           current_realty.options.filter(category='В номере')]
-        realty_options_list_in_room = list(zip(realty_in_room_options_category, realty_in_room_options_name))
-        context['room_options'] = realty_options_list_in_room
-
-        context['detail_photos'] = Photos.objects.filter(camp=pk)
         if self.request.user.is_authenticated:
             current_user = self.request.user.id
 
@@ -390,8 +375,14 @@ class RealtyDetailView(generic.DetailView):
                     }
                 )
 
+        context['detail_photos'] = Photos.objects.filter(camp=pk)
         context['comments'] = Comments.objects.filter(realty=pk).order_by('-publish_at')
         context['comments_count'] = Comments.objects.annotate(Count('id')).filter(realty=pk)
+        context['realty_slug'] = realty_slug
+        context['current_realty'] = current_realty
+        context['current_company'] = current_company
+        context['advertised_realty'] = advertised_realty
+        context['current_account'] = current_account
         return context
 
     def post(self, request, *args, **kwargs):
@@ -491,12 +482,7 @@ def create_camp_object_step1(request):
 
     hh_realty_form1 = CreateHolidayHouseForm1(initial={'company': request.user.id})
 
-    if 'detail__change_button' in request.GET:
-        current_object = Camp.objects.get(id=request.GET.get('detail__change_button'))
-        hh_realty_form1 = CreateHolidayHouseForm1(instance=current_object)
-        return render(request, 'app_premises/create_realty.html', context={'hh_realty_form1': hh_realty_form1})
-
-    if request.method == "GET" and not 'detail__change_button' in request.GET:
+    if request.method == "GET":
         return render(request, 'app_premises/create_realty.html', context={'hh_realty_form1': hh_realty_form1})
 
     if request.method == "POST":

@@ -475,14 +475,13 @@ div.offcanvas2-body {
 /* Стили формы логина */
 
 div#login.dropdown {
-    display: inline-block;
-}
+    display: inline-block;}
 
 .back-img-link-container {
-    width: 7%;
-}
+    width: 7%;}
 
-.reserve-end-container {
+.reserve-end-container,
+.reserve-end-container2 {
     display: flex;
     align-items: flex-start;
     position: relative;
@@ -492,30 +491,29 @@ div#login.dropdown {
     background: #fffffff2;
     flex-direction: column;
     margin-top: 10px;
-    border-radius: 0.3rem;
-}
+    border-radius: 0.3rem;}
+
+.reserve-end-container2 {
+    flex-direction: row;
+    grid-gap: 10px;}
 
 h5.end_reserve_form_text {
     color: black;
     font-weight: bold;
     font-size: 1.2em;
-    margin: 0;
-}
+    margin: 0;}
 
 .user_detail__list_of_reservations_form_text {
     color: black;
     font-size: 1.1em;
-    margin: 0;
-}
+    margin: 0;}
 
 p.end_reserve_form_text {
     width: 90%;
-    color: black;
-}
+    color: black;}
 
 .user_detail__list_of_reservations_text_form {
-    font-size: 0.8em;
-}
+    font-size: 0.8em;}
 
 .end_reserve_form_text_container {
     display: flex;
@@ -627,13 +625,13 @@ button#check-detail-button.btn.btn-light, button#check-detail-button2.btn.btn-li
     margin: 0 auto;
     margin-bottom: 10px;
     height: 50px;
-    width: 80%;}
+    width: 90%;}
 
 button#to-reserve-page-id.btn.btn-light {
     background: #17a2b899;
     margin: 1% auto;
     height: 50px;
-    width: 80%;}
+    width: 90%;}
 
 button#end_reserve.btn.btn-light {
     background: #17a2b899;
@@ -2856,7 +2854,7 @@ input#id_phone_1.edit-account-input {
     display: none;}
 
 .reservation__form_end {
-    width: fit-content;}
+    width: 35%;}
 
 .account__phone_and_email_container {
     display: flex;
@@ -3163,8 +3161,26 @@ div#staticBackdropRules.modal.fade.show {
 
 @media only screen and (max-width: 1920px) {
     .index__top_content_container {
-    grid-template-columns: repeat(auto-fit, 13%);}
+    grid-template-columns: repeat(auto-fit, 13.8%);}
 
+    .camp_detail__full_options_list_img {
+        width: 5%;
+        margin-right: 10px;}
+
+    .camp_detail__full_options_list {
+        list-style: none;}
+
+    div#camp_detail__modal_body.modal-body {
+        column-count: 3;}
+
+    .reservation_end__info_container {
+        width: 65%;
+        color: black;}
+
+    .reservation_end__info_block {
+        border-radius: 0.5rem;
+        padding: 1%;
+        box-shadow: 0 14px 28px rgb(0 0 0 / 5%), 0 10px 10px rgb(0 0 0 / 2%);}
 }
 
 @media only screen and (max-width: 1366px) {

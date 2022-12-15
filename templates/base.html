@@ -33,15 +33,15 @@
                           <div class="base_menu__guest_name">{{ guest }}</div><img class="open-profile-button" src="{% static 'img/icons/icons8-login-66.png' %}" alt="Войти в кабинет">
                       </a>
                       <form class="dropdown-menu p-4" id="base_menu__container">
-                          <p>{{ guest }}</p>
-                          <p class="base_menu__lk_logout">
+                          <div>{{ guest }}</div>
+                          <div class="base_menu__lk_logout">
                               {% if request.user.slug %}
                                 <a href="{% url 'app_profiler:account_detail' slug=request.user.slug %}">Личный кабинет</a>
                               {% else %}
                                 <a href="{% url 'app_profiler:account_detail' id=request.user.id %}">Личный кабинет</a>
                               {% endif %}
                               <a href="{% url 'app_profiler:logout' %}">Выйти</a>
-                          </p>
+                          </div>
                           <ul class="base_menu__links_container">
                               {% if request.user.is_company %}
                                   <li class="base_menu__li_container">

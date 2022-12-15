@@ -1,8 +1,12 @@
 import datetime
+import re
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
 from .models import CustomUser
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
+from django.utils.translation import gettext_lazy as _
 
 User = get_user_model()
 
@@ -87,6 +91,19 @@ class RegisterForm1(UserCreationForm):
         model = CustomUser
         fields = ['email', 'password1', 'password2']
 
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if CustomUser.objects.filter(email=email):
+            self.add_error('email', 'Пользователь с такой почтой уже существует!')
+        return email
+
+    def clean_password(self):
+        password1 = self.cleaned_data.get('password1')
+        password2 = self.cleaned_data.get('password2')
+        if password1 != password2:
+            self.add_error('password2', 'Введённые пароли не совпадают!')
+        return password1
+
     def __init__(self, *args, **kwargs):
         super(RegisterForm1, self).__init__(*args, **kwargs)
         """Задаём css class и help_text"""
@@ -108,12 +125,25 @@ class RegisterForm1(UserCreationForm):
 
 
 class RegisterForm2(forms.Form):
-
     last_name = forms.CharField(max_length=25, label='Фамилия')
     first_name = forms.CharField(max_length=25, label='Имя')
     phone = forms.CharField(max_length=12, required=True, label='Номер телефона')
     slug = forms.CharField(max_length=30, label='Ник', required=True)
     birthday = forms.DateField(required=False)
+
+    def clean_first_name(self):
+        first_name = self.cleaned_data['first_name']
+        last_name = self.cleaned_data['last_name']
+        print(re.search('\d+', first_name) is not None)
+        if re.findall("\d+", first_name) or not re.findall("\d+", last_name):
+            self.add_error('first_name', 'Имя не может содержать цифры')
+            self.add_error('last_name', 'Фамилия не может содержать цифры')
+
+    def clean_slug(self):
+        slug = self.cleaned_data['slug']
+        if CustomUser.objects.filter(slug=slug):
+            self.add_error('slug', 'Имя пользователя занято, выберите другое!')
+        return slug
 
     def __init__(self, *args, **kwargs):
         super(RegisterForm2, self).__init__(*args, **kwargs)
@@ -140,7 +170,6 @@ class RegisterForm2(forms.Form):
 
 
 class RegisterForm3(forms.Form):
-
     is_active = forms.BooleanField(required=True)
     is_company = forms.BooleanField(required=False)
 
