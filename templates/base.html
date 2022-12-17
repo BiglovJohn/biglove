@@ -63,6 +63,13 @@
                                 <form class="px-4 py-3" id="login-form" method="post">{% csrf_token %}
                                     <div class="mb-3">
                                         {{ auth_form.email }}
+                                        {% if auth_form.errors %}
+                                            {% for error in auth_form.email.errors %}
+                                                <div class="alert alert-danger">
+                                                    <strong>{{ error|escape }}</strong>
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
                                     </div>
                                     <div class="mb-3">
                                         {{ auth_form.password }}

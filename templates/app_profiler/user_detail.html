@@ -66,6 +66,13 @@
                             {{ account_form.email }}
                         </div>
                     </div>
+                    <div class="account__phone_and_email_container">
+                        <div class="account__names">
+                            <label class="user_detail__label_font_size">Телеграмм:</label>
+                            <span class="input-group-text" id="inputGroupPrepend">@{{ account_form.telegram }}</span>
+
+                        </div>
+                    </div>
                     <button type="submit" class="btn btn-success" name="account__save_form">Сохранить</button>
                 </div>
             </form>

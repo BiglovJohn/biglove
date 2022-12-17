@@ -18,6 +18,7 @@ def render_login_form(request):
                     login(request, user)
                 else:
                     auth_form.add_error('__all__', 'Проверьте правильность введёных данных')
+        print(auth_form.errors)
     else:
         auth_form = AuthForm()
 

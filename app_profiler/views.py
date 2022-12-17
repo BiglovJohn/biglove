@@ -51,7 +51,8 @@ class AccountEditFromView(View):
 
         if 'account__save_form' in request.POST and account_form.is_valid():
             account = account_form.save(commit=False)
-            account.save()
+            account.telegram = account_form.cleaned_data['telegram']
+            account.save(update_fields=["telegram"])
 
         if 'account__change_password_form' in request.POST:
             if request.method == 'POST':
@@ -73,7 +74,7 @@ class AccountEditFromView(View):
             if account_form.is_valid():
                 account = account_form.save(commit=False)
                 account.slug = account_form.cleaned_data['slug']
-                account.save()
+                account.save(update_fields=["slug"])
                 return redirect('app_profiler:account_detail', slug=slug)
             else:
                 messages.error(request, 'Ошибка при изменении ника')
@@ -140,7 +141,8 @@ class CompanyEditFromView(View):
         if 'account__save_form' in request.POST:
             if company_form.is_valid():
                 company = company_form.save(commit=False)
-                company.save()
+                company.type = company_form.cleaned_data['type']
+                company.save(update_fields=["type"])
                 return redirect('app_profiler:company_detail', company_id=company_id)
             else:
                 messages.error(request, 'Ошибка при изменении ссылки на компанию')

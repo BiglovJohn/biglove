@@ -41,6 +41,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=30, blank=True, verbose_name='Имя')
     last_name = models.CharField(max_length=30, blank=True, verbose_name='Фамилия')
     phone = models.CharField(max_length=12, blank=True, default='', help_text='Номер телефона')
+    telegram = models.CharField(max_length=30, blank=True, verbose_name='Телеграмм')
 
     birthday = models.DateField(blank=True, null=True, verbose_name='Дата рождения')
     gender = models.CharField(max_length=1, choices=_GENDER, default='m', blank=True, verbose_name='Пол')

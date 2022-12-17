@@ -176,7 +176,7 @@ a.btn.btn-light.detail__btn {
 
 .camp_detail__info_block {
     color: black;
-    width: 69%;}
+    width: 75%;}
 
 .camp_detail__arriving_departure_parameter {
     width: 25%;
@@ -186,7 +186,7 @@ a.btn.btn-light.detail__btn {
     width: 60%;}
 
 .camp_detail__living_rules_img {
-    width: 6%;
+    width: 4%;
     padding: 0.5%;}
 
 .auto__search_form_container {
@@ -1925,8 +1925,8 @@ img.options-icon {
 
 .hotels_detail__no_comments {
     position: absolute;
-    top: 25%;
-    left: 5%;
+    top: 30%;
+    left: 10%;
     text-align: center;}
 
 .hotels_detail__no_comments_info {
@@ -2323,7 +2323,8 @@ a#base__menu_buttons1.btn.btn-success {
 
 .realty_detail__list_info {
     border-radius: 0.2rem;
-    padding: 0;}
+    padding: 0;
+    width: 100%;}
 
 .realty_detail__top_text {
     width: 60%;
@@ -2792,13 +2793,11 @@ select#id_type.edit-manager-input {
 /* КОНЕЦ БЛОКА */
 
 button#account__change_password.btn.btn-success {
-
-}
+    margin-top: 1.5%;}
 
 .account__name_container {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 1.5%;}
+    justify-content: space-between;}
 
 .account__div_container {
     width: 97%;
@@ -3092,7 +3091,7 @@ div#staticBackdropRules.modal.fade.show {
     width: 100%;
     margin-top: 10px;
     justify-items: center;
-    justify-content: center;}
+    justify-content: left;}
 
 .carousel {
     width: 100%;}
@@ -3112,10 +3111,11 @@ div#staticBackdropRules.modal.fade.show {
     text-align: justify;
     display: flex;
     padding: 1% 0;
-    flex-direction: column;}
+    flex-direction: column;
+    overflow-wrap: break-word;}
 
 .realty_detail__options_img {
-    width: 15%;}
+    width: 10%;}
 
 .realty_detail__option_info {
     margin-left: 10px;
@@ -3181,6 +3181,17 @@ div#staticBackdropRules.modal.fade.show {
         border-radius: 0.5rem;
         padding: 1%;
         box-shadow: 0 14px 28px rgb(0 0 0 / 5%), 0 10px 10px rgb(0 0 0 / 2%);}
+
+    span#inputGroupPrepend.input-group-text {
+        position: relative;
+        margin-bottom: 1.5%;}
+
+    input#id_telegram.edit-account-input {
+        position: absolute;
+        right: 0;
+        height: 100%;
+        width: 85%;
+        border: none;}
 }
 
 @media only screen and (max-width: 1366px) {

@@ -12,7 +12,7 @@ class CustomUserAdmin(admin.ModelAdmin):
         ('Учетные данные пользователя', {'fields': ('email', 'password', 'created_at')}),
         ('Статусы', {'fields': ('is_superuser', 'is_staff', 'is_company', 'is_active')}),
         ('Общая информация', {'fields': ('first_name', 'last_name', 'middle_name', 'slug', 'phone', 'gender', 'birthday',
-                                         'is_favorite')}),
+                                         'is_favorite', 'telegram')}),
         ('Паспортные данные', {'fields': ('passport_series', 'passport_number', 'passport_who', 'passport_code',
                                           'passport_date')}),
         ('Статистическая информация', {'fields': ('status', 'book_count')}),
