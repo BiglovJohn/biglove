@@ -14,6 +14,8 @@ from app_premises.forms import HolidayHouseForm
 
 
 class AnotherLogoutView(LogoutView):
+    """ Стандартная форма разлогина от LogoutView """
+
     template_name = 'app_profiler/logout.html'
 
 
@@ -167,7 +169,7 @@ class CompanyEditFromView(View):
                       )
 
 
-"""---КОНЕЦ РАЗДЕЛА ВЬШЕК ПО ОБЪЕКТАМ ПРОФИЛЕЙ---"""
+""" КОНЕЦ РАЗДЕЛА ВЬШЕК ПО ОБЪЕКТАМ ПРОФИЛЕЙ """
 
 
 def register_step1(request):

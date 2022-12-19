@@ -1,9 +1,9 @@
 import datetime
 import os
+from typing import Any
 
 from django.contrib.auth import authenticate, login
 from django.db.models import Q, Count
-from django.forms import forms
 from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -25,7 +25,15 @@ from app_data.models import Ip
 from app_data.views import get_client_ip
 
 
-def main_realty_list(request):
+class RegisterObject(View):
+    def get(self, request: Any) -> HttpResponse:
+        return render(request, 'app_premises/register_object.html')
+
+    def post(self, request: Any) -> HttpResponse:
+        return render(request, 'app_premises/register_object.html')
+
+
+def camp_list(request):
     """
         Получаем параметры с index.html форм и по ним фильтруем поисковую выдачу:
         - Страна
@@ -203,7 +211,7 @@ def main_realty_list(request):
         adv_realty_list = realty_list.filter(is_advertised=True).select_related('company')
         adv1 = Advertising.objects.all()
 
-        return render(request, 'app_premises/realty_list.html',
+        return render(request, 'app_premises/hotels_list.html',
                       {
                           'realty_list': realty_list,
                           'price_filter': price_filter,
@@ -239,7 +247,7 @@ def main_realty_list(request):
         if request.user.is_authenticated:
             favorite_list = Favorite.objects.filter(user=request.user.id).prefetch_related('camps', 'flats')
 
-        return render(request, 'app_premises/realty_list.html',
+        return render(request, 'app_premises/hotels_list.html',
                       {
                           'realty_list': realty_list,
                           'price_filter': price_filter,
@@ -486,7 +494,11 @@ def create_camp_object_step1(request):
     hh_realty_form1 = CreateHolidayHouseForm1(initial={'company': request.user.id})
 
     if request.method == "GET":
-        return render(request, 'app_premises/create_camp_step1.html', context={'hh_realty_form1': hh_realty_form1})
+        return render(request,
+                      'app_premises/create_camp_step1.html',
+                      context={
+                          'hh_realty_form1': hh_realty_form1,
+                      })
 
     if request.method == "POST":
         hh_realty_form1 = CreateHolidayHouseForm1(request.POST, initial={'company': request.user.id})
@@ -495,7 +507,6 @@ def create_camp_object_step1(request):
             current_object.company = CustomUser.objects.get(id=request.user.id)
             current_object.save()
             return redirect('app_premises:create_camp2')
-        return render(request, 'app_premises/create_camp_step1.html', context={'hh_realty_form1': hh_realty_form1})
     return render(request, 'app_premises/create_camp_step1.html', context={'hh_realty_form1': hh_realty_form1})
 
 
@@ -515,7 +526,6 @@ def create_camp_object_step2(request):
             current_object.realty_address = camp_object_form2.cleaned_data['realty_address']
             current_object.save()
             return redirect('app_premises:create_camp3')
-        return redirect('app_premises:create_camp2')
     return render(request, 'app_premises/create_camp_step2.html',
                   context={'camp_object_form2': camp_object_form2, 'current_object': current_object})
 
@@ -539,7 +549,6 @@ def create_camp_object_step3(request):
             current_object.food_options = camp_object_form3.cleaned_data['food_options']
             current_object.save()
             return redirect('app_premises:create_camp4')
-        return redirect('app_premises:create_camp3')
     return render(request, 'app_premises/create_camp_step3.html', context={'camp_object_form3': camp_object_form3})
 
 
@@ -557,7 +566,6 @@ def create_camp_object_step4(request):
             options_list = camp_object_form4.cleaned_data['options']
             current_object.options.add(*options_list)
             return redirect('app_premises:create_camp5')
-        return redirect('app_premises:create_camp4')
     return render(request, 'app_premises/create_camp_step4.html', context={'camp_object_form4': camp_object_form4})
 
 
@@ -575,7 +583,6 @@ def create_camp_object_step5(request):
             current_object.departure_time = camp_object_form5.cleaned_data['departure_time']
             current_object.save()
             return redirect('app_premises:create_camp6')
-        return redirect('app_premises:create_camp5')
     return render(request, 'app_premises/create_camp_step5.html', context={'camp_object_form5': camp_object_form5})
 
 
@@ -593,7 +600,6 @@ def create_camp_object_step6(request):
             for photo in files:
                 Photos.objects.create(camp=current_object, photo=photo)
             return redirect('app_premises:create_camp7')
-        return redirect('app_premises:create_camp6')
     return render(request, 'app_premises/create_camp_step6.html', context={'camp_object_form6': camp_object_form6})
 
 
@@ -610,7 +616,6 @@ def create_camp_object_step7(request):
             current_object.full_description = camp_object_form7.cleaned_data['full_description']
             current_object.save()
             return redirect('app_premises:create_camp8')
-        return redirect('app_premises:create_camp7')
     return render(request, 'app_premises/create_camp_step7.html', context={'camp_object_form7': camp_object_form7})
 
 
@@ -627,167 +632,7 @@ def create_camp_object_step8(request):
             current_object.realty_price = camp_object_form8.cleaned_data['realty_price']
             current_object.save()
             return redirect('app_premises:realty_detail', slug=current_object.slug)
-        return redirect('app_premises:create_camp8')
     return render(request, 'app_premises/create_camp_step8.html', context={'camp_object_form8': camp_object_form8})
-
-
-""" СОЗДАНИЕ ОБЪЕКТОВ НА ДОЛГИЙ СРОК """
-
-
-def create_flat_object_step1(request):
-    """
-    Представление для создания объекта в категории Альтернативные варианты размещения. Первый шаг - название объекта
-    """
-
-    hh_realty_form1 = CreateHolidayHouseForm1(initial={'company': request.user.id})
-
-    if request.method == "GET":
-        return render(request, 'app_premises/create_camp_step1.html', context={'hh_realty_form1': hh_realty_form1})
-
-    if request.method == "POST":
-        hh_realty_form1 = CreateHolidayHouseForm1(request.POST, initial={'company': request.user.id})
-        if hh_realty_form1.is_valid():
-            current_object = hh_realty_form1.save(commit=False)
-            current_object.company = CustomUser.objects.get(id=request.user.id)
-            current_object.save()
-            return redirect('app_premises:create_camp2')
-        return render(request, 'app_premises/create_camp_step1.html', context={'hh_realty_form1': hh_realty_form1})
-    return render(request, 'app_premises/create_camp_step1.html', context={'hh_realty_form1': hh_realty_form1})
-
-
-def create_flat_object_step2(request):
-    """
-    Представление для создания объекта в категории Альтернативные варианты размещения. Второй шаг - адрес
-    """
-
-    current_object = Camp.objects.filter(company=request.user.id).last()
-    camp_object_form2 = CreateHolidayHouseForm2()
-    if request.method == "POST":
-        camp_object_form2 = CreateHolidayHouseForm2(request.POST)
-        if camp_object_form2.is_valid():
-            current_object.ind = camp_object_form2.cleaned_data['ind']
-            current_object.realty_country = camp_object_form2.cleaned_data['realty_country']
-            current_object.realty_city = camp_object_form2.cleaned_data['realty_city']
-            current_object.realty_address = camp_object_form2.cleaned_data['realty_address']
-            current_object.save()
-            return redirect('app_premises:create_camp3')
-        return redirect('app_premises:create_camp2')
-    return render(request, 'app_premises/create_camp_step2.html',
-                  context={'camp_object_form2': camp_object_form2, 'current_object': current_object})
-
-
-def create_flat_object_step3(request):
-    """
-    Представление для создания объекта в категории Альтернативные варианты размещения. Третий шаг - параметры объекта
-    """
-
-    current_object = Camp.objects.filter(company=request.user.id).last()
-    camp_object_form3 = CreateHolidayHouseForm3()
-    if request.method == "POST":
-        camp_object_form3 = CreateHolidayHouseForm3(request.POST)
-        if camp_object_form3.is_valid():
-            current_object.stars = camp_object_form3.cleaned_data['stars']
-            current_object.count_of_persons = camp_object_form3.cleaned_data['count_of_persons']
-            current_object.realty_area = camp_object_form3.cleaned_data['realty_area']
-            current_object.book_cancel = camp_object_form3.cleaned_data['book_cancel']
-            current_object.pay_type = camp_object_form3.cleaned_data['pay_type']
-            current_object.realty_type = camp_object_form3.cleaned_data['realty_type']
-            current_object.food_options = camp_object_form3.cleaned_data['food_options']
-            current_object.save()
-            return redirect('app_premises:create_camp4')
-        return redirect('app_premises:create_camp3')
-    return render(request, 'app_premises/create_camp_step3.html', context={'camp_object_form3': camp_object_form3})
-
-
-def create_flat_object_step4(request):
-    """
-    Представление для создания объекта в категории Альтернативные варианты размещения. Четвертый шаг - опции
-    """
-
-    current_object = Camp.objects.filter(company=request.user.id).last()
-    camp_object_form4 = CreateHolidayHouseForm4()
-    if request.method == "POST":
-        camp_object_form4 = CreateHolidayHouseForm4(request.POST)
-        if camp_object_form4.is_valid():
-            current_object.options.clear()
-            options_list = camp_object_form4.cleaned_data['options']
-            current_object.options.add(*options_list)
-            return redirect('app_premises:create_camp5')
-        return redirect('app_premises:create_camp4')
-    return render(request, 'app_premises/create_camp_step4.html', context={'camp_object_form4': camp_object_form4})
-
-
-def create_flat_object_step5(request):
-    """
-    Представление для создания объекта в категории Альтернативные варианты размещения. Пятый шаг - условия проживания
-    """
-
-    current_object = Camp.objects.filter(company=request.user.id).last()
-    camp_object_form5 = CreateHolidayHouseForm5()
-    if request.method == "POST":
-        camp_object_form5 = CreateHolidayHouseForm5(request.POST)
-        if camp_object_form5.is_valid():
-            current_object.arriving_time = camp_object_form5.cleaned_data['arriving_time']
-            current_object.departure_time = camp_object_form5.cleaned_data['departure_time']
-            current_object.save()
-            return redirect('app_premises:create_camp6')
-        return redirect('app_premises:create_camp5')
-    return render(request, 'app_premises/create_camp_step5.html', context={'camp_object_form5': camp_object_form5})
-
-
-def create_flat_object_step6(request):
-    """
-    Представление для создания объекта в категории Альтернативные варианты размещения. Шестой шаг - фотографии
-    """
-
-    current_object = Camp.objects.filter(company=request.user.id).last()
-    camp_object_form6 = PhotosForm()
-    if request.method == "POST":
-        camp_object_form6 = PhotosForm(request.POST, request.FILES, initial={'camp': current_object})
-        if camp_object_form6.is_valid():
-            files = request.FILES.getlist('photo')
-            for photo in files:
-                Photos.objects.create(camp=current_object, photo=photo)
-            return redirect('app_premises:create_camp7')
-        return redirect('app_premises:create_camp6')
-    return render(request, 'app_premises/create_camp_step6.html', context={'camp_object_form6': camp_object_form6})
-
-
-def create_flat_object_step7(request):
-    """
-    Представление для создания объекта в категории Альтернативные варианты размещения. Седьмой шаг - описание
-    """
-
-    current_object = Camp.objects.filter(company=request.user.id).last()
-    camp_object_form7 = CreateHolidayHouseForm6()
-    if request.method == "POST":
-        camp_object_form7 = CreateHolidayHouseForm6(request.POST, request.FILES, initial={'realty_obj': current_object})
-        if camp_object_form7.is_valid():
-            current_object.full_description = camp_object_form7.cleaned_data['full_description']
-            current_object.save()
-            return redirect('app_premises:create_camp8')
-        return redirect('app_premises:create_camp7')
-    return render(request, 'app_premises/create_camp_step7.html', context={'camp_object_form7': camp_object_form7})
-
-
-def create_flat_object_step8(request):
-    """
-    Представление для создания объекта в категории Альтернативные варианты размещения. Восьмой шаг - цена
-    """
-
-    current_object = Camp.objects.filter(company=request.user.id).last()
-    camp_object_form8 = CreateHolidayHouseForm7()
-    if request.method == "POST":
-        camp_object_form8 = CreateHolidayHouseForm7(request.POST)
-        if camp_object_form8.is_valid():
-            current_object.realty_price = camp_object_form8.cleaned_data['realty_price']
-            current_object.save()
-            return redirect('app_premises:realty_detail', slug=current_object.slug)
-        return redirect('app_premises:create_camp8')
-    return render(request, 'app_premises/create_camp_step8.html', context={'camp_object_form8': camp_object_form8})
-
-
-"""---КОНЕЦ РАЗДЕЛА ВЬШЕК ПО ОБЪЕКТАМ НЕДВИЖИМОСТИ---"""
 
 
 class ReservationFormView(View):
@@ -860,7 +705,6 @@ class ReservationFormView(View):
         if 'reservation-submit' in request.POST:
             realty = request.GET.get('to-reserve-page').split(', ')[0]
             current_realty_price = request.GET.get('to-reserve-page').split(', ')[1]
-            # TODO попробовать get(id=..., None) конструкцию
             current_user = CustomUser.objects.none()
             if self.request.user.is_authenticated:
                 current_user = CustomUser.objects.get(id=request.user.id)
@@ -971,35 +815,6 @@ class ReservationFormView(View):
             return HttpResponseRedirect('/')
 
 
-class HolidayHouseObjectFormView(View):
-
-    def get(self, request):
-        current_company = CustomUser.objects.get(id=request.user.id)
-        hh_realty_form1 = CreateHolidayHouseForm1(initial={'company': current_company})
-        upload_photos_form = PhotosForm(request.FILES)
-        return render(request, 'app_premises/create_camp_step1.html',
-                      context={'hh_realty_form1': hh_realty_form1, 'upload_photos_form': upload_photos_form})
-
-    def post(self, request):
-        context = {}
-        current_company = CustomUser.objects.get(id=request.user.id)
-
-        if 'realty_create__save_realty_object' in request.POST:
-            hh_realty_form = CreateHolidayHouseForm(request.POST, request.FILES)
-            upload_photos_form = PhotosForm(request.FILES)
-            if hh_realty_form.is_valid() and upload_photos_form.is_valid():
-                hh_realty = hh_realty_form.save(commit=False)
-                files = request.FILES.getlist('photo')
-                hh_realty.save()
-                for photo in files:
-                    Photos.objects.create(camp=hh_realty, photo=photo)
-            return redirect('app_profiler:company_detail', slug=current_company.slug)
-        else:
-            hh_realty_form = CreateHolidayHouseForm()
-        context['form'] = hh_realty_form
-        return render(request, 'app_premises/create_camp_step1.html', context={'hh_realty_form': hh_realty_form})
-
-
 def permission_denied(request):
     """ Страница permission denied """
 
@@ -1030,17 +845,10 @@ def add_comment(request):
     return HttpResponse(data, content_type='text/html')
 
 
-# def create_camp_object(request):
-#     user = CustomUser.objects.get(id=request.user.id)
-#     current_object = HolidayHouseObject.objects.create(company=user, realty_name=request.GET.get('name'))
-#     camp_form_step2 = CreateHolidayHouseForm2(instance=current_object)
-#     return HttpResponse(camp_form_step2, content_type='text/html')
-
-
 """ Представления объектов недвижимости на долгий срок """
 
 
-def main_lt_realty_list(request):
+def flat_list(request):
     """
         Получаем параметры с index.html форм и по ним фильтруем поисковую выдачу:
         - Страна
@@ -1357,32 +1165,160 @@ class LonTermRealtyEditFromView(View):
                           )
 
 
-class LongTermObjectFormView(View):
+""" СОЗДАНИЕ ОБЪЕКТОВ НА ДОЛГИЙ СРОК """
 
-    def get(self, request):
-        current_company = CustomUser.objects.get(id=request.user.id)
-        lt_realty_form = FlatForm(initial={'company': current_company})
-        upload_photos_form = PhotosForm(request.FILES)
-        return render(request, 'app_premises/lt_create_realty.html',
-                      context={'lt_realty_form': lt_realty_form, 'upload_photos_form': upload_photos_form})
 
-    def post(self, request):
-        context = {}
-        current_company = CustomUser.objects.get(id=request.user.id)
-        if 'lt_realty_create__save_realty_object' in request.POST:
-            lt_realty_form = FlatForm(request.POST, request.FILES)
-            upload_photos_form = PhotosForm(request.FILES)
-            if lt_realty_form.is_valid() and upload_photos_form.is_valid():
-                lt_realty = lt_realty_form.save(commit=False)
-                files = request.FILES.getlist('photo')
-                lt_realty.save()
-                for photo in files:
-                    Photos.objects.create(long_term_obj=lt_realty, photo=photo)
-            return redirect('app_companies:company_detail', company_slug=current_company.slug)
-        else:
-            lt_realty_form = FlatForm()
-        context['form'] = lt_realty_form
-        return render(request, 'app_premises/lt_create_realty.html', context={'lt_realty_form': lt_realty_form})
+def create_flat_object_step1(request):
+    """
+    Представление для создания объекта в категории На долгий срок. Первый шаг - название объекта
+    """
+
+    hh_realty_form1 = CreateHolidayHouseForm1(initial={'company': request.user.id})
+
+    if request.method == "GET":
+        return render(request, 'app_premises/create_camp_step1.html', context={'hh_realty_form1': hh_realty_form1})
+
+    if request.method == "POST":
+        hh_realty_form1 = CreateHolidayHouseForm1(request.POST, initial={'company': request.user.id})
+        if hh_realty_form1.is_valid():
+            current_object = hh_realty_form1.save(commit=False)
+            current_object.company = CustomUser.objects.get(id=request.user.id)
+            current_object.save()
+            return redirect('app_premises:create_camp2')
+        return render(request, 'app_premises/create_camp_step1.html', context={'hh_realty_form1': hh_realty_form1})
+    return render(request, 'app_premises/create_camp_step1.html', context={'hh_realty_form1': hh_realty_form1})
+
+
+def create_flat_object_step2(request):
+    """
+    Представление для создания объекта в категории Альтернативные варианты размещения. Второй шаг - адрес
+    """
+
+    current_object = Camp.objects.filter(company=request.user.id).last()
+    camp_object_form2 = CreateHolidayHouseForm2()
+    if request.method == "POST":
+        camp_object_form2 = CreateHolidayHouseForm2(request.POST)
+        if camp_object_form2.is_valid():
+            current_object.ind = camp_object_form2.cleaned_data['ind']
+            current_object.realty_country = camp_object_form2.cleaned_data['realty_country']
+            current_object.realty_city = camp_object_form2.cleaned_data['realty_city']
+            current_object.realty_address = camp_object_form2.cleaned_data['realty_address']
+            current_object.save()
+            return redirect('app_premises:create_camp3')
+        return redirect('app_premises:create_camp2')
+    return render(request, 'app_premises/create_camp_step2.html',
+                  context={'camp_object_form2': camp_object_form2, 'current_object': current_object})
+
+
+def create_flat_object_step3(request):
+    """
+    Представление для создания объекта в категории Альтернативные варианты размещения. Третий шаг - параметры объекта
+    """
+
+    current_object = Camp.objects.filter(company=request.user.id).last()
+    camp_object_form3 = CreateHolidayHouseForm3()
+    if request.method == "POST":
+        camp_object_form3 = CreateHolidayHouseForm3(request.POST)
+        if camp_object_form3.is_valid():
+            current_object.stars = camp_object_form3.cleaned_data['stars']
+            current_object.count_of_persons = camp_object_form3.cleaned_data['count_of_persons']
+            current_object.realty_area = camp_object_form3.cleaned_data['realty_area']
+            current_object.book_cancel = camp_object_form3.cleaned_data['book_cancel']
+            current_object.pay_type = camp_object_form3.cleaned_data['pay_type']
+            current_object.realty_type = camp_object_form3.cleaned_data['realty_type']
+            current_object.food_options = camp_object_form3.cleaned_data['food_options']
+            current_object.save()
+            return redirect('app_premises:create_camp4')
+        return redirect('app_premises:create_camp3')
+    return render(request, 'app_premises/create_camp_step3.html', context={'camp_object_form3': camp_object_form3})
+
+
+def create_flat_object_step4(request):
+    """
+    Представление для создания объекта в категории Альтернативные варианты размещения. Четвертый шаг - опции
+    """
+
+    current_object = Camp.objects.filter(company=request.user.id).last()
+    camp_object_form4 = CreateHolidayHouseForm4()
+    if request.method == "POST":
+        camp_object_form4 = CreateHolidayHouseForm4(request.POST)
+        if camp_object_form4.is_valid():
+            current_object.options.clear()
+            options_list = camp_object_form4.cleaned_data['options']
+            current_object.options.add(*options_list)
+            return redirect('app_premises:create_camp5')
+        return redirect('app_premises:create_camp4')
+    return render(request, 'app_premises/create_camp_step4.html', context={'camp_object_form4': camp_object_form4})
+
+
+def create_flat_object_step5(request):
+    """
+    Представление для создания объекта в категории Альтернативные варианты размещения. Пятый шаг - условия проживания
+    """
+
+    current_object = Camp.objects.filter(company=request.user.id).last()
+    camp_object_form5 = CreateHolidayHouseForm5()
+    if request.method == "POST":
+        camp_object_form5 = CreateHolidayHouseForm5(request.POST)
+        if camp_object_form5.is_valid():
+            current_object.arriving_time = camp_object_form5.cleaned_data['arriving_time']
+            current_object.departure_time = camp_object_form5.cleaned_data['departure_time']
+            current_object.save()
+            return redirect('app_premises:create_camp6')
+        return redirect('app_premises:create_camp5')
+    return render(request, 'app_premises/create_camp_step5.html', context={'camp_object_form5': camp_object_form5})
+
+
+def create_flat_object_step6(request):
+    """
+    Представление для создания объекта в категории Альтернативные варианты размещения. Шестой шаг - фотографии
+    """
+
+    current_object = Camp.objects.filter(company=request.user.id).last()
+    camp_object_form6 = PhotosForm()
+    if request.method == "POST":
+        camp_object_form6 = PhotosForm(request.POST, request.FILES, initial={'camp': current_object})
+        if camp_object_form6.is_valid():
+            files = request.FILES.getlist('photo')
+            for photo in files:
+                Photos.objects.create(camp=current_object, photo=photo)
+            return redirect('app_premises:create_camp7')
+        return redirect('app_premises:create_camp6')
+    return render(request, 'app_premises/create_camp_step6.html', context={'camp_object_form6': camp_object_form6})
+
+
+def create_flat_object_step7(request):
+    """
+    Представление для создания объекта в категории Альтернативные варианты размещения. Седьмой шаг - описание
+    """
+
+    current_object = Camp.objects.filter(company=request.user.id).last()
+    camp_object_form7 = CreateHolidayHouseForm6()
+    if request.method == "POST":
+        camp_object_form7 = CreateHolidayHouseForm6(request.POST, request.FILES, initial={'realty_obj': current_object})
+        if camp_object_form7.is_valid():
+            current_object.full_description = camp_object_form7.cleaned_data['full_description']
+            current_object.save()
+            return redirect('app_premises:create_camp8')
+        return redirect('app_premises:create_camp7')
+    return render(request, 'app_premises/create_camp_step7.html', context={'camp_object_form7': camp_object_form7})
+
+
+def create_flat_object_step8(request):
+    """
+    Представление для создания объекта в категории Альтернативные варианты размещения. Восьмой шаг - цена
+    """
+
+    current_object = Camp.objects.filter(company=request.user.id).last()
+    camp_object_form8 = CreateHolidayHouseForm7()
+    if request.method == "POST":
+        camp_object_form8 = CreateHolidayHouseForm7(request.POST)
+        if camp_object_form8.is_valid():
+            current_object.realty_price = camp_object_form8.cleaned_data['realty_price']
+            current_object.save()
+            return redirect('app_premises:realty_detail', slug=current_object.slug)
+        return redirect('app_premises:create_camp8')
+    return render(request, 'app_premises/create_camp_step8.html', context={'camp_object_form8': camp_object_form8})
 
 
 """---КОНЕЦ РАЗДЕЛА ВЬШЕК ПО ОБЪЕКТАМ НЕДВИЖИМОСТИ---"""
@@ -1399,11 +1335,3 @@ def lt_favorite(request):
         Favorite.objects.get(user=request.user.id).long_term_objects.remove(
             Flat.objects.get(id=realty_id))
         return HttpResponse('from', content_type='text/html')
-
-
-class RegisterObject(View):
-    def get(self, request):
-        return render(request, 'app_premises/register_object.html')
-
-    def post(self, request):
-        return render(request, 'app_premises/register_object.html')

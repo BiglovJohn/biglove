@@ -1,7 +1,5 @@
-from app_profiler.forms import AuthForm, RegisterForm
+from app_profiler.forms import AuthForm
 from django.contrib.auth import authenticate, login
-from django.shortcuts import redirect
-
 from .forms import GuestForm
 from .models import CustomUser
 
@@ -18,7 +16,6 @@ def render_login_form(request):
                     login(request, user)
                 else:
                     auth_form.add_error('__all__', 'Проверьте правильность введёных данных')
-        print(auth_form.errors)
     else:
         auth_form = AuthForm()
 

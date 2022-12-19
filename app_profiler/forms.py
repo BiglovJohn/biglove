@@ -4,9 +4,7 @@ from django import forms
 from django.contrib.auth import get_user_model, authenticate
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
 from .models import CustomUser
-from django.core.exceptions import ValidationError
-from django.core.validators import validate_email
-from django.utils.translation import gettext_lazy as _
+
 
 User = get_user_model()
 
@@ -14,16 +12,9 @@ today = datetime.date.today()
 tomorrow = today + datetime.timedelta(days=1)
 
 
-# class DatePickerForm(forms.Form):
-#     check_in = forms.DateField(widget=forms.DateInput(attrs={'placeholder': f'{today.strftime("%d.%m.%Y")}'}),
-#                                input_formats=['%d.%m.%Y'], required=False)
-#     check_out = forms.DateField(widget=forms.DateInput(attrs={'placeholder': f'{tomorrow.strftime("%d.%m.%Y")}'}),
-#                                 input_formats=['%d.%m.%Y'], required=False)
-
-
 class AuthForm(forms.Form):
     """
-        Auth form
+        Форма авторизации и аутентификации
 
         Attributes:
             email: str
@@ -33,13 +24,6 @@ class AuthForm(forms.Form):
     """
     email = forms.EmailField(required=True, help_text='Введите логин')
     password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Введите пароль'}))
-
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        password = self.cleaned_data.get('password')
-        if not CustomUser.objects.filter(email=email) or not authenticate(email=email, password=password):
-            self.add_error('email', 'Логин или пароль введены неверно! Проверьте правильность введённых данных.')
-        return email
 
     def __init__(self, *args, **kwargs):
         super(AuthForm, self).__init__(*args, **kwargs)
@@ -150,7 +134,6 @@ class RegisterForm2(forms.Form):
     def clean_first_name(self):
         first_name = self.cleaned_data['first_name']
         last_name = self.cleaned_data['last_name']
-        print(re.search('\d+', first_name) is not None)
         if re.findall("\d+", first_name) or re.findall("\d+", last_name):
             self.add_error('first_name', 'Имя не может содержать цифры')
             self.add_error('last_name', 'Фамилия не может содержать цифры')

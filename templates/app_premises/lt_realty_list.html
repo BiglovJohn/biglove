@@ -31,7 +31,7 @@
             <a data-bs-toggle="realty-type-filters" data-bs-target="#filters_menu"><img class="base__filters_img_close" id="filters_menu_button_close" src="../../static/img/icons/free-icon-options-8111047.png"></a>
         </div>
 
-        <form class="block-type" action="{% url 'app_premises:lt_realty_list' %}" method="post">{% csrf_token %}
+        <form class="block-type" action="{% url 'app_premises:flat_list' %}" method="post">{% csrf_token %}
 
             <menu class="search-realty-list-block-type">
                 <div class="container2">
@@ -253,7 +253,7 @@
                             <p class="short-description-text">ул. {{ obj.realty_address }}, {{ obj.house_number }}, {{ obj.floor }} этаж</p>
                             <p class="short-description-text">Обновлено {{ obj.updated_at }}</p>
                             <div class="realty_list__views_container">
-                                <form method="get" id="addFavoriteForm{{ obj.id }}" data-url_root="{% url 'app_premises:lt_realty_list' %}" class="realty_list__favorite_container">
+                                <form method="get" id="addFavoriteForm{{ obj.id }}" data-url_root="{% url 'app_premises:flat_list' %}" class="realty_list__favorite_container">
                                     {% for object in favorite_list %}
                                         {% if obj in object.long_term_objects.all %}
                                             <img id="dismissFavorite{{ obj.id }}" style="width: 22%;" onclick="{{ obj.id }}" src="{% static 'img/icons/free-icon-wishlist-3132924-added.png' %}">

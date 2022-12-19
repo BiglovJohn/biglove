@@ -1,8 +1,7 @@
 import datetime
 from django import forms
-from .models import FurnitureModel, TechniqueModel, Flat
-from .models import Camp, Reservation, Photos
-from .services.base_services import IN_HOTEL_OPTIONS, IN_ROOM_OPTIONS
+from .models import Camp, Reservation, Photos, Flat
+from .services.base_services import IN_HOTEL_OPTIONS, IN_ROOM_OPTIONS, FURNITURE, TECHNIQUE
 
 
 _FILTER_TYPE = [
@@ -232,7 +231,7 @@ class ReservationForm(forms.ModelForm):
 
 
 class ReservationListSearchForm(forms.Form):
-    """ Форма резервирования для вывода date picker на главную страницу """
+    """ Форма резервирования для вывода date picker на страницу списка бъектов """
 
     check_in = forms.DateField(required=False)
     check_out = forms.DateField(required=False)
@@ -388,15 +387,6 @@ class PayTypeForm(forms.Form):
 """ ОБЪЕКТЫ НА ДЛИТЕЛЬНЫЙ СРОК """
 
 
-list_of_furniture_id = [furniture.id for furniture in FurnitureModel.objects.all()]
-list_of_furniture_names = [furniture.name for furniture in FurnitureModel.objects.all()]
-_FURNITURE = list(zip(list_of_furniture_id, list_of_furniture_names))
-
-list_of_technique_id = [technique.id for technique in TechniqueModel.objects.all()]
-list_of_technique_names = [technique.name for technique in TechniqueModel.objects.all()]
-_TECHNIQUE = list(zip(list_of_technique_id, list_of_technique_names))
-
-
 class FlatForm(forms.ModelForm):
     class Meta:
         model = Flat
@@ -426,6 +416,126 @@ class FlatForm(forms.ModelForm):
         # self.fields['company'] = forms.ModelChoiceField(
         #     required=True,
         #     queryset=ManagerProfile.objects.filter(referring_user=1))
+
+
+class CreateFlatForm1(forms.ModelForm):
+    class Meta:
+        model = Camp
+        fields = ('realty_name', 'company')
+
+    def __init__(self, *args, **kwargs):
+        super(CreateFlatForm1, self).__init__(*args, **kwargs)
+        """Работа с классами формы"""
+
+        self.fields['realty_name'].widget.attrs['class'] = 'form-control'
+        self.fields['realty_name'].widget.attrs['required'] = True
+        self.fields['realty_name'].widget.attrs['placeholder'] = 'Мезмайская пустошь'
+
+
+class CreateFlatForm2(forms.ModelForm):
+    class Meta:
+        model = Camp
+        fields = ('realty_country', 'realty_city', 'realty_address', 'ind')
+
+    def __init__(self, *args, **kwargs):
+        super(CreateFlatForm2, self).__init__(*args, **kwargs)
+        """Работа с классами формы"""
+
+        self.fields['ind'].widget.attrs['class'] = 'form-control'
+        self.fields['ind'].widget.attrs['required'] = True
+        self.fields['ind'].widget.attrs['placeholder'] = '350000'
+
+        self.fields['realty_country'].widget.attrs['class'] = 'form-control'
+        self.fields['realty_country'].widget.attrs['required'] = True
+        self.fields['realty_country'].widget.attrs['placeholder'] = 'Россия'
+
+        self.fields['realty_city'].widget.attrs['class'] = 'form-control'
+        self.fields['realty_city'].widget.attrs['required'] = True
+        self.fields['realty_city'].widget.attrs['placeholder'] = 'Москва'
+
+        self.fields['realty_address'].widget.attrs['class'] = 'form-control'
+        self.fields['realty_address'].widget.attrs['required'] = True
+        self.fields['realty_address'].widget.attrs['placeholder'] = 'пр. Писателя Знаменского, 6'
+
+
+class CreateFlatForm3(forms.ModelForm):
+    class Meta:
+        model = Camp
+        fields = ('count_of_persons', 'realty_area', 'realty_type', 'book_cancel', 'pay_type', 'food_options', 'stars')
+
+    def __init__(self, *args, **kwargs):
+        super(CreateFlatForm3, self).__init__(*args, **kwargs)
+        """Работа с классами формы"""
+
+        self.fields['count_of_persons'].widget.attrs['class'] = 'form-control'
+        self.fields['count_of_persons'].widget.attrs['required'] = True
+
+        self.fields['realty_type'].widget.attrs['class'] = 'form-control'
+        self.fields['realty_type'].widget.attrs['required'] = True
+
+        self.fields['realty_area'].widget.attrs['class'] = 'form-control'
+        self.fields['realty_area'].widget.attrs['required'] = True
+
+        self.fields['stars'].widget.attrs['class'] = 'form-control'
+        self.fields['stars'].widget.attrs['required'] = True
+
+        self.fields['book_cancel'].widget.attrs['required'] = True
+        self.fields['book_cancel'].widget.attrs['id'] = 'book_cancel_create_camp'
+        self.fields['book_cancel'].widget.attrs['class'] = 'form-select'
+        self.fields['pay_type'].widget.attrs['required'] = True
+        self.fields['pay_type'].widget.attrs['id'] = 'pay_type_create_camp'
+        self.fields['pay_type'].widget.attrs['class'] = 'form-select'
+        self.fields['food_options'].widget.attrs['required'] = True
+        self.fields['food_options'].widget.attrs['id'] = 'food_options_create_camp'
+        self.fields['food_options'].widget.attrs['class'] = 'form-select'
+
+
+class CreateFlatForm4(forms.ModelForm):
+    class Meta:
+        model = Camp
+        fields = ('options',)
+
+    def __init__(self, *args, **kwargs):
+        super(CreateFlatForm4, self).__init__(*args, **kwargs)
+        """Работа с классами формы"""
+
+        self.fields['options'].widget.attrs['required'] = True
+
+
+class CreateFlatForm5(forms.ModelForm):
+    class Meta:
+        model = Camp
+        fields = ('arriving_time', 'departure_time', 'arriving_time_to', 'departure_time_to')
+
+    def __init__(self, *args, **kwargs):
+        super(CreateFlatForm5, self).__init__(*args, **kwargs)
+        """Работа с классами формы"""
+
+        self.fields['arriving_time'].widget.attrs['class'] = 'form-control'
+        self.fields['departure_time'].widget.attrs['class'] = 'form-control'
+        self.fields['arriving_time_to'].widget.attrs['class'] = 'form-control'
+        self.fields['departure_time_to'].widget.attrs['class'] = 'form-control'
+
+
+class CreateFlatForm6(forms.ModelForm):
+    class Meta:
+        model = Camp
+        fields = ('full_description',)
+
+    def __init__(self, *args, **kwargs):
+        super(CreateFlatForm6, self).__init__(*args, **kwargs)
+        """ Работа с классами формы """
+
+
+class CreateFlatForm7(forms.ModelForm):
+    class Meta:
+        model = Camp
+        fields = ('realty_price',)
+
+    def __init__(self, *args, **kwargs):
+        super(CreateFlatForm7, self).__init__(*args, **kwargs)
+        """ Работа с классами формы """
+        self.fields['realty_price'].widget.attrs['class'] = 'form-control'
 
 
 class DropdownFilterLongTermForm(forms.Form):
@@ -486,7 +596,7 @@ class FurnitureFilterForm(forms.Form):
         label='',
         required=False,
         widget=forms.CheckboxSelectMultiple,
-        choices=_FURNITURE,
+        choices=FURNITURE,
     )
 
     def __init__(self, *args, **kwargs):
@@ -500,7 +610,7 @@ class TechniqueFilterForm(forms.Form):
         label='',
         required=False,
         widget=forms.CheckboxSelectMultiple,
-        choices=_TECHNIQUE,
+        choices=TECHNIQUE,
     )
 
     def __init__(self, *args, **kwargs):
