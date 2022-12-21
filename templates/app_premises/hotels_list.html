@@ -155,8 +155,10 @@
                         {% for adv_realty in adv_realty_list|slice:4 %}
                             <div class="realty-card adv">
                                 <img class="realty_list__adv_top_stamp" src="../../static/img/icons/free-icon-top-753359.png">
-                                <div>
-                                  <img src="../../media/{{ adv_realty.camp_photos.all.0.photo }}" class="d-block w-100" alt="...">
+                                <div class="hotels_list__img_container">
+                                  <a href='{% url "app_premises:realty_detail" adv_realty.slug %}'>
+                                      <img src="../../media/{{ adv_realty.camp_photos.all.0.photo }}" id="hotels_list_img_adv" class="d-block w-100" alt="...">
+                                  </a>
                                 </div>
                                 <div class="short-describe-text">
                                     <h4 class="short-description-title"><a class="camp_list__link_style" href='{% url "app_premises:realty_detail" adv_realty.slug %}'>{{ adv_realty.realty_name }}</a></h4>
@@ -253,8 +255,10 @@
                 {% if realty_list %}
                     {% for obj in realty_list %}
                         <div class="realty-card">
-                            <div>
-                              <img src="../../media/{{ obj.camp_photos.all.0.photo }}" class="d-block w-100" alt="...">
+                            <div class="hotels_list__img_container">
+                              <a href='{% url "app_premises:realty_detail" obj.slug %}'>
+                                  <img src="../../media/{{ obj.camp_photos.all.0.photo }}" id="hotels_list_img" class="d-block w-100" alt="...">
+                              </a>
                             </div>
                             <div class="price_book_status_container">
                                 {% for reserve in reservation_set %}

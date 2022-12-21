@@ -1,6 +1,4 @@
-from django.shortcuts import render, redirect
-from app_profiler.models import CustomUser
-
+from django.shortcuts import render
 from app_premises.models import Photos, Camp
 
 """Главная страница"""

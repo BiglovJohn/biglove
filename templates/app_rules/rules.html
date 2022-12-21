@@ -8,15 +8,18 @@
 </head>
 {% block content %}
 <body>
-    <div>
-        <h3 class="main_rules__h3_text">Правила оказания услуг клиентам</h3>
-        <div class="rules__main_container">
-            {% for rule in rules_list %}
-                <ul>
-                    <li class="rules__sub_category_text">{{ rule.sub_category }}</li>
-                    <div>{{ rule.text | safe | linebreaks }}</div>
-                </ul>
-            {% endfor %}
+    <div class="rules__main_container">
+        <div class="rules__regulations_left_menu_container">
+
+        </div>
+        <div class="rules__regulations_main_text_container">
+            <h3 class="main_rules__h3_text">Правила оказания услуг клиентам</h3>
+            <div>Последнее обновление: 19 декабря 2022 г.</div>
+            <ul>
+                {% for line in lines %}
+                    <li style="list-style: upper-latin;">{{ line }}</li>
+                {% endfor %}
+            </ul>
         </div>
     </div>
 </body>
