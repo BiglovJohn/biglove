@@ -15,11 +15,50 @@
         <div class="rules__regulations_main_text_container">
             <h3 class="main_rules__h3_text">Правила оказания услуг клиентам</h3>
             <div>Последнее обновление: 19 декабря 2022 г.</div>
+                <ul>
+                    {% for key, value in rules.get_content_dict.items %}
+                        <a href="{{ value.link }}">
+                            <li class="rules__site_rules_list">{{ value.to_list }}</li>
+                        </a>
+                    {% endfor %}
+                </ul>
+
+            <h3 class="main_rules__h3_text" id="rules__all_tourist_destinations">{{ rules.get_content_dict.all_tourist_destinations.to_list }}</h3>
             <ul>
-                {% for line in lines %}
-                    <li style="list-style: upper-latin;">{{ line }}</li>
+                {% for key, value in rules.get_content_dict.all_tourist_destinations.category_content.items %}
+                    <a href="{{ value.sub_link }}">
+                        <li class="rules__site_rules_list_sub">{{ key }}</li>
+                    </a>
                 {% endfor %}
             </ul>
+
+            <div>
+                <ul>
+                    {% for key, value in rules.get_content_dict.all_tourist_destinations.category_content.items %}
+                        <h5 id="category_content{{ value.id }}">{{ key }}</h5>
+                        {% for key, value in value.content.items %}
+                            <li style="list-style: none;">{{ key }}. {{ value }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <h3 class="main_rules__h3_text" id="rules__realty_objects">{{ rules.get_content_dict.realty_objects.to_list }}</h3>
+            <ul>
+                {% for key, value in rules.get_content_dict.realty_objects.category_content.items %}
+                    <a href="{{ value }}">
+                        <li class="rules__site_rules_list_sub">{{ key }} </li>
+                    </a>
+                {% endfor %}
+            </ul>
+
+            <h3 class="main_rules__h3_text" id="rules__dictionary">{{ rules.get_content_dict.dictionary.to_list }}</h3>
+                {% for key, value in rules.get_content_dict.dictionary.words.items %}
+                    <div>
+                        "{{ key }}" — {{ value }}
+                    </div>
+                    <br>
+                {% endfor %}
         </div>
     </div>
 </body>

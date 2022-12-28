@@ -1231,6 +1231,12 @@ input#id_total_sum {
     font-size: 2em;
     font-weight: bold;}
 
+.rules__site_rules_list {
+    list-style: upper-alpha;}
+
+.rules__site_rules_list_sub {
+    list-style: auto;}
+
 .rules__main_container {
     width: 60%;
     margin: 0 auto;
@@ -1240,6 +1246,7 @@ input#id_total_sum {
 
 .rules__regulations_left_menu_container {
     width: 30%;
+    height: 300px;
     box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);}
 
 .rules__regulations_main_text_container {
