@@ -367,7 +367,7 @@ class RealtyDetailView(generic.DetailView):
         """ Списки опций по категориям для конкретного отеля """
 
         current_realty_options = current_realty.options
-        context['in_hotel_options'] = current_realty_options.filter(category='В отеле')
+        context['in_hotel_options'] = current_realty_options.filter(category='На территории')
         context['in_room_options'] = current_realty_options.filter(category='В номере')
         context['other_options'] = current_realty_options.filter(category='Особенности размещения')
 
@@ -430,7 +430,6 @@ class RealtyEditFromView(View):
         if request.user.is_authenticated and request.user.is_company:
             current_manager = CustomUser.objects.get(id=request.user.id)
             realty_edit = Camp.objects.get(slug=slug)
-
             if realty_edit.company == current_manager:
                 realty_edit_form = HolidayHouseForm(instance=realty_edit)
                 upload_photos_form = PhotosForm(request.FILES, initial={'camp': realty_edit.id})
@@ -562,9 +561,9 @@ def create_camp_object_step4(request):
     if request.method == "POST":
         camp_object_form4 = CreateHolidayHouseForm4(request.POST)
         if camp_object_form4.is_valid():
-            current_object.options.clear()
+            # current_object.options.clear()
             options_list = camp_object_form4.cleaned_data['options']
-            current_object.options.add(*options_list)
+            # current_object.options.add(*options_list)
             return redirect('app_premises:create_camp5')
     return render(request, 'app_premises/create_camp_step4.html', context={'camp_object_form4': camp_object_form4})
 
@@ -579,9 +578,9 @@ def create_camp_object_step5(request):
     if request.method == "POST":
         camp_object_form5 = CreateHolidayHouseForm5(request.POST)
         if camp_object_form5.is_valid():
-            current_object.arriving_time = camp_object_form5.cleaned_data['arriving_time']
-            current_object.departure_time = camp_object_form5.cleaned_data['departure_time']
-            current_object.save()
+            # current_object.arriving_time = camp_object_form5.cleaned_data['arriving_time']
+            # current_object.departure_time = camp_object_form5.cleaned_data['departure_time']
+            # current_object.save()
             return redirect('app_premises:create_camp6')
     return render(request, 'app_premises/create_camp_step5.html', context={'camp_object_form5': camp_object_form5})
 
@@ -597,8 +596,8 @@ def create_camp_object_step6(request):
         camp_object_form6 = PhotosForm(request.POST, request.FILES, initial={'camp': current_object})
         if camp_object_form6.is_valid():
             files = request.FILES.getlist('photo')
-            for photo in files:
-                Photos.objects.create(camp=current_object, photo=photo)
+            # for photo in files:
+            #     Photos.objects.create(camp=current_object, photo=photo)
             return redirect('app_premises:create_camp7')
     return render(request, 'app_premises/create_camp_step6.html', context={'camp_object_form6': camp_object_form6})
 
@@ -613,8 +612,8 @@ def create_camp_object_step7(request):
     if request.method == "POST":
         camp_object_form7 = CreateHolidayHouseForm6(request.POST, request.FILES, initial={'realty_obj': current_object})
         if camp_object_form7.is_valid():
-            current_object.full_description = camp_object_form7.cleaned_data['full_description']
-            current_object.save()
+            # current_object.full_description = camp_object_form7.cleaned_data['full_description']
+            # current_object.save()
             return redirect('app_premises:create_camp8')
     return render(request, 'app_premises/create_camp_step7.html', context={'camp_object_form7': camp_object_form7})
 
@@ -629,8 +628,8 @@ def create_camp_object_step8(request):
     if request.method == "POST":
         camp_object_form8 = CreateHolidayHouseForm7(request.POST)
         if camp_object_form8.is_valid():
-            current_object.realty_price = camp_object_form8.cleaned_data['realty_price']
-            current_object.save()
+            # current_object.realty_price = camp_object_form8.cleaned_data['realty_price']
+            # current_object.save()
             return redirect('app_premises:realty_detail', slug=current_object.slug)
     return render(request, 'app_premises/create_camp_step8.html', context={'camp_object_form8': camp_object_form8})
 
@@ -821,7 +820,7 @@ def permission_denied(request):
     return render(request, '403.html')
 
 
-def favorite(request):
+def favorite(request) -> HttpResponse:
     """ AJAX функция для добавления в избранное или удаление из избранного """
 
     realty_id = request.GET.get('realty_id', None)
@@ -835,7 +834,7 @@ def favorite(request):
         return HttpResponse('from', content_type='text/html')
 
 
-def add_comment(request):
+def add_comment(request) -> HttpResponse:
     """ AJAX функция для отправки отзывов на объекты размещения """
 
     user = CustomUser.objects.get(id=request.GET.get('user'))

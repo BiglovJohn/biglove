@@ -98,6 +98,16 @@
             <a id="base__menu_buttons1" type="" href="{% url 'app_index:index' %}" class="btn btn-outline-light">Жилье</a>
 <!--            <a id="base__menu_buttons2" type="" href="{% url 'app_auto:auto_index' %}" class="btn btn-outline-light">Авто</a>-->
         </nav>
+        <nav class="base__main_menu">
+            <div style="display: flex; flex-direction: column;">
+                <div style="font-size: 2em; font-weight: bold; color: black;">
+                    Бронируй, властвуй, отдыхай
+                </div>
+                <div style="font-size: 1.2em;">
+                    Экономьте на отдыхе с нашим сервисом!
+                </div>
+            </div>
+        </nav>
     </nav>
 </header>
 
@@ -180,7 +190,6 @@
 {% block footer %}
 <footer class="base__footer_not_fixed">
     <div class="base__footer_container">
-        <a class="base__logo_footer" href="/"><img class="logo-main_footer" src="../../static/img/logo.png" alt="Логотип"></a>
         <div class="base__copyright">
             <li class="base_menu__li_container"><a class="footer__links" href="{% url 'app_rules:our_values' %}">Наши ценности</a></li>
             <li class="base_menu__li_container"><a class="footer__links" href="{% url 'app_rules:rules' %}">Правила сайта</a></li>
@@ -197,7 +206,7 @@
             <h5 class="modal-title" id="staticBackdropLabel5">Контакты</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body" id="contacts_popup">
               <div>Телефон для справок: +7 (938) 416-66-72</div>
               <div>Эл. почта: biglov.info@yandex.ru</div>
           </div>

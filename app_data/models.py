@@ -13,7 +13,7 @@ class LocationModel(models.Model):
 
     class Meta:
         """ Определение параметров в мета классе локации """
-        db_table = 'location_db'
+        # db_table = 'location_db'
         ordering = ['city']
         verbose_name = 'Локация'
         verbose_name_plural = 'Локации'
@@ -44,7 +44,7 @@ class Ip(models.Model):  # наша таблица где будут айпи а
         return self.ip
 
     class Meta:
-        db_table = 'ip_addresses_db'
+        # db_table = 'ip_addresses_db'
         ordering = ['visited_at']
         verbose_name = 'IP адрес'
         verbose_name_plural = 'IP адреса'

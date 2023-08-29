@@ -14,7 +14,7 @@ class Comments(models.Model):
 
     class Meta:
         """Определение параметров в мета классе комментария"""
-        db_table = 'comments_db'
+        # db_table = 'comments_db'
         ordering = ['publish_at']
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'

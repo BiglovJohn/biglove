@@ -139,12 +139,12 @@ class CompanyEditFromView(View):
         current_company = CustomUser.objects.get(id=company_id)
         company_form = CompanyProfileForm(request.POST, instance=current_company)
         realty_form = HolidayHouseForm(request.POST)
-
         if 'account__save_form' in request.POST:
             if company_form.is_valid():
                 company = company_form.save(commit=False)
                 company.type = company_form.cleaned_data['type']
-                company.save(update_fields=["type"])
+                company.middle_name = company_form.cleaned_data['middle_name']
+                company.save()
                 return redirect('app_profiler:company_detail', company_id=company_id)
             else:
                 messages.error(request, 'Ошибка при изменении ссылки на компанию')

@@ -27,14 +27,14 @@
 {% block content %}
 <body class="index__body">
 
-    <div class="index-conteiner">
-        <div class="index-main-text">
-            <h2 class="index-h2-text">Бронируй, властвуй, отдыхай!</h2>
-            <div class="index-conteiner-h3-img">
-                <img class="just-chill-index" src="{% static 'img/just-chill.png' %}" alt="JUST_CHILL">
-            </div>
-        </div>
-    </div>
+<!--    <div class="index-conteiner">-->
+<!--        <div class="index-main-text">-->
+<!--            <h2 class="index-h2-text">Бронируй, властвуй, отдыхай!</h2>-->
+<!--            <div class="index-conteiner-h3-img">-->
+<!--                <img class="just-chill-index" src="{% static 'img/just-chill.png' %}" alt="JUST_CHILL">-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
 
     <form class="search-form2" action="{% url 'app_premises:realty_list' %}" method="get">
         <input name="q" type="text" class="form-control" id="search-form" placeholder="Куда отправимся?" autocomplete="off">
@@ -68,24 +68,6 @@
         <button name="search" class="btn btn-info" id="base-search-button">Проверить цены</button>
     </form>
 
-    <div class="index__adv_long_term">
-        <div class="index__adv_main_container">
-            <div class="index__adv_text">
-                <div>
-                    Планируете переезд?
-                    <div class="index__adv_text_sub">Найдите жилье своей мечты на <b style="color: #0f90e4">Biglov.ru</b></div>
-                </div>
-                <a id="base__menu_buttons1" type="" href="{% url 'app_premises:flat_list' %}" class="btn btn-success">Найти жилье на длительный срок</a>
-            </div>
-        </div>
-        <div class="index__adv_main_container2">
-            <div class="index__adv_text">
-                <div>
-                    Сайт находится в процессе разработки. Ваши отзывы крайне важны! Если нашли "баг" - сообщите нам!
-                </div>
-            </div>
-        </div>
-    </div>
     <div class="index__top_directions">
         <div class="index__top_title_container">
             <h4 class="index__top_h4_text">Выбор посетителей</h4>
@@ -103,6 +85,41 @@
                     </a>
                 </div>
             {% endfor %}
+        </div>
+    </div>
+
+    <div class="index__top_directions">
+        <div class="index__top_title_container">
+            <h4 class="index__top_h4_text">Новые направления</h4>
+        </div>
+
+        <div class="index__top_content_container">
+            <div class="index__top_content">
+                <a class="index__top_link_style" href="#">
+                    <img class="index__top_img" src="https://pibig.info/uploads/posts/2021-05/1622398817_26-pibig_info-p-priroda-utrom-more-priroda-krasivo-foto-26.jpg">
+                    <div class="index__top_camp_title">Мезмай</div>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="index__top_directions">
+        <div class="index__top_title_container">
+            <h4 class="index__top_h4_text">Топовые направления</h4>
+        </div>
+
+        <div class="index__top_content_container">
+            <div class="index__top_content">
+                <a class="index__top_link_style" href="#">
+                    <img class="index__top_img" src="https://img-fotki.yandex.ru/get/901683/13385546.81/0_b8a75_a0368965_orig">
+                    <div class="index__top_directions_name">
+                        Мезмай
+                        <img src="{% static 'img/icons/free-icon-russia-197408.png' %}">
+                    </div>
+                </a>
+            </div>
+
         </div>
     </div>
 

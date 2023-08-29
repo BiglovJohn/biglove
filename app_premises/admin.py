@@ -7,6 +7,7 @@ from .models import Camp, RealtyOptions, Reservation, Photos, Favorite, Flat, \
 @admin.register(Camp)
 class HolidayHouseObjectAdmin(admin.ModelAdmin):
     list_display = ['id', 'realty_name', 'realty_type', 'realty_book_count', 'total_views']
+    list_editable = ["realty_type"]
     list_display_links = ['id']
     list_select_related = ['company']
     list_filter = (('created_at', DateRangeFilter), ('realty_price', NumericRangeFilter),

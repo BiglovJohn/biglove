@@ -70,8 +70,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     kor_account = models.CharField(max_length=22, blank=True, verbose_name='Корреспондентский счёт')
     bic = models.CharField(max_length=9, blank=True, verbose_name='БИК')
     middle_name = models.CharField(max_length=50, blank=True, null=True, verbose_name='Отчество')
-    passport_series = models.IntegerField(blank=True, null=True, verbose_name='Серия паспорта')
-    passport_number = models.IntegerField(blank=True, null=True, verbose_name='Номер паспорта')
+    passport_series = models.CharField(max_length=4, blank=True, null=True, verbose_name='Серия паспорта')
+    passport_number = models.CharField(max_length=6, blank=True, null=True, verbose_name='Номер паспорта')
     passport_who = models.CharField(max_length=100, null=True, blank=True, verbose_name='Кем выдан')
     passport_code = models.CharField(max_length=10, null=True, blank=True, verbose_name='Код подразделения')
     passport_date = models.DateField(blank=True, null=True, verbose_name='Дата выдачи паспорта')
@@ -82,7 +82,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = []
 
     class Meta:
-        db_table = 'accounts_db'
+        # db_table = 'accounts_db'
         ordering = ['created_at']
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'

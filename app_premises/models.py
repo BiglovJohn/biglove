@@ -12,19 +12,19 @@ from django.urls import reverse
 from app_data.models import Ip
 from app_profiler.models import CustomUser
 
-# _REALTY_TYPE = [
-#     ('h', 'Отель'),
-#     ('c', 'Хостел'),
-#     ('a', 'Апартаменты'),
-#     ('ah', 'Апарт-отель'),
-#     ('gh', 'Гостевой дом'),
-#     ('k', 'Коттедж'),
-#     ('v', 'Вилла'),
-#     ('kp', 'Кемпинг'),
-#     ('gp', 'Глэмпинг'),
-#     ('kv', 'Квартира'),
-#     ('dm', 'Дом'),
-# ]
+_REALTY_TYPE = [
+    ('h', 'Отель'),
+    ('c', 'Хостел'),
+    ('a', 'Апартаменты'),
+    ('ah', 'Апарт-отель'),
+    ('gh', 'Гостевой дом'),
+    ('k', 'Коттедж'),
+    ('v', 'Вилла'),
+    ('kp', 'Кемпинг'),
+    ('gp', 'Глэмпинг'),
+    ('kv', 'Квартира'),
+    ('dm', 'Дом'),
+]
 
 _PAY_TYPE = [
     ('o', 'Оплата онлайн'),
@@ -71,7 +71,7 @@ class RealtyOptions(models.Model):
         return self.option_name
 
     class Meta:
-        db_table = 'options_db'
+        # db_table = 'options_db'
         ordering = ['-views_count']
         verbose_name = 'Опция'
         verbose_name_plural = 'Опции'
@@ -87,7 +87,7 @@ class FurnitureModel(models.Model):
 
     class Meta:
         """ Определение параметров в мета классе """
-        db_table = 'furniture_db'
+        # db_table = 'furniture_db'
         ordering = ['category']
         verbose_name = 'Мебель'
         verbose_name_plural = 'Мебель'
@@ -103,7 +103,7 @@ class TechniqueModel(models.Model):
 
     class Meta:
         """ Определение параметров в мета классе """
-        db_table = 'technique_db'
+        # db_table = 'technique_db'
         ordering = ['category']
         verbose_name = 'Техника'
         verbose_name_plural = 'Техника'
@@ -125,7 +125,7 @@ class RealtyObjectBaseClass(models.Model):
     children = models.BooleanField(blank=True, default=False, verbose_name='Можно с детьми')
     animals = models.BooleanField(blank=True, default=False, verbose_name='Можно с животными')
     smoke = models.BooleanField(blank=True, default=False, verbose_name='Можно курить')
-    ind = models.CharField(max_length=6, blank=True, verbose_name='Индекс') #TODO Добавить в админку
+    ind = models.CharField(max_length=6, blank=True, verbose_name='Индекс')  # TODO Добавить в админку
 
     def total_views(self):
         return self.views_count.count()
@@ -172,7 +172,8 @@ class Camp(RealtyObjectBaseClass):
     arriving_time_to = models.TimeField(default='23:00', verbose_name='Время заселения до')
     departure_time_to = models.TimeField(default='12:00', verbose_name='Время выезда до')
     realty_book_count = models.PositiveIntegerField(default=0, verbose_name='Бронирований')
-    stars = models.CharField(max_length=1, default='0', choices=_STARS, verbose_name='Звёздность') #TODO Добавить в админку
+    stars = models.CharField(max_length=1, default='0', choices=_STARS,
+                             verbose_name='Звёздность')  # TODO Добавить в админку
 
     def __str__(self):
         return self.realty_name
@@ -187,14 +188,13 @@ class Camp(RealtyObjectBaseClass):
 
     class Meta:
         """Определение параметров в мета классе альбом"""
-        db_table = 'camps_db'
+        # db_table = 'camps_db'
         ordering = ['created_at']
         verbose_name = 'Кемпинг'
         verbose_name_plural = 'Кемпинги'
 
 
 class Flat(RealtyObjectBaseClass):
-
     _LT_REALTY_TYPE = [
         ('kv', '1-к комнатная квартира'),
         ('2k', '2-х комнатная квартира'),
@@ -240,7 +240,7 @@ class Flat(RealtyObjectBaseClass):
 
     class Meta:
         """ Определение параметров в мета классе альбом """
-        db_table = 'flats_db'
+        # db_table = 'flats_db'
         ordering = ['created_at']
         verbose_name = 'Объект на длительный срок'
         verbose_name_plural = 'Объекты на длительный срок'
@@ -263,7 +263,7 @@ class Reservation(models.Model):
 
     class Meta:
         """Определение параметров в мета классе альбом"""
-        db_table = 'reservations_db'
+        # db_table = 'reservations_db'
         ordering = ['check_in']
         verbose_name = 'Бронирование'
         verbose_name_plural = 'Бронирования'
@@ -303,7 +303,7 @@ class Photos(models.Model):
 
     class Meta:
         """ Определение параметров в мета классе фото """
-        db_table = 'photos_db'
+        # db_table = 'photos_db'
         ordering = ['created_at']
         verbose_name = 'Фотография'
         verbose_name_plural = 'Фотографии'
@@ -330,7 +330,7 @@ class Favorite(models.Model):
     )
 
     class Meta:
-        db_table = 'favorites_db'
+        # db_table = 'favorites_db'
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранные'
 
@@ -358,7 +358,7 @@ class Advertising(models.Model):
     created_at = models.DateField(auto_now_add=True, verbose_name='Дата создания')
 
     class Meta:
-        db_table = 'advertising_db'
+        # db_table = 'advertising_db'
         ordering = ['created_at']
         verbose_name = 'Реклама'
         verbose_name_plural = 'Рекламы'

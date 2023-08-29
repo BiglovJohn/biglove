@@ -102,42 +102,42 @@
                     </script>
                 </menu>
 
-                <menu class="block-type">
-                    <h6 class="realty-menu-text">В отеле</h6>
-                    <div class="form-checkbox">
-                        {% for hotel_option in hotel_filter_checkbox %}
-                            {{ hotel_option }}
-                        {% endfor %}
-                    </div>
-                    <script>
-                        $("label").attr("for", "");
-                    </script>
-                </menu>
+<!--                <menu class="block-type">-->
+<!--                    <h6 class="realty-menu-text">В отеле</h6>-->
+<!--                    <div class="form-checkbox">-->
+<!--                        {% for hotel_option in hotel_filter_checkbox %}-->
+<!--                            {{ hotel_option }}-->
+<!--                        {% endfor %}-->
+<!--                    </div>-->
+<!--                    <script>-->
+<!--                        $("label").attr("for", "");-->
+<!--                    </script>-->
+<!--                </menu>-->
 
-                <menu class="block-type">
-                    <h6 class="realty-menu-text">В номере</h6>
-                    <div class="form-checkbox">
-                        {% for room_option in room_filter_checkbox %}
-                            {{ room_option }}
-                        {% endfor %}
-                    </div>
-                    <script>
-                        $("label").attr("for", "");
-                    </script>
-                </menu>
+<!--                <menu class="block-type">-->
+<!--                    <h6 class="realty-menu-text">В номере</h6>-->
+<!--                    <div class="form-checkbox">-->
+<!--                        {% for room_option in room_filter_checkbox %}-->
+<!--                            {{ room_option }}-->
+<!--                        {% endfor %}-->
+<!--                    </div>-->
+<!--                    <script>-->
+<!--                        $("label").attr("for", "");-->
+<!--                    </script>-->
+<!--                </menu>-->
 
-                <menu class="block-type">
-                    <h6 class="realty-menu-text">Питание</h6>
-                    <div class="form-checkbox">
-                        {% for food_option in food_options_checkbox %}
-                            {{ food_option.0 }}
-                            {{ food_option.1 }}
-                            {{ food_option.2 }}
-                            {{ food_option.3 }}
-                            {{ food_option.4 }}
-                        {% endfor %}
-                    </div>
-                </menu>
+<!--                <menu class="block-type">-->
+<!--                    <h6 class="realty-menu-text">Питание</h6>-->
+<!--                    <div class="form-checkbox">-->
+<!--                        {% for food_option in food_options_checkbox %}-->
+<!--                            {{ food_option.0 }}-->
+<!--                            {{ food_option.1 }}-->
+<!--                            {{ food_option.2 }}-->
+<!--                            {{ food_option.3 }}-->
+<!--                            {{ food_option.4 }}-->
+<!--                        {% endfor %}-->
+<!--                    </div>-->
+<!--                </menu>-->
                 <div style="display: flex; flex-direction: row; width: 100%; align-items: center;">
                     <input class="filter-input" type="submit" name="realty_list__search" value="Найти">
                 </div>
@@ -170,19 +170,16 @@
                                             {% if favorite_list %}
                                                 {% for object in favorite_list %}
                                                     {% if adv_realty in object.camps.all %}
-                                                        <img id="dismissAdvFavorite{{ adv_realty.id }}" style="width: 22%;" onclick="{{ adv_realty.id }}" src="{% static 'img/icons/free-icon-wishlist-3132924-added.png' %}">
+                                                        <img id="dismissAdvFavorite{{ adv_realty.id }}" style="width: 12%;" onclick="{{ adv_realty.id }}" src="{% static 'img/icons/free-icon-wishlist-3132924-added.png' %}">
                                                     {% elif adv_realty not in object.camps.all %}
-                                                        <img id="addAdvFavorite{{ adv_realty.id }}" style="width: 22%;" onclick="{{ adv_realty.id }}" src="{% static 'img/icons/free-icon-wishlist-3132924.png' %}">
+                                                        <img id="addAdvFavorite{{ adv_realty.id }}" style="width: 12%;" onclick="{{ adv_realty.id }}" src="{% static 'img/icons/free-icon-wishlist-3132924.png' %}">
                                                     {% endif %}
                                                 {% endfor %}
                                             {% else %}
-                                                <img style="width: 22%;" onclick="{{ adv_realty.id }}" src="{% static 'img/icons/free-icon-wishlist-3132924.png' %}">
+                                                <img style="width: 12%;" onclick="{{ adv_realty.id }}" src="{% static 'img/icons/free-icon-wishlist-3132924.png' %}">
                                             {% endif %}
                                         </form>
-                                        <div class="realty_list__total_view_container">
-                                            <img class="realty_list__total_views" src="../../static/img/icons/free-icon-eye-scanner-7790069.png">
-                                            <div>{{ adv_realty.total_views }}</div>
-                                        </div>
+
                                     </div>
 
                                     <script>
@@ -234,17 +231,6 @@
                                           })
                                         );
                                     </script>
-
-                                    <div class="price_book_status_container">
-                                        {% for reserve in reservation_set %}
-                                            {% if obj.id == reserve.obj_id %}
-                                                <div class="realty-booked">
-                                                    <p class="realty-booked-text">Забронировано</p>
-                                                    <p class="realty-booked-date-range">с {{ reserve.obj_check_in }} по {{ reserve.obj_check_out }}</p>
-                                                </div>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </div>
                                 </div>
                             </div>
                         {% endfor %}
@@ -260,16 +246,6 @@
                                   <img src="../../media/{{ obj.camp_photos.all.0.photo }}" id="hotels_list_img" class="d-block w-100" alt="...">
                               </a>
                             </div>
-                            <div class="price_book_status_container">
-                                {% for reserve in reservation_set %}
-                                    {% if obj.id == reserve.obj_id %}
-                                        <div class="realty-booked">
-                                            <p class="realty-booked-text">Забронировано</p>
-                                            <p class="realty-booked-date-range">с {{ reserve.obj_check_in }} по {{ reserve.obj_check_out }}</p>
-                                        </div>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
                             <div class="short-describe-text">
                                 <h4 class="short-description-title"> <a class="camp_list__link_style" href='{% url "app_premises:realty_detail" obj.slug %}'>{{ obj.realty_name }}</a></h4>
                                 <div class="short-description-text">{{ obj.realty_city }}</div>
@@ -280,20 +256,15 @@
                                         {% if favorite_list %}
                                             {% for object in favorite_list %}
                                                 {% if obj in object.camps.all %}
-                                                    <img id="dismissFavorite{{ obj.id }}" style="width: 22%;" onclick="{{ obj.id }}" src="{% static 'img/icons/free-icon-wishlist-3132924-added.png' %}">
+                                                    <img id="dismissFavorite{{ obj.id }}" style="width: 12%;" onclick="{{ obj.id }}" src="{% static 'img/icons/free-icon-wishlist-3132924-added.png' %}">
                                                 {% else %}
-                                                    <img id="addFavorite{{ obj.id }}" style="width: 22%;" onclick="{{ obj.id }}" src="{% static 'img/icons/free-icon-wishlist-3132924.png' %}">
+                                                    <img id="addFavorite{{ obj.id }}" style="width: 12%;" onclick="{{ obj.id }}" src="{% static 'img/icons/free-icon-wishlist-3132924.png' %}">
                                                 {% endif %}
                                             {% endfor %}
                                         {% else %}
-                                            <img style="width: 22%;" onclick="{{ adv_realty.id }}" src="{% static 'img/icons/free-icon-wishlist-3132924.png' %}">
+                                            <img style="width: 12%;" onclick="{{ adv_realty.id }}" src="{% static 'img/icons/free-icon-wishlist-3132924.png' %}">
                                         {% endif %}
                                     </form>
-
-                                    <div class="realty_list__total_view_container">
-                                        <img class="realty_list__total_views" src="../../static/img/icons/free-icon-eye-scanner-7790069.png">
-                                        <div>{{ obj.total_views }}</div>
-                                    </div>
                                 </div>
 
                                 <script>

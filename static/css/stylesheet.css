@@ -33,7 +33,7 @@ button.btn.btn-outline-light {
 img.base__arrow_top {
     width: 3%;
     position: sticky;
-    bottom: 0;
+    bottom: 10%;
     left: 95%;}
 
 .search-form {
@@ -59,8 +59,8 @@ div#index-search.row.height.d-flex.justify-content-center.align-items-center {
 
 .index__top_directions {
     width: 60%;
-    height: 20%;
-    margin: 0 auto;}
+    margin: 0 auto;
+    margin-top: 2%;}
 
 .index__top_h4_text {
     color: black;
@@ -80,19 +80,25 @@ div#index-search.row.height.d-flex.justify-content-center.align-items-center {
 .index__top_content_container {
     display: grid;
     grid-gap: 5px;
-    grid-template-columns: repeat(auto-fit, 13%);
+    grid-template-columns: repeat(auto-fit, 24%);
     justify-items: center;
-    justify-content: center;
     text-align: center;
     color: black;
-    position: relative;}
+    position: relative;
+    font-size: 1.5em;}
+
+.index__top_directions_name {
+    position: absolute;
+    top: 0;
+    color: white;
+    left: 1%;}
 
 .index__top_help_show {
     display: block;
     position: absolute;
     width: 30%;
     top: 5%;
-    left: 22%;
+    left: 18%;
     background: white;
     box-shadow: 0 14px 28px rgb(0 0 0 / 25%), 0 10px 10px rgb(0 0 0 / 22%);
     color: black;
@@ -167,12 +173,13 @@ a.btn.btn-light.detail__btn {
 .camp_detail__arriving_departure {
     width: 100%;
     display: flex;
-    flex-direction: row;
-    margin: 1% 0;
+    margin: 0;
     padding: 0 1%;
-    align-items: center;
+    border-bottom: 1px solid;
+    border-color: #dbdbdb;
     color: black;
-    font-size: 1.2em;}
+    font-size: 1em;
+    height: 70px;}
 
 .camp_detail__info_block {
     color: black;
@@ -180,13 +187,18 @@ a.btn.btn-light.detail__btn {
 
 .camp_detail__arriving_departure_parameter {
     width: 25%;
-    padding-left: 1%;}
+    padding-left: 1%;
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    font-size: 0.9em;}
 
 .camp_detail__options_container {
-    width: 60%;}
+    width: 100%;
+    display: flex;
+    align-items: center;}
 
 .camp_detail__living_rules_img {
-    width: 4%;
     padding: 0.5%;}
 
 .auto__search_form_container {
@@ -429,8 +441,10 @@ div.offcanvas2-body {
 .base__footer_container {
     display: flex;
     align-items: flex-start;
-    justify-content: center;
-    flex-direction: row;}
+    justify-content: end;
+    flex-direction: row;
+    bottom: 0;
+    width: 100%;}
 
 .base__footer_all {
     width: 100%;
@@ -458,11 +472,11 @@ div.offcanvas2-body {
 
 .base__footer_not_fixed {
     width: 100%;
+    height: 20%;
     margin: auto 0;
-    height: fit-content;
     background: #17a2b899;
     z-index: 10;
-    font-size: 0.9em;}
+    font-size: 1.4em;}
 
 .base__footer {
     display: flex;
@@ -486,12 +500,15 @@ div#login.dropdown {
     align-items: flex-start;
     position: relative;
     margin: 0 auto;
-    width: 50%;
+    width: 60%;
     height: fit-content;
     background: #fffffff2;
     flex-direction: column;
     margin-top: 10px;
     border-radius: 0.3rem;}
+
+.reservation_end__info_container {
+    width: 100%;}
 
 .reserve-end-container2 {
     flex-direction: row;
@@ -616,7 +633,7 @@ p.end_reserve_form_text {
     display: flex;
     align-items: center;
     align-content: center;
-    justify-content: flex-end;
+    justify-content: center;
     margin: 0;}
 
 button#check-detail-button.btn.btn-light, button#check-detail-button2.btn.btn-light {
@@ -1019,17 +1036,26 @@ div#offcanvasScrolling2.offcanvas.offcanvas-start.show {
 
 .offcanvas-title {
     font-weight: bold;
-    font-size: 1.2em;
+    font-size: 2em;
     position: relative;
-    text-align: center;
-}
+    text-align: center;}
 
-div.offcanvas-header {
-    justify-content: end !important;
-}
+.realty_detail__ul {
+    list-style: none;
+    padding: 0;}
+
+.realty_detail__options_popup {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 20px;}
+
+.realty_detail__option_popup_in {
+    display: flex;
+    flex-direction: column;
+    width: 25%;}
 
 .company__edit_profile {
-    width: 40%;
+    width: 32%;
 }
 
 .company__show_objects_list {
@@ -1076,8 +1102,7 @@ div.offcanvas-header {
 /* Колонки объектов в управлении на странице компании */
 
 .company__list_of_control_realty {
-    width: 100%;
-    max-height: 130px;}
+    width: 100%;}
 
 .company_detail__info_before_register_container {
     display: flex;
@@ -1133,11 +1158,13 @@ h5.company_detail__info_before_register {
     justify-content: start;
     grid-gap: 10px;
     padding: 0;
-    grid-template-columns: repeat(auto-fit, 150px);}
+    grid-template-columns: repeat(auto-fit, 24%);}
 
 .company__realty_object {
-    font-size: 0.8em;
-    list-style: none;}
+    font-size: 1em;
+    list-style: none;
+    line-height: 1;
+    margin-top: 3%;}
 
 /* конец блока */
 
@@ -1244,7 +1271,7 @@ input#id_total_sum {
     color: black;
     grid-gap: 15px;}
 
-.rules__regulations_left_menu_container {
+!rules__regulations_left_menu_container {
     width: 30%;
     height: 300px;
     box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);}
@@ -1300,8 +1327,7 @@ a#detail__show_options.btn.btn-light {
     text-align: center;}
 
 div#offcanvasScrolling.offcanvas.offcanvas-start.detail__show_comments.show {
-    width: 35%;
-    max-width: 50%;}
+    width: 35%;}
 
 button#realty-ditail-edit.btn.btn-light {
     display: inline-block;
@@ -1546,7 +1572,6 @@ input#main_search_out {
 
 .realty-detail-booked {
     text-align: center;
-    height: 50px;
     background: #b85be39c;
     padding: 0 10px;
     border-radius: 0.4rem;
@@ -1631,12 +1656,20 @@ button#close_pop_up_btn.btn-close {
     width: 100%;
     display: flex;
     justify-content: flex-end;
-    padding-right: 15px;
-}
+    padding-right: 15px;}
 
 .reservation_list__h5_header {
     text-align: center;
-}
+    margin-top: 1%;}
+
+.camp_detail__full_options_list_img {
+    width: 8%;
+    margin: 0 10px;}
+
+.realty_detail__h6_options {
+    color: black;
+    text-align: left;
+    font-weight: bold;}
 
 .user_detail__list_of_reservations {
     display: grid;
@@ -1653,8 +1686,9 @@ button#close_pop_up_btn.btn-close {
     display: flex;
     justify-content: center;
     height: 70%;
-    margin-top: 5%;
-    align-items: flex-start;}
+    align-items: flex-start;
+    width: 80%;
+    margin: 0 auto;}
 
 .create_camp__time_containers {
     display: flex;
@@ -1756,7 +1790,7 @@ div#pop_up4 {
 /* КОНЕЦ БЛОКА */
 
 .realty-booked-date-range {
-    font-size: xx-small;
+    font-size: 0.9em;
     color: black;
 }
 
@@ -1798,8 +1832,11 @@ div#pay_type_options.form-check-input
 .hotels_detail__param_container {
     display: flex;
     flex-direction: column;
-    background: #80808024;
-    border-radius: 0.3rem;}
+    border-radius: 0.3rem;
+    padding: 0 14px;
+    width: 100%;
+    border: 0.5px solid;
+    border-color: #dbdbdb;}
 
 div#remember-me.form-check {
     text-align: left;
@@ -1848,7 +1885,6 @@ menu.date-block-type {
 
 .realty_list__favorite_container {
     display: flex;
-    flex-direction: row-reverse;
     align-items: center;
     justify-content: flex-end;}
 
@@ -1864,7 +1900,7 @@ div#realty-list-in-profile.offcanvas-body {
     display: block;}
 
 .search-realty-list-block-type {
-    margin: 4px auto;
+    margin: 10px auto;
     padding: 0;
     width: 90%;
     text-align: center;}
@@ -1883,12 +1919,10 @@ div.realty-card {
     width: 6%;
     padding-bottom: 0.5%;
     border-width: thin;
-    background: white;
     border-radius: 0 0 0.75rem 0.75rem;
     margin: 0.5%;
     text-align: center;
     min-width: 215px;
-    position: relative;
     box-shadow: 0 14px 28px rgb(0 0 0 / 5%), 0 10px 10px rgb(0 0 0 / 2%);}
 
 div.realty-card.adv {
@@ -1914,6 +1948,7 @@ img.options-icon {
 
 .detail__bottom_container_comment_and_info {
     display: flex;
+    justify-content: center;
     margin: 0;
     padding: 0 1% 1% 1%;}
 
@@ -1940,20 +1975,15 @@ img.options-icon {
     width: 95%;}
 
 .detail_realty__comments_full_container {
-    display: flex;
-    width: 95%;
-    height: 82%;
-    flex-direction: column-reverse;
-    background: #ffffffe8;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 24%);
+    grid-gap: 5px;
     border-radius: 0.75rem;
     overflow: auto;
     position: relative;}
 
 .hotels_detail__no_comments {
-    position: absolute;
-    top: 30%;
-    left: 10%;
-    text-align: center;}
+    }
 
 .hotels_detail__no_comments_info {
     height: 100px;
@@ -1991,10 +2021,8 @@ img#sendMessage2 {
 }
 
 textarea#id_comment_text {
-    height: 40px;
+    height: 63px;
     width: 100%;
-    min-height: 40px;
-    max-height: 200px;
     border-radius: 0.5rem;
     resize: vertical;
     text-indent: 5px;
@@ -2009,7 +2037,9 @@ select#id_company {
     text-align: right;
     font-size: 0.7em;
     width: 95%;
-    margin: 0 auto;}
+    margin: 0 auto;
+    position: absolute;
+    bottom: 0;}
 
 button#detail__button_send_message.btn.btn-outline-light,
 button#sendMessage2.btn.btn-outline-light
@@ -2037,12 +2067,11 @@ button#sendMessage2.btn.btn-outline-light
 
 .detail__comments_text_container {
     display: flex;
+    position: relative;
     flex-direction: column;
     color: black;
     text-align: left;
-    margin: 5px auto;
-    width: 95%;
-    background: #17a2b899;
+    background: #d5dedf99;
     border-radius: 0.75rem;}
 
 .detail__comment_username {
@@ -2068,7 +2097,10 @@ button#sendMessage2.btn.btn-outline-light
     word-break: break-word;
     font: -webkit-mini-control;
     font-size: 0.9em;
-    padding: 1% 0;}
+    padding: 0 0 5% 0;}
+
+.realty_detail__description {
+    margin-top: 1%;}
 
 .detail__current_user {
     margin-right: 5px;
@@ -2123,7 +2155,14 @@ button#sendMessage2.btn.btn-outline-light
 .main_option_elem {
     text-align: left;
     display: flex;
-    align-items: center;}
+    align-items: center;
+    font-weight: bold;
+    font-size: 0.9em;
+    padding-left: 1%;}
+
+.realty_detail__in_out_rules {
+    width: 100%;
+    padding-left: 2%;}
 
 .reserve__main_option_elem {
     text-align: center;}
@@ -2136,7 +2175,9 @@ button#sendMessage2.btn.btn-outline-light
     font-weight: bold;}
 
 aside.realty-list-container {
-    display: flex;}
+    display: flex;
+    width: 60%;
+    margin: 0 auto;}
 
 .reserve__main_option_img {
     width: 15%;
@@ -2152,8 +2193,7 @@ ul.realty-list {
 
 .realty_list__realty_container {
     display: flex;
-    flex-direction: column;
-    width: 61%;}
+    flex-direction: column;}
 
 .relaty_list__adv_list {
     width: 100%;
@@ -2260,7 +2300,7 @@ button#exit_from_realty_edit.btn.btn-danger {
     margin: 0;
     padding: 0;
     background: #17a2b899;
-    height: 100%;
+    height: 250px;
     width: 100%;
     justify-content: flex-start;
     flex-direction: column;
@@ -2316,8 +2356,8 @@ a#base__menu_buttons1.btn.btn-success {
     flex-direction: column;
     align-items: center;
     position: relative;
-    left: 30%;
-    top: 30%;
+    left: 50%;
+    top: 50%;
     opacity: 0.3;}
 
 .lt_realty_list__empty_queryset_text {
@@ -2359,8 +2399,9 @@ a#base__menu_buttons1.btn.btn-success {
 
 .hotels_detail__check_reservation {
     display: flex;
-    width: 30%;
-    height: 400px;
+    flex-direction: column;
+    width: 22%;
+    height: fit-content;
     box-shadow: 0 14px 28px rgb(0 0 0 / 5%), 0 10px 10px rgb(0 0 0 / 2%);
     background: #80808030;
     margin-right: 10px;
@@ -2451,7 +2492,8 @@ div#carouselExampleIndicators.carousel.slide {
     width: 60%;}
 
 .camp_detail__one_more_container {
-    display: flex;}
+    display: flex;
+    max-height: 553px;}
 
 .realty_edit_form_container {
     width: 50%;
@@ -2579,7 +2621,9 @@ input#id_realty_to_city.create-realty-input {
 
 .edit_realty__main_container {
     display: flex;
-    justify-content: center;}
+    justify-content: center;
+    width: 80%;
+    margin: 0 auto;}
 
 .edit_realty__upload_photo_container {
     width: 40%;}
@@ -2673,8 +2717,7 @@ label {
 
 div.offcanvas-header {
     display: flex;
-    justify-content: space-around;
-}
+    width: 100%;}
 
 div#detail__offcanvas_comments_header.offcanvas-header {
 
@@ -2763,14 +2806,26 @@ form#base_menu__container.dropdown-menu.p-4.show {
 .company__edit_form_container {
     width: 80%;
     height: fit-content;
-    margin: 0.5% auto;
+    margin: 5% auto;
     display: flex;
-    justify-content: center;
-}
+    justify-content: center;}
+
+.realty_detail__img_min_container {
+    width: 15%;
+    overflow: scroll;}
+
+.realty_detail__img_min {
+    padding: 2% 0 0 2%;
+    width: 100%;}
 
 .company__reserve_date {
-    font-size: 0.8em;
-}
+    font-size: 0.8em;}
+
+img#realty_detail__main_image.d-block.w-100 {
+    height: 553px !important;
+    display: flex !important;
+    width: auto !important;
+    margin: 0 auto;}
 
 .company__main_param_block,
 .company__bank_param,
@@ -2841,7 +2896,8 @@ menu.realty-type-filters {
     padding: 0;
     width: 15%;
     min-width: 250px;
-    box-shadow: 0 14px 28px rgb(0 0 0 / 8%), 0 10px 10px rgb(0 0 0 / 12%);}
+    box-shadow: 0 14px 28px rgb(0 0 0 / 8%), 0 10px 10px rgb(0 0 0 / 12%);
+    height: fit-content;}
 
 .lt_realty_list__open_filters {
     display: none;}
@@ -2878,7 +2934,7 @@ input#id_phone_1.edit-account-input {
     display: none;}
 
 .reservation__form_end {
-    width: 35%;}
+    width: 48%;}
 
 .account__phone_and_email_container {
     display: flex;
@@ -3115,10 +3171,19 @@ div#staticBackdropRules.modal.fade.show {
     width: 100%;
     margin-top: 10px;
     justify-items: center;
-    justify-content: left;}
+    justify-content: center;}
+
+.realty_detail__sub_info {
+    padding: 3%;
+    background: white;
+    height: fit-content;
+    color: black;}
+
+.realty_detail__p_sub_info {
+    margin: 0;}
 
 .carousel {
-    width: 100%;}
+    width: 60%;}
 
 .realty_detail__options_img_container {
     display: flex;
@@ -3127,16 +3192,25 @@ div#staticBackdropRules.modal.fade.show {
     border-width: thin;
     border-color: #8080803b;
     border-radius: 0.4rem;
-    padding: 5px;}
+    padding: 5px;
+    width: 100%;}
 
 .camp_detail__descriptions_container {
-    font-size: 1.1em;
+    font-size: 0.9em;
     color: black;
     text-align: justify;
     display: flex;
-    padding: 1% 0;
+    padding: 1% 0 0 0;
     flex-direction: column;
     overflow-wrap: break-word;}
+
+.realty_detail__reviews_container {
+    width: 100%;}
+
+.realty_detail__check-in_rules {
+    font-size: 0.8em;
+    font-weight: bold;
+    color: gray;}
 
 .realty_detail__options_img {
     width: 10%;}
@@ -3183,12 +3257,15 @@ div#staticBackdropRules.modal.fade.show {
     height: 40%;
     width: 70%;}
 
+div#contacts_popup.modal-body {
+    font-size: 0.9em;}
+
 @media only screen and (max-width: 1920px) {
     .index__top_content_container {
     grid-template-columns: repeat(auto-fit, 13.8%);}
 
     .camp_detail__full_options_list_img {
-        width: 5%;
+        width: 8%;
         margin-right: 10px;}
 
     .camp_detail__full_options_list {
@@ -3325,7 +3402,7 @@ div#staticBackdropRules.modal.fade.show {
         column-count: 2;}
 
     .company__edit_profile {
-        width: 50%;}
+        width: 32%;}
 
     .create-realty-menu1,
     .create-realty-menu2 {
@@ -4050,7 +4127,7 @@ div#staticBackdropRules.modal.fade.show {
         text-align: center;}
 
     .realty_list__realty_container {
-        width: 80%;
+        width: 68%;
         margin: 0 auto;}
 
     .main_rules__h3_text {

@@ -33,8 +33,8 @@ class AuthForm(forms.Form):
 
 
 class RegisterForm(UserCreationForm):
-    user = CustomUser.objects.last()
-    user_id = user.id
+    # user = CustomUser.objects.last()
+    user_id = 0
 
     """Переопределение формы регистрации главного родителя"""
     last_name = forms.CharField(max_length=25, required=False, label='Фамилия')
@@ -84,8 +84,8 @@ class RegisterForm(UserCreationForm):
 
 
 class RegisterForm1(UserCreationForm):
-    user = CustomUser.objects.last()
-    user_id = user.id
+    # user = CustomUser.objects.last()
+    user_id = 0
 
     class Meta:
         model = CustomUser

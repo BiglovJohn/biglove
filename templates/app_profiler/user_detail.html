@@ -21,6 +21,7 @@
         <div class="user_detail__forms_container">
             <form class="account__form_container" method="post">{% csrf_token %}
                 <div class="account__div_container">
+                    <h4>Персональные данные</h4>
                     <div class="account__name_container">
                         {{ account_form.status.as_hidden }}
                         {{ account_form.created_at.as_hidden }}
@@ -73,7 +74,7 @@
 
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-success" name="account__save_form">Сохранить</button>
+                    <button type="submit" class="btn btn-success" name="account__save_form" style="margin-top: 10px;">Сохранить</button>
                 </div>
             </form>
             <form class="account__change_slug" method="post" action="{% url 'app_profiler:account_detail' slug=request.user.slug %}">{% csrf_token %}
